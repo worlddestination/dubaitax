@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0">
+
+<title>
+VAT Calculator
+</title>
+
+<script src="https://cdn.tailwindcss.com">
+</script>
+
+<link rel="stylesheet"
+href="style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+<div class="logo">
+Dubai AI Tax
+</div>
+
+<ul class="nav-links">
+
+<li><a href="index.html">Home</a></li>
+
+<li><a href="about.html">About</a></li>
+
+<li><a href="vat-calculator.html">
+VAT Calculator
+</a></li>
+
+<li><a href="corporate-tax.html">
+Corporate Tax
+</a></li>
+
+<li><a href="blog.html">Blog</a></li>
+
+<li><a href="contact.html">
+Contact
+</a></li>
+
+</ul>
+
+</nav>
+
+<section class="hero">
+
+<div class="glass calculator-box">
+
+<h1 class="text-4xl mb-6">
+
+VAT Calculator
+
+</h1>
+
+<input
+type="number"
+id="amount"
+placeholder="Enter Amount"
+class="tax-input text-black"
+>
+
+<button
+onclick="calculateVAT()"
+class="hero-btn w-full"
+>
+
+Calculate VAT
+
+</button>
+
+<div
+id="vatResult"
+class="result">
+</div>
+
+</div>
+
+</section>
+
+<footer class="footer">
+
+© 2026 Dubai AI Tax
+
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
