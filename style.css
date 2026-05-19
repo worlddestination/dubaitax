@@ -1,20 +1,217 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
 body{
+
+  font-family:sans-serif;
+
   background:
   linear-gradient(
     135deg,
-    #0f172a,
-    #020617
+    #020617,
+    #0f172a
   );
+
+  color:white;
+
+  overflow-x:hidden;
 }
 
-.glass{
-  background: rgba(255,255,255,0.1);
+/* NAVBAR */
 
-  backdrop-filter: blur(20px);
+.navbar{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  padding:20px 60px;
+
+  position:sticky;
+
+  top:0;
+
+  z-index:1000;
+
+  background:
+  rgba(255,255,255,0.05);
+
+  backdrop-filter:blur(20px);
+
+  border-bottom:
+  1px solid rgba(255,255,255,0.1);
+}
+
+.logo{
+
+  font-size:30px;
+
+  font-weight:bold;
+
+  color:#facc15;
+}
+
+.nav-links{
+
+  display:flex;
+
+  gap:30px;
+
+  list-style:none;
+}
+
+.nav-links a{
+
+  text-decoration:none;
+
+  color:white;
+
+  transition:0.3s;
+}
+
+.nav-links a:hover{
+
+  color:#facc15;
+}
+
+/* HERO SECTION */
+
+.hero{
+
+  min-height:90vh;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  text-align:center;
+
+  padding:50px;
+}
+
+.hero-content{
+
+  max-width:800px;
+}
+
+.hero-content h1{
+
+  font-size:75px;
+
+  line-height:1.1;
+
+  margin-bottom:20px;
+}
+
+.hero-content p{
+
+  font-size:22px;
+
+  color:#cbd5e1;
+
+  margin-bottom:35px;
+}
+
+/* BUTTON */
+
+.hero-btn{
+
+  padding:18px 45px;
+
+  border:none;
+
+  border-radius:16px;
+
+  background:#facc15;
+
+  color:black;
+
+  font-size:18px;
+
+  font-weight:bold;
+
+  cursor:pointer;
+
+  transition:0.3s;
+}
+
+.hero-btn:hover{
+
+  transform:scale(1.05);
+
+  background:#fde047;
+}
+
+/* GLASS CARD */
+
+.glass{
+
+  background:
+  rgba(255,255,255,0.08);
+
+  backdrop-filter:blur(20px);
 
   border:
   1px solid rgba(255,255,255,0.1);
 
   box-shadow:
-  0 0 30px rgba(255,255,255,0.1);
+  0 0 40px rgba(255,255,255,0.1);
+}
+
+/* CALCULATOR */
+
+.calculator-box{
+
+  width:400px;
+
+  padding:40px;
+
+  border-radius:30px;
+}
+
+.tax-input{
+
+  width:100%;
+
+  padding:18px;
+
+  border:none;
+
+  border-radius:15px;
+
+  margin-bottom:20px;
+
+  font-size:18px;
+}
+
+.result{
+
+  margin-top:25px;
+
+  font-size:30px;
+
+  font-weight:bold;
+}
+
+/* FOOTER */
+
+.footer{
+
+  text-align:center;
+
+  padding:30px;
+
+  border-top:
+  1px solid rgba(255,255,255,0.1);
+
+  margin-top:100px;
+
+  color:#94a3b8;
 }
