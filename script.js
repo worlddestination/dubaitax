@@ -20,3 +20,10 @@ document.getElementById("result")
 
 tax.toFixed(2);
 }
+function toggleMenu(){
+
+document
+.querySelector(".nav-links")
+.classList.toggle("active");
+
+}
