@@ -451,64 +451,155 @@ body{
 ========================= */
 
 .logo,
-.footer-brand{
+.footer-logo{
   display:flex;
   align-items:center;
+  justify-content:center;
   gap:14px;
 }
 
-.logo-icon{
+.logo-box{
   position:relative;
-  width:70px;
-  height:70px;
+  width:68px;
+  height:68px;
   border-radius:20px;
-  background:linear-gradient(135deg,#00c6ff,#0052ff,#8f00ff);
+
+  background:
+  linear-gradient(135deg,#00bfff 0%,#003cff 45%,#7a00ff 100%);
+
   display:flex;
   align-items:flex-end;
   justify-content:center;
-  padding-bottom:12px;
+
   overflow:hidden;
+
+  box-shadow:
+  0 0 20px rgba(0,191,255,.5),
+  0 0 40px rgba(122,0,255,.35);
+
+  animation: glow 4s infinite linear;
 }
 
-.bar{
-  width:8px;
-  border-radius:10px;
+/* BARS */
+
+.bars{
+  display:flex;
+  align-items:flex-end;
+  gap:6px;
+  margin-bottom:14px;
+  z-index:2;
+}
+
+.bars span{
+  width:7px;
   background:white;
-  margin:0 3px;
+  border-radius:20px;
 }
 
-.bar1{
+.bars span:nth-child(1){
   height:18px;
 }
 
-.bar2{
-  height:28px;
+.bars span:nth-child(2){
+  height:30px;
 }
 
-.bar3{
-  height:40px;
+.bars span:nth-child(3){
+  height:42px;
 }
+
+/* ARROW */
 
 .arrow{
   position:absolute;
-  width:55px;
-  height:55px;
+  width:42px;
+  height:42px;
   border-top:10px solid #ffb347;
   border-right:10px solid #ffb347;
+
+  right:7px;
+  top:12px;
+
   transform:rotate(45deg);
-  top:5px;
-  right:-5px;
-  border-radius:4px;
+
+  animation: rotateArrow 3s linear infinite;
 }
 
-.logo-text{
-  font-size:48px;
+/* TEXT */
+
+.logo h2,
+.footer-logo h2{
+  font-size:58px;
   font-weight:800;
   font-style:italic;
-  background:linear-gradient(to right,#ffffff,#7fe8ff,#00bfff);
+
+  background:linear-gradient(
+  90deg,
+  #ffffff,
+  #8be9ff,
+  #00bfff
+  );
+
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
+
   letter-spacing:-2px;
+
+  animation: shine 4s linear infinite;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes glow{
+
+  0%{
+    box-shadow:
+    0 0 20px rgba(0,191,255,.4),
+    0 0 40px rgba(122,0,255,.2);
+  }
+
+  50%{
+    box-shadow:
+    0 0 35px rgba(0,191,255,.8),
+    0 0 60px rgba(122,0,255,.45);
+  }
+
+  100%{
+    box-shadow:
+    0 0 20px rgba(0,191,255,.4),
+    0 0 40px rgba(122,0,255,.2);
+  }
+
+}
+
+@keyframes rotateArrow{
+
+  from{
+    transform:rotate(45deg);
+  }
+
+  to{
+    transform:rotate(405deg);
+  }
+
+}
+
+@keyframes shine{
+
+  0%{
+    filter:brightness(1);
+  }
+
+  50%{
+    filter:brightness(1.5);
+  }
+
+  100%{
+    filter:brightness(1);
+  }
+
 }
 
 /* =========================
@@ -518,18 +609,16 @@ body{
 .footer{
   margin-top:80px;
   padding:40px 20px;
-  background:#050505;
-  text-align:center;
-  color:#aaa;
-}
 
-.footer-brand{
-  justify-content:center;
-  margin-bottom:20px;
+  background:transparent;
+
+  text-align:center;
 }
 
 .footer p{
-  font-size:14px;
+  margin-top:16px;
+  color:#888;
+  font-size:15px;
 }
 
 /* =========================
@@ -538,13 +627,14 @@ body{
 
 @media(max-width:768px){
 
-  .logo-text{
-    font-size:34px;
+  .logo h2,
+  .footer-logo h2{
+    font-size:38px;
   }
 
-  .logo-icon{
-    width:55px;
-    height:55px;
+  .logo-box{
+    width:58px;
+    height:58px;
   }
 
 }
