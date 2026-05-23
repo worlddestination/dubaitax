@@ -45,10 +45,6 @@ body{
     transition:0.3s;
 }
 
-.nav-links a:hover{
-    color:#2F66F3;
-}
-
 .start-btn{
     color:#101010 !important;
     font-weight:500;
