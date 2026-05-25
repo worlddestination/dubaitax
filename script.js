@@ -123,8 +123,6 @@ document.getElementById("vatTool").addEventListener("click", increaseTax);
 document.getElementById("corporateTool").addEventListener("click", increaseTax);
 
 document.getElementById("aiTool").addEventListener("click", increaseTax);
-
-});
 fetch("blogs.json")
 
 .then(res => res.json())
