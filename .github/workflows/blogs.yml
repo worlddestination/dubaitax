@@ -1,0 +1,38 @@
+name: Auto UAE Tax Blogs
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+
+  workflow_dispatch:
+
+jobs:
+  update-blog:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install axios
+
+      - name: Generate Blogs
+        run: node generateBlogs.js
+
+      - name: Commit Changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git add blogs.json
+
+          git commit -m "Auto update UAE tax blogs" || echo "No changes"
+
+          git push
