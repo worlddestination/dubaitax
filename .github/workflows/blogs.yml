@@ -1,12 +1,7 @@
 name: Auto UAE Tax Blogs
 
 on:
-  schedule:
-    - cron: '0 6 * * *'
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   update-blog:
@@ -15,8 +10,6 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -32,16 +25,7 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
 
-      - name: Commit Changes
+      - name: Show blogs file
         run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-
-          git add blogs.json
-
-          if git diff --staged --quiet; then
-            echo "No changes"
-          else
-            git commit -m "Auto update UAE tax blogs"
-            git push
-          fi
+          echo "=== blogs.json ==="
+          cat blogs.json
