@@ -1,8 +1,8 @@
 const fs = require("fs");
 const axios = require("axios");
 
-const GROQ_API_KEY = process.env.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;
-const NEWS_API_KEY = process.env.aa8784ca4feb42a0af0cc261654374fc;
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const NEWS_API_KEY = process.env.NEWS_API_KEY;
 
 async function generateBlogs() {
 
