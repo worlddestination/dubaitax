@@ -1,268 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <title>Emunib</title>
-
-  <meta name="description" content="AI-powered UAE tax and business platform by Emunib. Calculate VAT, Corporate Tax and Free Zone tax instantly.">
-
-  <meta name="google-site-verification" content="vk25zGlpHdsecFZx2kXTZh951_tccpCtAah4efGIk8c" />
-
-  <link rel="stylesheet" href="style.css"/>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <meta name="robots" content="index, follow">
-
-  <meta name="author" content="Emunib">
-
-  <meta property="og:title" content="Emunib">
-
-  <meta property="og:description" content="AI-powered UAE tax and business platform">
-
-  <meta property="og:type" content="website">
-
-  <meta name="theme-color" content="#2F66F3">
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Emunib — UAE Tax Platform</title>
+<meta name="description" content="AI-powered UAE tax and business platform by Emunib. Calculate VAT, Corporate Tax and Free Zone tax instantly."/>
+<meta name="robots" content="index, follow"/>
+<meta name="author" content="Emunib"/>
+<meta property="og:title" content="Emunib"/>
+<meta property="og:description" content="AI-powered UAE tax and business platform"/>
+<meta property="og:type" content="website"/>
+<meta name="theme-color" content="#B44FFF"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <header class="navbar">
+<div class="bg"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+<div class="bg-orb orb4"></div>
+<div class="grid-bg"></div>
 
-    <div class="logo">
-
-  <div class="logo-box">
-
-    <div class="bars">
-      <span></span>
-      <span></span>
-      <span></span>
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="logo-gem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
     </div>
-
-    <div class="arrow"></div>
-
+    <span class="logo-text">Emunib</span>
+  </a>
+  <div class="nav-links">
+    <a href="#">Products</a>
+    <a href="#">Resources</a>
+    <a href="#">Company</a>
+    <button class="nav-btn" onclick="location.href='vat.html'"><span>Get Started →</span></button>
   </div>
+</nav>
 
-  <h2>Emunib</h2>
-
-</div>
-
-    <nav class="nav-links">
-      <a href="#">Products</a>
-      <a href="#">Resources</a>
-      <a href="#">Company</a>
-      <a href="#" class="start-btn">Get Started</a>
-    </nav>
-
-  </header>
-
-
-
-  <!-- HERO -->
-  <section class="hero-section">
-
-    <div class="hero-left">
-
-      <div class="badge">
-        🇦🇪 UAE Trusted Tax Platform
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-l">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      🇦🇪 UAE Trusted Tax Platform
+    </div>
+    <h1 class="hero-h1">
+      <span class="h1-plain">Dubai UAE</span>
+      <span class="h1-grad">Tax & VAT</span>
+      <span class="h1-plain">Platform</span>
+    </h1>
+    <p class="hero-p">Calculate VAT, Corporate Tax, Free Zone tax and business compliance with AI-powered precision tools built for the UAE.</p>
+    <div class="hero-btns">
+      <button class="btn-main" onclick="location.href='vat.html'">⚡ Start Filing</button>
+      <button class="btn-sec" onclick="location.href='ai-assistant.html'">Talk to Expert</button>
+    </div>
+  </div>
+  <div class="hero-r">
+    <div class="glass-card parallax-scene" id="heroCard">
+      <div class="card-hdr">
+        <span class="card-hdr-title">Live VAT Calculator</span>
+        <span class="live-pill"><span class="live-dot2"></span>Live</span>
       </div>
-
-      <h1>
-        Dubai UAE <br>
-Tax Calculator & <br>
-VAT Platform
-      </h1>
-
-      <p>
-        Calculate VAT, Corporate Tax, Free Zone tax and business
-        compliance with AI-powered tools.
-      </p>
-
-      <div class="hero-buttons">
-
-        <button class="primary-btn">
-          Start Filing
-        </button>
-
-        <button class="secondary-btn">
-          Talk To Expert
-        </button>
-
+      <div class="amount-wrap">
+        <div>
+          <div class="amount-label">AMOUNT</div>
+          <div class="amount-num" id="dispVal">10,000</div>
+        </div>
+        <span style="font-size:13px;color:rgba(255,255,255,0.3);font-weight:600">AED</span>
       </div>
-
-    </div>
-
-
-
-    <div class="hero-right">
-
-      <div class="image-box">
-
-        <img
-          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop"
-          alt="girl"
-        />
-
+      <div class="rate-pills">
+        <div class="rp active-pink" onclick="setRate(this,'pink',5)">5% VAT</div>
+        <div class="rp" onclick="setRate(this,'purple',9)">9% Corp</div>
+        <div class="rp" onclick="setRate(this,'cyan',0)">Free Zone</div>
       </div>
-
+      <div class="result-glass">
+        <div>
+          <div class="res-l">Tax Amount</div>
+          <div class="res-v" id="resTax">500 AED</div>
+        </div>
+        <div style="text-align:right">
+          <div class="res-l">Total</div>
+          <div class="res-tot" id="resTotal">10,500 AED</div>
+        </div>
+      </div>
+      <div class="sparks">
+        <div class="sp"></div><div class="sp"></div>
+        <div class="sp"></div><div class="sp"></div>
+        <div class="sp"></div><div class="sp"></div>
+        <div class="sp"></div>
+      </div>
     </div>
-
-  </section>
-
-
-
-
-
-  <!-- STATS -->
-  <section class="stats-section">
-
-    <div class="stat-card">
-      <h2 id="businessCount">0</h2>
-<p>Businesses Served</p>
-    </div>
-
-    <div class="stat-card">
-      <h2 id="taxCount">0</h2>
-<p>Tax Calculated</p>
-    </div>
-
-    <div class="stat-card">
-      <h2>99%</h2>
-      <p>Accuracy Rate</p>
-    </div>
-
-    <div class="stat-card">
-      <h2>24/7</h2>
-      <p>AI Support</p>
-    </div>
-
-  </section>
-
-
-
-
-
-  <!-- SERVICES -->
-  <section class="services-section">
-
-    <!-- CARD 1 -->
-    <div class="service-card">
-
-      <h3>
-        VAT Calculator
-      </h3>
-
-      <p>
-        Instant UAE VAT calculations.
-      </p>
-
-      <a href="vat.html" id="vatTool">
-  Open Tool
-</a>
-
-    </div>
-
-
-
-
-    <!-- CARD 2 -->
-    <div class="service-card">
-
-      <h3>
-        Corporate Tax
-      </h3>
-
-      <p>
-        Calculate UAE corporate tax.
-      </p>
-
-      <a href="corporate-tax.html" id="corporateTool">
-  Open Tool
-</a>  
-
-    </div>
-
-
-
-
-    <!-- CARD 3 -->
-    <div class="service-card">
-
-      <h3>
-        Free Zone Tax
-      </h3>
-
-      <p>
-        Dubai Free Zone tax guidance.
-      </p>
-
-      <a href="freezone.html">
-  Open Tool
-</a>
-
-    </div>
-
-
-
-
-    <!-- CARD 4 -->
-    <div class="service-card">
-
-      <h3>
-        AI Tax Assistant
-      </h3>
-
-      <p>
-        AI-powered UAE tax support.
-      </p>
-
-      <a href="ai-assistant.html" id="aiTool">
-  Open Tool
-</a>
-
-    </div>
-
-  </section>
-  <section class="blog-section">
-
-<h2>Latest UAE Tax News</h2>
-
-<div id="blogContainer" class="blog-grid"></div>
-
+  </div>
 </section>
 
-  <!-- FOOTER -->
- <footer class="footer">
-
-  <div class="footer-logo">
-
-    <div class="logo-box">
-
-      <div class="bars">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-
-      <div class="arrow"></div>
-
+<!-- STATS -->
+<section class="stats">
+  <div class="stats-grid">
+    <div class="stat-glass">
+      <div class="stat-num"><span data-count="1240">0</span>+</div>
+      <div class="stat-lbl">Businesses Served</div>
     </div>
-
-    <h2>Emunib</h2>
-
+    <div class="stat-glass">
+      <div class="stat-num"><span data-count="8500">0</span>+</div>
+      <div class="stat-lbl">Tax Calculated</div>
+    </div>
+    <div class="stat-glass">
+      <div class="stat-num">99%</div>
+      <div class="stat-lbl">Accuracy Rate</div>
+    </div>
+    <div class="stat-glass">
+      <div class="stat-num">24/7</div>
+      <div class="stat-lbl">AI Support</div>
+    </div>
   </div>
+</section>
 
-  <p>
-    © 2026 Dubai Emunib Tax. All Rights Reserved.
-  </p>
+<!-- SERVICES -->
+<section class="services">
+  <div class="sec-head">
+    <div class="sec-eyebrow">Our Tools</div>
+    <div class="sec-title">Everything you need</div>
+  </div>
+  <div class="svc-grid">
+    <a class="svc-card" href="vat.html">
+      <div class="svc-icon">🧮</div>
+      <div class="svc-title">VAT Calculator</div>
+      <div class="svc-desc">Instant UAE VAT calculations at 5% — accurate to the fils every time with full breakdown.</div>
+      <span class="svc-link-btn">Open Tool <span class="arrow-ico">→</span></span>
+    </a>
+    <a class="svc-card" href="corporate-tax.html">
+      <div class="svc-icon">🏦</div>
+      <div class="svc-title">Corporate Tax</div>
+      <div class="svc-desc">Calculate UAE 9% corporate tax with full deductions, exemptions and filing guidance.</div>
+      <span class="svc-link-btn">Open Tool <span class="arrow-ico">→</span></span>
+    </a>
+    <a class="svc-card" href="freezone.html">
+      <div class="svc-icon">🏙️</div>
+      <div class="svc-title">Free Zone Tax</div>
+      <div class="svc-desc">Dubai Free Zone 0% tax guidance and QFZP eligibility checks with expert support.</div>
+      <span class="svc-link-btn">Open Tool <span class="arrow-ico">→</span></span>
+    </a>
+    <a class="svc-card" href="ai-assistant.html">
+      <div class="svc-icon">🤖</div>
+      <div class="svc-title">AI Tax Assistant</div>
+      <div class="svc-desc">AI-powered UAE tax advisor — ask anything, get instant expert-level answers 24/7.</div>
+      <span class="svc-link-btn">Open Tool <span class="arrow-ico">→</span></span>
+    </a>
+  </div>
+</section>
 
+<!-- BLOG -->
+<section class="blog">
+  <div class="sec-head">
+    <div class="sec-eyebrow">Latest News</div>
+    <div class="sec-title">UAE Tax Updates</div>
+  </div>
+  <div class="blog-grid" id="blogGrid">
+    <div class="blog-card">
+      <span class="blog-tag">Corporate Tax</span>
+      <div class="blog-h">UAE Corporate Tax 2024: What Changed</div>
+      <div class="blog-p">Key updates to the UAE corporate tax regime every business must know about this year.</div>
+      <div class="blog-meta">
+        <span class="blog-date">Jun 2026</span>
+        <span class="blog-arr">→</span>
+      </div>
+    </div>
+    <div class="blog-card">
+      <span class="blog-tag">VAT</span>
+      <div class="blog-h">VAT Filing Deadlines You Can't Miss</div>
+      <div class="blog-p">Complete calendar of FTA deadlines for UAE VAT-registered businesses in 2026.</div>
+      <div class="blog-meta">
+        <span class="blog-date">May 2026</span>
+        <span class="blog-arr">→</span>
+      </div>
+    </div>
+    <div class="blog-card">
+      <span class="blog-tag">Free Zone</span>
+      <div class="blog-h">QFZP Status: New Eligibility Rules</div>
+      <div class="blog-p">Updated criteria for Qualifying Free Zone Person status under the latest UAE law.</div>
+      <div class="blog-meta">
+        <span class="blog-date">Apr 2026</span>
+        <span class="blog-arr">→</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a class="nav-logo" href="#" style="text-decoration:none">
+    <div class="logo-gem" style="width:36px;height:36px;border-radius:12px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" width="18" height="18">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    </div>
+    <span class="logo-text" style="font-size:20px">Emunib</span>
+  </a>
+  <span class="footer-copy">© 2026 Emunib. All Rights Reserved.</span>
 </footer>
+
 <script src="script.js"></script>
 </body>
 </html>
