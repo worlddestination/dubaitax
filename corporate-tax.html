@@ -1,45 +1,1306 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Corporate Tax Calculator — Emunib UAE Tax Platform</title>
+<meta name="description" content="Calculate UAE Corporate Tax at 9% with deductions, exemptions, small business relief and full compliance breakdown."/>
+<meta name="robots" content="index, follow"/>
+<meta property="og:title" content="Corporate Tax Calculator — Emunib"/>
+<meta property="og:description" content="Instant UAE Corporate Tax calculations — accurate, FTA-verified, with full deduction guidance."/>
+<meta property="og:type" content="website"/>
+<meta name="theme-color" content="#B44FFF"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
-  <meta charset="UTF-8">
+<style>
+/* ══════════════════════════════════════════════════════════
+   EMUNIB — CORPORATE TAX CALCULATOR  |  v3.0
+   Matches main site: Dark · Glassmorphism · Neon · Cinematic
+══════════════════════════════════════════════════════════ */
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+/* ── RESET & ROOT ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-  <title>Corporate Tax</title>
+:root {
+  --pink:   #FF2D78;
+  --purple: #B44FFF;
+  --cyan:   #00F5FF;
+  --gold:   #FFD166;
+  --green:  #06FFA5;
+  --orange: #FF7043;
+  --bg:     #04020F;
+  --glass-bg:     rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.09);
+  --text:   #ffffff;
+  --text-muted: rgba(255,255,255,0.45);
+  --text-dim:   rgba(255,255,255,0.2);
+  --radius-card: 28px;
+  --radius-pill: 100px;
+  --transition: 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
 
-  <link rel="stylesheet" href="corporate.css">
+html { scroll-behavior:smooth; }
 
+body {
+  font-family:'Space Grotesk','Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  min-height:100vh;
+  cursor:none;
+}
+
+a { text-decoration:none; color:inherit; }
+
+/* ── CURSOR ── */
+.cursor-glow {
+  position:fixed; width:400px; height:400px; border-radius:50%;
+  background:radial-gradient(circle,rgba(180,79,255,0.12) 0%,transparent 70%);
+  transform:translate(-50%,-50%); pointer-events:none; z-index:9998;
+  transition:opacity 0.3s; will-change:transform;
+}
+.cursor-dot {
+  position:fixed; width:8px; height:8px; border-radius:50%;
+  background:var(--purple); transform:translate(-50%,-50%);
+  pointer-events:none; z-index:9999;
+  transition:transform 0.1s, background 0.2s;
+  box-shadow:0 0 10px var(--purple),0 0 20px rgba(180,79,255,0.5);
+}
+
+/* ── PARTICLE CANVAS ── */
+#particleCanvas {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+}
+
+/* ── BACKGROUND ── */
+.bg-root { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+.bg-base {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%,   rgba(180,79,255,0.35)  0%, transparent 55%),
+    radial-gradient(ellipse 70% 55% at 90% 5%,   rgba(255,45,120,0.25)  0%, transparent 55%),
+    radial-gradient(ellipse 55% 50% at 5%  90%,  rgba(0,245,255,0.18)   0%, transparent 55%),
+    radial-gradient(ellipse 45% 45% at 95% 85%,  rgba(255,112,67,0.14)  0%, transparent 50%),
+    #04020F;
+}
+.bg-grid {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
+}
+.bg-vignette {
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 40%,rgba(4,2,15,0.85) 100%);
+}
+.orb { position:absolute; border-radius:50%; filter:blur(100px); animation:orbFloat ease-in-out infinite; will-change:transform; }
+.orb-1 { width:700px;height:700px;background:rgba(180,79,255,0.22);top:-200px;left:-150px;animation-duration:14s; }
+.orb-2 { width:600px;height:600px;background:rgba(255,45,120,0.18);top:-100px;right:-150px;animation-duration:18s;animation-delay:-5s; }
+.orb-3 { width:500px;height:500px;background:rgba(0,245,255,0.14);bottom:-100px;left:10%;animation-duration:20s;animation-delay:-9s; }
+.orb-4 { width:400px;height:400px;background:rgba(255,112,67,0.1);bottom:-80px;right:5%;animation-duration:16s;animation-delay:-3s; }
+.scanlines {
+  position:absolute; inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);
+}
+@keyframes orbFloat {
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(40px,60px) scale(1.06)}
+  66%{transform:translate(-30px,20px) scale(0.95)}
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0;left:0;right:0; z-index:200;
+}
+.nav-inner {
+  max-width:1400px; margin:0 auto; padding:0 48px; height:76px;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(4,2,15,0.55);
+  backdrop-filter:blur(32px) saturate(200%);
+  -webkit-backdrop-filter:blur(32px) saturate(200%);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.nav-logo { display:flex; align-items:center; gap:14px; cursor:pointer; }
+.logo-crystal {
+  width:46px; height:46px; border-radius:16px;
+  background:linear-gradient(135deg,var(--purple),var(--pink),var(--cyan));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.2),0 0 24px rgba(180,79,255,0.6),0 0 50px rgba(255,45,120,0.3),inset 0 1px 0 rgba(255,255,255,0.35);
+  animation:crystalPulse 3s ease-in-out infinite; flex-shrink:0; position:relative; overflow:hidden;
+}
+.crystal-sheen { position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.25) 0%,transparent 60%); border-radius:inherit; }
+@keyframes crystalPulse {
+  0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,0.2),0 0 24px rgba(180,79,255,0.6),0 0 50px rgba(180,79,255,0.3),inset 0 1px 0 rgba(255,255,255,0.35)}
+  50%{box-shadow:0 0 0 1px rgba(255,255,255,0.3),0 0 40px rgba(180,79,255,0.9),0 0 80px rgba(180,79,255,0.4),inset 0 1px 0 rgba(255,255,255,0.45)}
+}
+.logo-wordmark { display:flex; flex-direction:column; gap:1px; }
+.logo-text-main { font-size:24px; font-weight:800; letter-spacing:-0.8px; color:#fff; line-height:1; }
+.logo-text-sub { font-size:9px; font-weight:700; letter-spacing:2.5px; color:rgba(255,255,255,0.35); text-transform:uppercase; }
+.nav-border-glow {
+  position:absolute; bottom:0; left:10%; right:10%; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(180,79,255,0.6),rgba(180,79,255,0.5),rgba(0,245,255,0.5),transparent);
+}
+.nav-back {
+  display:flex; align-items:center; gap:8px;
+  padding:10px 20px; border-radius:100px;
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+  font-size:13px; font-weight:700; color:rgba(255,255,255,0.55);
+  cursor:pointer; transition:all 0.3s;
+}
+.nav-back:hover { background:rgba(255,255,255,0.1); color:#fff; }
+.nav-badge {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 16px; border-radius:100px;
+  background:rgba(180,79,255,0.1); border:1px solid rgba(180,79,255,0.25);
+  font-size:11px; font-weight:800; letter-spacing:1px; color:var(--purple);
+}
+.badge-dot { width:6px;height:6px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px var(--purple);animation:badgeBlink 2s ease-in-out infinite; }
+@keyframes badgeBlink { 0%,100%{opacity:1;box-shadow:0 0 8px var(--purple)} 50%{opacity:0.5;box-shadow:0 0 4px var(--purple)} }
+.nav-right-group { display:flex; align-items:center; gap:12px; }
+.status-pill {
+  display:flex; align-items:center; gap:7px;
+  padding:6px 14px; border-radius:100px;
+  background:rgba(180,79,255,0.08); border:1px solid rgba(180,79,255,0.2);
+  font-size:11px; font-weight:700; color:var(--purple);
+}
+.status-dot { width:6px;height:6px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px var(--purple);animation:badgeBlink 2s ease-in-out infinite; }
+
+/* ── PAGE HERO ── */
+.page-hero {
+  position:relative; z-index:1;
+  padding:120px 48px 60px;
+  max-width:1400px; margin:0 auto;
+  text-align:center;
+}
+.page-eyebrow {
+  display:inline-flex; align-items:center; gap:12px;
+  padding:8px 20px; border-radius:100px;
+  background:rgba(180,79,255,0.1); border:1px solid rgba(180,79,255,0.25);
+  font-size:11px; font-weight:800; letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--purple); margin-bottom:28px;
+  animation:fadeUp 0.7s 0.1s cubic-bezier(0.16,1,0.3,1) both;
+}
+.eyebrow-icon { font-size:14px; }
+.page-title {
+  font-size:clamp(44px,6vw,88px); font-weight:900; letter-spacing:-3px;
+  line-height:0.95; margin-bottom:24px;
+  font-family:'Space Grotesk',sans-serif;
+  animation:fadeUp 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+}
+.title-main { display:block; color:#fff; }
+.title-grad {
+  display:block;
+  background:linear-gradient(90deg,var(--purple) 0%,var(--cyan) 80%);
+  background-size:300%;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  animation:gradShift 5s linear infinite;
+}
+@keyframes gradShift { 0%{background-position:0%} 100%{background-position:300%} }
+.page-sub {
+  font-size:17px; color:var(--text-muted); line-height:1.75; max-width:540px; margin:0 auto 48px;
+  animation:fadeUp 0.7s 0.3s cubic-bezier(0.16,1,0.3,1) both;
+}
+.page-sub em { font-style:normal; color:rgba(255,255,255,0.75); }
+
+/* Feature pills row */
+.feature-pills {
+  display:flex; justify-content:center; gap:10px; flex-wrap:wrap;
+  animation:fadeUp 0.7s 0.4s cubic-bezier(0.16,1,0.3,1) both;
+  margin-bottom:64px;
+}
+.fpill {
+  display:flex; align-items:center; gap:7px;
+  padding:8px 16px; border-radius:100px;
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09);
+  font-size:12px; font-weight:700; color:var(--text-muted);
+}
+.fpill-dot { width:6px;height:6px;border-radius:50%; }
+.fpill:nth-child(1) .fpill-dot { background:var(--purple); box-shadow:0 0 6px var(--purple); }
+.fpill:nth-child(2) .fpill-dot { background:var(--green); box-shadow:0 0 6px var(--green); }
+.fpill:nth-child(3) .fpill-dot { background:var(--purple); box-shadow:0 0 6px var(--purple); }
+.fpill:nth-child(4) .fpill-dot { background:var(--gold); box-shadow:0 0 6px var(--gold); }
+
+@keyframes fadeUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+/* ── CALCULATOR LAYOUT ── */
+.calc-layout {
+  position:relative; z-index:1;
+  max-width:1200px; margin:0 auto;
+  padding:0 48px 100px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+  align-items:start;
+}
+
+/* ── INPUT PANEL ── */
+.panel-glass {
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(40px) saturate(180%);
+  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:var(--radius-card);
+  padding:36px;
+  position:relative; overflow:hidden;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.1),0 40px 80px rgba(0,0,0,0.5);
+  animation:fadeUp 0.7s 0.5s cubic-bezier(0.16,1,0.3,1) both;
+}
+.panel-top-streak {
+  position:absolute; top:0; left:15%; right:15%; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(180,79,255,0.6),rgba(180,79,255,0.5),transparent);
+}
+.panel-header { margin-bottom:32px; }
+.panel-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:5px 14px; border-radius:100px;
+  background:rgba(180,79,255,0.1); border:1px solid rgba(180,79,255,0.25);
+  font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase;
+  color:var(--purple); margin-bottom:14px;
+}
+.panel-title { font-size:22px; font-weight:800; color:#fff; margin-bottom:6px; }
+.panel-sub { font-size:13px; color:var(--text-muted); }
+
+/* ── FORM FIELDS ── */
+.field-group { margin-bottom:20px; position:relative; }
+.field-label {
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  color:rgba(255,255,255,0.35); margin-bottom:10px;
+}
+.field-label-right { font-size:10px; letter-spacing:1px; color:rgba(255,255,255,0.2); font-weight:600; }
+.field-input-wrap { position:relative; }
+.field-prefix {
+  position:absolute; left:0; top:0; bottom:0; width:60px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; font-weight:800; color:rgba(255,255,255,0.3);
+  border-right:1px solid rgba(255,255,255,0.08);
+  pointer-events:none;
+}
+.field-input {
+  width:100%; height:60px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:16px; padding-left:72px; padding-right:20px;
+  font-size:20px; font-weight:700;
+  color:#fff; outline:none;
+  font-family:'Space Grotesk','Inter',sans-serif;
+  transition:border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  -moz-appearance:textfield;
+}
+.field-input::-webkit-outer-spin-button,
+.field-input::-webkit-inner-spin-button { -webkit-appearance:none; }
+.field-input::placeholder { color:rgba(255,255,255,0.15); font-size:16px; }
+.field-input:focus {
+  border-color:rgba(180,79,255,0.5);
+  box-shadow:0 0 0 3px rgba(180,79,255,0.1),0 0 30px rgba(180,79,255,0.15);
+  background:rgba(180,79,255,0.04);
+}
+
+/* Quick amount chips */
+.quick-chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+.chip {
+  padding:7px 16px; border-radius:100px;
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09);
+  font-size:12px; font-weight:700; color:var(--text-muted);
+  cursor:pointer; transition:var(--transition);
+  font-family:inherit;
+}
+.chip:hover { background:rgba(180,79,255,0.12); border-color:rgba(180,79,255,0.35); color:var(--purple); transform:translateY(-2px); }
+.chip.active { background:rgba(180,79,255,0.15); border-color:rgba(180,79,255,0.4); color:var(--purple); }
+
+/* Toggle sections */
+.toggle-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 16px; border-radius:14px;
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  cursor:pointer; margin-bottom:16px; transition:all 0.3s;
+}
+.toggle-row:hover { background:rgba(255,255,255,0.06); }
+.toggle-label { font-size:13px; font-weight:700; color:var(--text-muted); display:flex; align-items:center; gap:10px; }
+.toggle-switch {
+  width:44px; height:24px; border-radius:100px;
+  background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.1);
+  position:relative; transition:all 0.3s; flex-shrink:0;
+}
+.toggle-switch.on { background:rgba(180,79,255,0.3); border-color:rgba(180,79,255,0.5); }
+.toggle-knob {
+  position:absolute; top:2px; left:2px; width:18px; height:18px;
+  border-radius:50%; background:rgba(255,255,255,0.5); transition:all 0.3s;
+}
+.toggle-switch.on .toggle-knob { left:22px; background:var(--purple); box-shadow:0 0 8px rgba(180,79,255,0.6); }
+
+.toggle-section { display:none; animation:fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+.toggle-section.show { display:block; }
+
+/* Tabs for deductions */
+.tab-row {
+  display:flex; gap:8px; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.tab-btn {
+  padding:12px 16px; border:none; background:none; cursor:pointer;
+  font-family:inherit; font-size:13px; font-weight:700;
+  color:rgba(255,255,255,0.35); border-bottom:2px solid transparent;
+  transition:all 0.3s; position:relative;
+}
+.tab-btn:hover { color:rgba(255,255,255,0.6); }
+.tab-btn.active { color:var(--purple); border-bottom-color:var(--purple); }
+
+/* ── CALCULATE BUTTON ── */
+.btn-calc {
+  width:100%; height:64px; border-radius:18px; border:none;
+  cursor:pointer; font-family:inherit; font-size:17px; font-weight:800;
+  color:#fff; position:relative; overflow:hidden;
+  box-shadow:0 4px 0 rgba(100,40,150,0.6),0 12px 40px rgba(180,79,255,0.4),inset 0 1px 0 rgba(255,255,255,0.15);
+  transition:all 0.3s;
+}
+.btn-calc-bg {
+  position:absolute; inset:0;
+  background:linear-gradient(135deg,var(--purple),var(--cyan),var(--purple));
+  background-size:200%; animation:btnShift 4s ease-in-out infinite;
+}
+@keyframes btnShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+.btn-calc:hover { transform:translateY(-4px) scale(1.02); box-shadow:0 8px 0 rgba(100,40,150,0.5),0 20px 60px rgba(180,79,255,0.55); }
+.btn-calc:active { transform:translateY(1px); }
+.btn-calc-content { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:12px; }
+.btn-calc-icon { font-size:22px; }
+.btn-calc-shine {
+  position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
+  transform:skewX(-20deg) translateX(-100%);
+  animation:btnShine 3s ease-in-out infinite;
+}
+@keyframes btnShine { 0%,60%,100%{transform:skewX(-20deg) translateX(-100%)} 80%{transform:skewX(-20deg) translateX(200%)} }
+
+/* ── RESULT PANEL ── */
+.result-panel {
+  display:flex; flex-direction:column; gap:16px;
+  animation:fadeUp 0.7s 0.6s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+/* Main result card */
+.result-card {
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(40px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:var(--radius-card); padding:32px;
+  position:relative; overflow:hidden;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.1),0 40px 80px rgba(0,0,0,0.5);
+}
+.result-card-streak {
+  position:absolute; top:0; left:15%; right:15%; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(180,79,255,0.7),transparent);
+}
+.result-empty {
+  padding:40px 0; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:16px;
+}
+.empty-icon { font-size:48px; opacity:0.3; }
+.empty-text { font-size:15px; color:var(--text-dim); font-weight:600; }
+
+.result-content { display:none; }
+.result-content.show { display:block; }
+
+.result-header { margin-bottom:28px; display:flex; justify-content:space-between; align-items:flex-start; }
+.result-label-sm { font-size:10px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:6px; }
+.result-amount {
+  font-size:52px; font-weight:900; letter-spacing:-2px; line-height:1;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.result-badge-right {
+  padding:8px 16px; border-radius:100px;
+  background:rgba(180,79,255,0.12); border:1px solid rgba(180,79,255,0.3);
+  font-size:20px; font-weight:900; color:var(--purple);
+}
+
+/* Breakdown rows */
+.breakdown-section { margin-bottom:24px; }
+.breakdown-title { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.25); margin-bottom:14px; }
+.breakdown-rows { display:flex; flex-direction:column; gap:8px; }
+.breakdown-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 16px; border-radius:12px;
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
+  transition:all 0.3s;
+}
+.breakdown-row:hover { background:rgba(255,255,255,0.06); }
+.br-label { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:rgba(255,255,255,0.5); }
+.br-dot { width:8px;height:8px;border-radius:50%; }
+.br-val { font-size:16px; font-weight:800; }
+.br-revenue .br-dot { background:rgba(255,255,255,0.3); }
+.br-revenue .br-val { color:rgba(255,255,255,0.7); }
+.br-deductions .br-dot { background:var(--green); box-shadow:0 0 6px rgba(6,255,165,0.5); }
+.br-deductions .br-val { color:var(--green); }
+.br-tax .br-dot { background:var(--purple); box-shadow:0 0 6px rgba(180,79,255,0.5); }
+.br-tax .br-val { color:var(--purple); }
+
+/* Total row */
+.total-row {
+  padding:18px 20px; border-radius:16px; margin-top:8px;
+  background:linear-gradient(90deg,rgba(180,79,255,0.1),rgba(180,79,255,0.08));
+  border:1px solid rgba(180,79,255,0.25);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.tr-label { font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.4); }
+.tr-val { font-size:28px; font-weight:900; color:#fff; }
+
+/* Tax bracket visualization */
+.bracket-viz { margin-top:24px; }
+.bv-label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.25); margin-bottom:12px; }
+.bracket-items { display:flex; flex-direction:column; gap:8px; }
+.bracket-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 16px; border-radius:12px;
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);
+}
+.bi-left { font-size:12px; font-weight:700; color:rgba(255,255,255,0.5); }
+.bi-right { font-size:14px; font-weight:800; color:#fff; }
+
+/* Relief status indicator */
+.relief-indicator {
+  padding:16px; border-radius:16px; margin-top:16px;
+  background:rgba(6,255,165,0.08); border:1px solid rgba(6,255,165,0.25);
+  display:flex; align-items:center; gap:12px;
+}
+.ri-icon { font-size:28px; }
+.ri-text { flex:1; }
+.ri-label { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:rgba(6,255,165,0.7); }
+.ri-desc { font-size:14px; font-weight:700; color:var(--green); margin-top:2px; }
+
+/* Export row */
+.export-row { display:flex; gap:10px; margin-top:20px; }
+.btn-export {
+  flex:1; height:48px; border-radius:14px; border:none;
+  cursor:pointer; font-family:inherit; font-size:13px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:var(--transition);
+}
+.btn-export-primary {
+  background:rgba(180,79,255,0.15); border:1px solid rgba(180,79,255,0.3);
+  color:var(--purple);
+}
+.btn-export-primary:hover { background:rgba(180,79,255,0.25); transform:translateY(-3px); box-shadow:0 8px 24px rgba(180,79,255,0.2); }
+.btn-export-ghost {
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.45);
+}
+.btn-export-ghost:hover { background:rgba(255,255,255,0.08); color:#fff; transform:translateY(-3px); }
+
+/* ── INFO GRID ── */
+.info-grid {
+  position:relative; z-index:1;
+  max-width:1200px; margin:0 auto;
+  padding:0 48px 40px;
+  display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+  animation:fadeUp 0.7s 0.8s cubic-bezier(0.16,1,0.3,1) both;
+}
+.info-card {
+  border-radius:20px; padding:24px;
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+  position:relative; overflow:hidden;
+  transition:var(--transition);
+}
+.info-card:hover { transform:translateY(-6px); }
+.info-card::before { content:''; position:absolute; top:0;left:15%;right:15%;height:1px; }
+.info-card:nth-child(1)::before { background:linear-gradient(90deg,transparent,rgba(180,79,255,0.5),transparent); }
+.info-card:nth-child(2)::before { background:linear-gradient(90deg,transparent,rgba(180,79,255,0.5),transparent); }
+.info-card:nth-child(3)::before { background:linear-gradient(90deg,transparent,rgba(180,79,255,0.4),transparent); }
+.ic-icon { font-size:28px; margin-bottom:12px; }
+.ic-title { font-size:15px; font-weight:800; color:#fff; margin-bottom:6px; }
+.ic-desc { font-size:13px; color:var(--text-muted); line-height:1.65; }
+
+/* ── HISTORY SECTION ── */
+.history-section {
+  position:relative; z-index:1;
+  max-width:1200px; margin:0 auto;
+  padding:0 48px 80px;
+  animation:fadeUp 0.7s 1s cubic-bezier(0.16,1,0.3,1) both;
+}
+.section-head-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.section-head-title { font-size:18px; font-weight:800; color:#fff; }
+.clear-hist-btn {
+  background:none; border:none; cursor:pointer; font-family:inherit;
+  font-size:12px; font-weight:700; color:rgba(255,255,255,0.2); letter-spacing:1px; text-transform:uppercase;
+  transition:color 0.3s; padding:4px;
+}
+.clear-hist-btn:hover { color:var(--purple); }
+.history-list { display:flex; flex-direction:column; gap:10px; }
+.history-item {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:16px 20px; border-radius:16px;
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  transition:all 0.3s; cursor:pointer;
+}
+.history-item:hover { background:rgba(255,255,255,0.06); border-color:rgba(180,79,255,0.2); transform:translateX(4px); }
+.hi-left { display:flex; align-items:center; gap:14px; }
+.hi-num { width:32px; height:32px; border-radius:10px; background:rgba(180,79,255,0.1); border:1px solid rgba(180,79,255,0.2); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:var(--purple); }
+.hi-details {}
+.hi-base { font-size:15px; font-weight:700; color:rgba(255,255,255,0.7); }
+.hi-time { font-size:11px; color:rgba(255,255,255,0.25); margin-top:2px; }
+.hi-right { text-align:right; }
+.hi-tax { font-size:14px; font-weight:800; color:var(--purple); }
+.hi-total { font-size:12px; color:rgba(255,255,255,0.3); margin-top:2px; }
+.history-empty { padding:32px; text-align:center; font-size:14px; color:rgba(255,255,255,0.2); font-weight:600; }
+
+/* ── FOOTER ── */
+.site-footer {
+  position:relative; z-index:1;
+  border-top:1px solid rgba(255,255,255,0.07); padding:40px 0;
+}
+.footer-inner { max-width:1200px; margin:0 auto; padding:0 48px; display:flex; justify-content:space-between; align-items:center; }
+.footer-left { font-size:13px; color:rgba(255,255,255,0.2); }
+.footer-links { display:flex; gap:24px; }
+.footer-links a { font-size:12px; font-weight:600; color:rgba(255,255,255,0.25); transition:color 0.3s; }
+.footer-links a:hover { color:rgba(255,255,255,0.6); }
+.footer-tags { display:flex; gap:8px; }
+.footer-tag {
+  padding:4px 12px; border-radius:100px;
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+  font-size:10px; font-weight:700; color:rgba(255,255,255,0.25); letter-spacing:1px;
+}
+
+/* ── TOAST ── */
+#toast {
+  position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(80px);
+  background:rgba(180,79,255,0.1); border:1px solid rgba(180,79,255,0.3);
+  backdrop-filter:blur(20px); border-radius:16px;
+  padding:14px 24px; display:flex; align-items:center; gap:12px;
+  font-size:14px; font-weight:700; color:#fff; z-index:99998;
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.4s ease; opacity:0;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+#toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+/* ── LOADER ── */
+#pageLoader {
+  position:fixed; inset:0; background:#04020F; z-index:99999;
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity 0.6s ease;
+}
+.loader-inner { text-align:center; }
+.loader-logo {
+  width:64px; height:64px; border-radius:22px;
+  background:linear-gradient(135deg,var(--purple),var(--cyan),var(--purple));
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 16px; font-size:28px;
+  animation:loaderPulse 1s ease-in-out infinite;
+  box-shadow:0 0 40px rgba(180,79,255,0.5);
+}
+@keyframes loaderPulse {
+  0%,100%{transform:scale(1);box-shadow:0 0 40px rgba(180,79,255,0.5)}
+  50%{transform:scale(1.1);box-shadow:0 0 70px rgba(180,79,255,0.8)}
+}
+.loader-text { color:rgba(255,255,255,0.4); font-size:12px; font-weight:700; letter-spacing:3px; }
+.loader-bar {
+  width:40px; height:2px; background:linear-gradient(90deg,var(--purple),var(--cyan));
+  border-radius:1px; margin:12px auto 0;
+  animation:loaderBar 0.8s ease-in-out infinite alternate;
+}
+@keyframes loaderBar { from{transform:scaleX(0.4)} to{transform:scaleX(1)} }
+
+/* ── RESPONSIVE ── */
+@media (max-width:960px) {
+  .calc-layout { grid-template-columns:1fr; gap:20px; padding:0 24px 80px; }
+  .info-grid { grid-template-columns:1fr; padding:0 24px 40px; }
+  .history-section { padding:0 24px 60px; }
+  .page-hero { padding:100px 24px 40px; }
+  .nav-inner { padding:0 20px; }
+  .footer-inner { flex-direction:column; gap:16px; text-align:center; }
+  .footer-links { display:none; }
+}
+@media (max-width:600px) {
+  .feature-pills { gap:6px; }
+  .fpill { font-size:11px; padding:6px 12px; }
+  .export-row { flex-direction:column; }
+  .info-grid { grid-template-columns:1fr; }
+  .tab-row { flex-wrap:wrap; }
+  .bracket-items { font-size:12px; }
+}
+</style>
 </head>
-
 <body>
 
-  <div class="container">
+<!-- LOADER -->
+<div id="pageLoader">
+  <div class="loader-inner">
+    <div class="loader-logo">🏦</div>
+    <div class="loader-text">EMUNIB</div>
+    <div class="loader-bar"></div>
+  </div>
+</div>
 
-    <h1>UAE Corporate Tax</h1>
+<!-- CURSOR -->
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="cursor-dot"  id="cursorDot"></div>
 
-    <input
-      type="number"
-      id="profit"
-      placeholder="Enter Business Profit"
-    >
+<!-- PARTICLE CANVAS -->
+<canvas id="particleCanvas"></canvas>
 
-    <button onclick="calculateCorporateTax()">
-      Calculate Tax
+<!-- BACKGROUND -->
+<div class="bg-root">
+  <div class="bg-base"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+  <div class="scanlines"></div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <div class="logo-crystal">
+        <div class="crystal-sheen"></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="logo-wordmark">
+        <span class="logo-text-main">Emunib</span>
+        <span class="logo-text-sub">UAE Tax Platform</span>
+      </div>
+    </a>
+
+    <div class="nav-right-group">
+      <div class="nav-badge">
+        <span class="badge-dot"></span>
+        CORPORATE TAX
+      </div>
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        9% Standard Rate
+      </div>
+      <button class="nav-back" onclick="history.back()">← Back</button>
+    </div>
+  </div>
+  <div class="nav-border-glow"></div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-eyebrow">
+    <span class="eyebrow-icon">🏦</span>
+    UAE CORPORATE TAX CALCULATOR · 9% STANDARD RATE
+  </div>
+  <h1 class="page-title">
+    <span class="title-main">Calculate Your</span>
+    <span class="title-grad">Corporate Tax</span>
+  </h1>
+  <p class="page-sub">
+    Accurate UAE Corporate Tax at <em>9% standard rate</em> — compute tax amounts
+    with full deductions, exemptions, small business relief and FTA-verified breakdown in seconds.
+  </p>
+  <div class="feature-pills">
+    <div class="fpill"><span class="fpill-dot"></span> 9% Corporate Tax Rate</div>
+    <div class="fpill"><span class="fpill-dot"></span> Small Business Relief</div>
+    <div class="fpill"><span class="fpill-dot"></span> Full Deductions Support</div>
+    <div class="fpill"><span class="fpill-dot"></span> Export Ready Reports</div>
+  </div>
+</div>
+
+<!-- CALCULATOR LAYOUT -->
+<div class="calc-layout">
+
+  <!-- INPUT PANEL -->
+  <div class="panel-glass">
+    <div class="panel-top-streak"></div>
+    <div class="panel-header">
+      <div class="panel-badge">📊 INPUT</div>
+      <div class="panel-title">Enter Financial Details</div>
+      <div class="panel-sub">Fill in business figures to compute corporate tax breakdown</div>
+    </div>
+
+    <!-- Revenue field -->
+    <div class="field-group">
+      <div class="field-label">
+        <span>Annual Business Revenue</span>
+        <span class="field-label-right">IN AED (DIRHAMS)</span>
+      </div>
+      <div class="field-input-wrap">
+        <div class="field-prefix">AED</div>
+        <input type="number" id="revenueInput" class="field-input" placeholder="0.00" min="0" step="0.01" oninput="onRevenueInput()"/>
+      </div>
+      <div class="quick-chips">
+        <button class="chip" onclick="setRevenue(500000)">500K</button>
+        <button class="chip" onclick="setRevenue(1000000)">1M</button>
+        <button class="chip" onclick="setRevenue(5000000)">5M</button>
+        <button class="chip" onclick="setRevenue(10000000)">10M</button>
+        <button class="chip" onclick="setRevenue(50000000)">50M</button>
+      </div>
+    </div>
+
+    <!-- Expense field -->
+    <div class="field-group">
+      <div class="field-label">
+        <span>Total Deductible Expenses</span>
+        <span class="field-label-right">IN AED</span>
+      </div>
+      <div class="field-input-wrap">
+        <div class="field-prefix">AED</div>
+        <input type="number" id="expenseInput" class="field-input" placeholder="0.00" min="0" step="0.01" oninput="onExpenseInput()"/>
+      </div>
+    </div>
+
+    <!-- Small Business Relief Toggle -->
+    <div class="toggle-row" id="reliefToggle" onclick="toggleRelief()">
+      <div class="toggle-label">
+        <span>💰</span>
+        Qualify for Small Business Relief
+      </div>
+      <div class="toggle-switch" id="reliefSwitch">
+        <div class="toggle-knob"></div>
+      </div>
+    </div>
+
+    <div class="toggle-section" id="reliefSection">
+      <div class="field-group" style="margin-bottom:0;">
+        <div class="field-label"><span>Annual Profit (AED)</span><span class="field-label-right">Max 375K</span></div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.35); margin:6px 0; padding:8px 14px; border-radius:10px; background:rgba(6,255,165,0.08);">✓ Profit up to AED 375,000 is exempt from corporate tax</div>
+      </div>
+    </div>
+
+    <!-- Additional Deductions Toggle -->
+    <div class="toggle-row" id="deductToggle" onclick="toggleDeductions()">
+      <div class="toggle-label">
+        <span>🔖</span>
+        Add Special Deductions
+      </div>
+      <div class="toggle-switch" id="deductSwitch">
+        <div class="toggle-knob"></div>
+      </div>
+    </div>
+
+    <div class="toggle-section" id="deductSection">
+      <div class="field-group">
+        <div class="field-label"><span>R&D Expenditure Deduction</span></div>
+        <div class="field-input-wrap">
+          <div class="field-prefix">AED</div>
+          <input type="number" id="rdInput" class="field-input" placeholder="0.00" min="0" step="0.01"/>
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><span>Donation / Charity Deduction</span></div>
+        <div class="field-input-wrap">
+          <div class="field-prefix">AED</div>
+          <input type="number" id="donationInput" class="field-input" placeholder="0.00" min="0" step="0.01"/>
+        </div>
+      </div>
+      <div class="field-group" style="margin-bottom:0;">
+        <div class="field-label"><span>Training & Development Costs</span></div>
+        <div class="field-input-wrap">
+          <div class="field-prefix">AED</div>
+          <input type="number" id="trainingInput" class="field-input" placeholder="0.00" min="0" step="0.01"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calculate Button -->
+    <button class="btn-calc" onclick="calculateCorpTax()" style="margin-top:24px;">
+      <div class="btn-calc-bg"></div>
+      <div class="btn-calc-content">
+        <span class="btn-calc-icon">⚡</span>
+        <span>Calculate Tax</span>
+      </div>
+      <div class="btn-calc-shine"></div>
     </button>
 
-    <div class="result-box">
+    <div style="text-align:center; margin-top:14px;">
+      <button class="reset-btn" onclick="resetAll()" style="background:none; border:none; cursor:pointer; font-family:inherit; font-size:12px; font-weight:700; color:rgba(255,255,255,0.2); letter-spacing:1px; text-transform:uppercase; transition:color 0.3s; padding:6px;">↺ Clear &amp; Reset</button>
+    </div>
+  </div>
 
-      <h2 id="taxAmount"></h2>
+  <!-- RESULT PANEL -->
+  <div class="result-panel">
 
-      <h2 id="netProfit"></h2>
+    <!-- Main result card -->
+    <div class="result-card">
+      <div class="result-card-streak"></div>
 
+      <div class="result-empty" id="resultEmpty">
+        <div class="empty-icon">🏦</div>
+        <div class="empty-text">Enter figures &amp; press Calculate</div>
+      </div>
+
+      <div class="result-content" id="resultContent">
+        <div class="result-header">
+          <div class="result-head-left">
+            <div class="result-label-sm">CORPORATE TAX DUE</div>
+            <div class="result-amount" id="resultTax">0.00</div>
+          </div>
+          <div class="result-badge-right" id="resultRate">9%</div>
+        </div>
+
+        <div class="breakdown-section">
+          <div class="breakdown-title">FINANCIAL BREAKDOWN</div>
+          <div class="breakdown-rows">
+            <div class="breakdown-row br-revenue">
+              <div class="br-label"><div class="br-dot"></div> Annual Revenue</div>
+              <div class="br-val" id="brRevenue">—</div>
+            </div>
+            <div class="breakdown-row br-deductions">
+              <div class="br-label"><div class="br-dot"></div> Total Deductions</div>
+              <div class="br-val" id="brDeductions">—</div>
+            </div>
+            <div class="breakdown-row br-revenue" style="background:rgba(0,245,255,0.06); border-color:rgba(0,245,255,0.15);">
+              <div class="br-label"><div class="br-dot" style="background:var(--cyan); box-shadow:0 0 6px rgba(0,245,255,0.5);"></div> Taxable Profit</div>
+              <div class="br-val" style="color:var(--cyan);" id="brProfit">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="total-row">
+          <div class="tr-label">TOTAL TAX PAYABLE</div>
+          <div class="tr-val" id="brTaxTotal">—</div>
+        </div>
+
+        <!-- Relief Indicator -->
+        <div class="relief-indicator" id="reliefIndicator" style="display:none;">
+          <div class="ri-icon">✨</div>
+          <div class="ri-text">
+            <div class="ri-label">Small Business Relief Applied</div>
+            <div class="ri-desc" id="reliefStatus">Relief: AED 0</div>
+          </div>
+        </div>
+
+        <!-- Tax bracket visualization -->
+        <div class="bracket-viz">
+          <div class="bv-label">TAX CALCULATION BREAKDOWN</div>
+          <div class="bracket-items">
+            <div class="bracket-item">
+              <div class="bi-left">Profit × 9%</div>
+              <div class="bi-right" id="bracketTax">0.00 AED</div>
+            </div>
+            <div class="bracket-item" id="reliefLine" style="display:none;">
+              <div class="bi-left">Less: Small Business Relief</div>
+              <div class="bi-right" style="color:var(--green);" id="bracketRelief">0.00 AED</div>
+            </div>
+            <div class="bracket-item">
+              <div class="bi-left" style="color:var(--purple); font-weight:900;">Final Tax Due</div>
+              <div class="bi-right" style="color:var(--purple); font-weight:900;" id="bracketFinal">0.00 AED</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:16px;">
+          <div style="flex:1; padding:12px 16px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); text-align:center;">
+            <div style="font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.25);">Effective Tax Rate</div>
+            <div style="font-size:24px; font-weight:900; color:#fff; margin-top:6px;" id="effectiveTaxRate">0%</div>
+          </div>
+          <div style="flex:1; padding:12px 16px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); text-align:center;">
+            <div style="font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,0.25);">Net Profit After Tax</div>
+            <div style="font-size:24px; font-weight:900; color:var(--green); margin-top:6px;" id="netProfit">0.00</div>
+          </div>
+        </div>
+
+        <div class="export-row">
+          <button class="btn-export btn-export-primary" onclick="copyResult()">📋 Copy Results</button>
+          <button class="btn-export btn-export-ghost" onclick="printResult()">🖨️ Print / Save PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formula card -->
+    <div style="background:rgba(255,255,255,0.04); backdrop-filter:blur(40px); border:1px solid rgba(255,255,255,0.09); border-radius:var(--radius-card); padding:28px; position:relative; overflow:hidden; box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);">
+      <div style="position:absolute; top:0;left:15%;right:15%;height:1px; background:linear-gradient(90deg,transparent,rgba(0,245,255,0.5),transparent);"></div>
+      <div style="font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:16px;">TAX FORMULA REFERENCE</div>
+      <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.07); border-radius:14px; padding:20px; font-family:'Inter',monospace; font-size:14px; line-height:2;">
+        <div style="display:flex; align-items:center; gap:8px;"><span style="color:var(--cyan); font-weight:700;">Profit</span><span style="color:rgba(255,255,255,0.3);">=</span><span style="color:#fff; font-weight:600;">Revenue − Expenses</span></div>
+        <div style="display:flex; align-items:center; gap:8px;"><span style="color:var(--cyan); font-weight:700;">Tax</span><span style="color:rgba(255,255,255,0.3);">=</span><span style="color:#fff; font-weight:600;">Profit × 0.09</span></div>
+        <div style="display:flex; align-items:center; gap:8px;"><span style="color:var(--cyan); font-weight:700;">Relief</span><span style="color:rgba(255,255,255,0.3);">→</span><span style="color:#fff; font-weight:600;">If Profit ≤ AED 375K</span></div>
+        <div style="display:flex; align-items:center; gap:8px; color:rgba(255,255,255,0.2); font-size:12px; font-style:italic;">Tax = 0 (Fully Exempt)</div>
+      </div>
     </div>
 
   </div>
+</div>
 
-  <script src="corporate.js"></script>
+<!-- INFO CARDS -->
+<div class="info-grid">
+  <div class="info-card">
+    <div class="ic-icon">📅</div>
+    <div class="ic-title">Filing Deadlines</div>
+    <div class="ic-desc">UAE corporate tax filing is typically due within 4 months of financial year-end. Extensions available upon request with proper documentation.</div>
+  </div>
+  <div class="info-card">
+    <div class="ic-icon">💼</div>
+    <div class="ic-title">Small Business Relief</div>
+    <div class="ic-desc">Businesses with annual profits up to AED 375,000 are fully exempt from corporate tax. A significant benefit for SMEs and startups.</div>
+  </div>
+  <div class="info-card">
+    <div class="ic-icon">📊</div>
+    <div class="ic-title">Deductible Expenses</div>
+    <div class="ic-desc">Salary, rent, utilities, supplies, depreciation, R&D costs, training, and donations are generally deductible from taxable profit.</div>
+  </div>
+</div>
 
+<!-- CALCULATION HISTORY -->
+<div class="history-section">
+  <div class="section-head-row">
+    <div class="section-head-title">Recent Calculations</div>
+    <button class="clear-hist-btn" onclick="clearHistory()">Clear All</button>
+  </div>
+  <div class="history-list" id="historyList">
+    <div class="history-empty" id="historyEmpty">No calculations yet — results appear here automatically.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-left">© 2026 Emunib. All Rights Reserved.</div>
+    <div class="footer-links">
+      <a href="vat.html">VAT Calculator</a>
+      <a href="freezone.html">Free Zone Tax</a>
+      <a href="ai-assistant.html">AI Assistant</a>
+      <a href="index.html">Home</a>
+    </div>
+    <div class="footer-tags">
+      <span class="footer-tag">🇦🇪 UAE</span>
+      <span class="footer-tag">FTA 2026</span>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div id="toast">✅ Copied to clipboard!</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   EMUNIB CORPORATE TAX CALCULATOR — script.js  v3.0
+══════════════════════════════════════════════════════════ */
+'use strict';
+
+/* ── PAGE LOADER ── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const l = document.getElementById('pageLoader');
+    l.style.opacity = '0';
+    setTimeout(() => l.remove(), 600);
+  }, 600);
+});
+
+/* ── CURSOR ── */
+(function() {
+  const glow = document.getElementById('cursorGlow');
+  const dot  = document.getElementById('cursorDot');
+  if (!glow || !dot || window.matchMedia('(hover:none)').matches) return;
+  let mx=0,my=0,dx=0,dy=0,gx=0,gy=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+  document.addEventListener('mouseenter', () => { glow.style.opacity='1'; dot.style.opacity='1'; });
+  document.addEventListener('mouseleave', () => { glow.style.opacity='0'; dot.style.opacity='0'; });
+  const interactable = 'a,button,input,label,[role="button"],.chip,.toggle-row';
+  document.addEventListener('mouseover', e => {
+    if(e.target.closest(interactable)){
+      dot.style.transform='translate(-50%,-50%) scale(2.5)';
+      dot.style.background='var(--purple)';
+    }
+  });
+  document.addEventListener('mouseout', e => {
+    if(e.target.closest(interactable)){
+      dot.style.transform='translate(-50%,-50%) scale(1)';
+      dot.style.background='var(--purple)';
+    }
+  });
+  (function loop(){
+    dx+=(mx-dx)*0.92; dy+=(my-dy)*0.92;
+    gx+=(mx-gx)*0.1;  gy+=(my-gy)*0.1;
+    dot.style.left=dx+'px'; dot.style.top=dy+'px';
+    glow.style.left=gx+'px'; glow.style.top=gy+'px';
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* ── PARTICLES ── */
+(function(){
+  const canvas=document.getElementById('particleCanvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H,pts=[],mouse={x:-9999,y:-9999};
+  const COLORS=['#B44FFF','#FF2D78','#00F5FF','#06FFA5','#FFD166'];
+  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function mkPt(){ const a=Math.random()*Math.PI*2,s=0.15+Math.random()*0.35; return {x:Math.random()*W,y:Math.random()*H,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:0.8+Math.random()*1.6,alpha:0.3+Math.random()*0.5,color:COLORS[~~(Math.random()*COLORS.length)],pulse:Math.random()*Math.PI*2,ps:0.015+Math.random()*0.02}; }
+  function hexRgb(h){ return parseInt(h.slice(1,3),16)+','+parseInt(h.slice(3,5),16)+','+parseInt(h.slice(5,7),16); }
+  function init(){ resize(); pts=[]; for(let i=0;i<100;i++) pts.push(mkPt()); }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      const dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<140&&d>0){const f=(140-d)/140;p.vx+=(dx/d)*f*0.15;p.vy+=(dy/d)*f*0.15;}
+      p.vx*=0.992;p.vy*=0.992;
+      const sp=Math.sqrt(p.vx*p.vx+p.vy*p.vy);if(sp>1.4){p.vx=p.vx/sp*1.4;p.vy=p.vy/sp*1.4;}
+      p.x+=p.vx;p.y+=p.vy;p.pulse+=p.ps;
+      if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;
+      const a=p.alpha*(0.6+0.4*Math.sin(p.pulse));
+      const rgb=hexRgb(p.color);
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${rgb},${a})`;ctx.fill();
+    });
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+      const a=pts[i],b=pts[j],d=Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2);
+      if(d<120){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(180,79,255,${(1-d/120)*0.1})`;ctx.lineWidth=0.5;ctx.stroke();}
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',()=>{resize();pts.forEach(p=>{if(p.x>W)p.x=Math.random()*W;if(p.y>H)p.y=Math.random()*H;});});
+  document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+  init(); draw();
+})();
+
+/* ── STATE ── */
+let isReliefOn = false;
+let isDeductOn = false;
+let calcHistory  = JSON.parse(localStorage.getItem('corpHistory') || '[]');
+
+/* ── TOGGLES ── */
+function toggleRelief(){
+  isReliefOn = !isReliefOn;
+  document.getElementById('reliefSwitch').classList.toggle('on', isReliefOn);
+  document.getElementById('reliefSection').classList.toggle('show', isReliefOn);
+}
+
+function toggleDeductions(){
+  isDeductOn = !isDeductOn;
+  document.getElementById('deductSwitch').classList.toggle('on', isDeductOn);
+  document.getElementById('deductSection').classList.toggle('show', isDeductOn);
+}
+
+/* ── INPUT LIVE HINT ── */
+function onRevenueInput(){
+  document.getElementById('revenueInput').style.borderColor='rgba(180,79,255,0.35)';
+}
+function onExpenseInput(){
+  document.getElementById('expenseInput').style.borderColor='rgba(180,79,255,0.35)';
+}
+
+/* ── SET QUICK AMOUNT ── */
+function setRevenue(val){
+  document.getElementById('revenueInput').value = val;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  event.target.classList.add('active');
+  onRevenueInput();
+}
+
+/* ── FORMAT ── */
+function fmt(n){ return 'AED ' + n.toLocaleString('en-AE', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtNum(n){ return n.toLocaleString('en-AE', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+/* ── ANIMATE NUMBER ── */
+function animNum(el, to, prefix='AED '){
+  let start=null; const dur=600; const from=0;
+  function step(ts){
+    if(!start) start=ts;
+    const p=Math.min((ts-start)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    el.textContent=(prefix)+fmtNum(from+(to-from)*e);
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ── MAIN CALCULATE ── */
+function calculateCorpTax(){
+  const revenue = parseFloat(document.getElementById('revenueInput').value);
+  const expenses = parseFloat(document.getElementById('expenseInput').value) || 0;
+
+  if(isNaN(revenue) || revenue <= 0){
+    shakeInput();
+    showToast('⚠️ Please enter valid revenue', 'error');
+    return;
+  }
+
+  /* Calculate profit */
+  let profit = revenue - expenses;
+  let totalDeductions = expenses;
+  let taxDue = 0;
+  let relief = 0;
+
+  /* Add special deductions */
+  if(isDeductOn){
+    const rd = parseFloat(document.getElementById('rdInput').value) || 0;
+    const donation = parseFloat(document.getElementById('donationInput').value) || 0;
+    const training = parseFloat(document.getElementById('trainingInput').value) || 0;
+    const special = rd + donation + training;
+    profit -= special;
+    totalDeductions += special;
+  }
+
+  profit = Math.max(0, profit);
+
+  /* Small Business Relief */
+  if(isReliefOn && profit <= 375000){
+    relief = profit; // Full relief
+    taxDue = 0;
+  } else {
+    taxDue = profit * 0.09;
+  }
+
+  const netProfitAfterTax = profit - taxDue;
+  const effectiveRate = revenue > 0 ? (taxDue / revenue) * 100 : 0;
+
+  /* Show result */
+  document.getElementById('resultEmpty').style.display   = 'none';
+  document.getElementById('resultContent').classList.add('show');
+
+  /* Animate tax amount */
+  animNum(document.getElementById('resultTax'), taxDue);
+
+  /* Fill breakdown */
+  document.getElementById('brRevenue').textContent    = fmt(revenue);
+  document.getElementById('brDeductions').textContent = fmt(totalDeductions);
+  document.getElementById('brProfit').textContent     = fmt(profit);
+  document.getElementById('brTaxTotal').textContent   = fmt(taxDue);
+  document.getElementById('resultRate').textContent   = '9%';
+
+  /* Relief indicator */
+  const relInd = document.getElementById('reliefIndicator');
+  const relLine = document.getElementById('reliefLine');
+  if(relief > 0){
+    relInd.style.display='flex';
+    relLine.style.display='flex';
+    document.getElementById('reliefStatus').textContent = `Relief: ${fmt(relief)}`;
+    document.getElementById('bracketRelief').textContent = fmt(relief);
+  } else {
+    relInd.style.display='none';
+    relLine.style.display='none';
+  }
+
+  /* Tax bracket */
+  document.getElementById('bracketTax').textContent  = fmt(profit * 0.09);
+  document.getElementById('bracketFinal').textContent = fmt(taxDue);
+
+  /* Rates */
+  document.getElementById('effectiveTaxRate').textContent = effectiveRate.toFixed(2) + '%';
+  document.getElementById('netProfit').textContent = fmt(netProfitAfterTax);
+
+  /* Save to history */
+  const entry = {
+    revenue: revenue,
+    expenses: totalDeductions,
+    profit: profit,
+    tax: taxDue,
+    time: new Date().toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit'}),
+    relief: relief > 0
+  };
+  calcHistory.unshift(entry);
+  if(calcHistory.length > 10) calcHistory.pop();
+  localStorage.setItem('corpHistory', JSON.stringify(calcHistory));
+  renderHistory();
+
+  showToast('✅ Corporate tax calculated!', 'success');
+}
+
+/* ── RENDER HISTORY ── */
+function renderHistory(){
+  const list  = document.getElementById('historyList');
+  const empty = document.getElementById('historyEmpty');
+  if(calcHistory.length === 0){
+    if(empty) empty.style.display='block';
+    const items = list.querySelectorAll('.history-item');
+    items.forEach(i=>i.remove());
+    return;
+  }
+  if(empty) empty.style.display='none';
+  const items = list.querySelectorAll('.history-item');
+  items.forEach(i=>i.remove());
+  calcHistory.forEach((e,i)=>{
+    const el = document.createElement('div');
+    el.className='history-item';
+    el.onclick = () => {
+      document.getElementById('revenueInput').value = e.revenue;
+      document.getElementById('expenseInput').value = e.expenses;
+      calculateCorpTax();
+    };
+    el.innerHTML=`
+      <div class="hi-left">
+        <div class="hi-num">${i+1}</div>
+        <div class="hi-details">
+          <div class="hi-base">${fmt(e.revenue)}</div>
+          <div class="hi-time">${e.time} · Profit: ${fmt(e.profit)} ${e.relief?'(Relief)':''}</div>
+        </div>
+      </div>
+      <div class="hi-right">
+        <div class="hi-tax">${fmt(e.tax)}</div>
+        <div class="hi-total">Net: ${fmt(e.profit - e.tax)}</div>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+/* ── CLEAR HISTORY ── */
+function clearHistory(){
+  calcHistory = [];
+  localStorage.removeItem('corpHistory');
+  renderHistory();
+  showToast('🗑️ History cleared', 'info');
+}
+
+/* ── RESET ── */
+function resetAll(){
+  document.getElementById('revenueInput').value = '';
+  document.getElementById('expenseInput').value = '';
+  document.getElementById('resultContent').classList.remove('show');
+  document.getElementById('resultEmpty').style.display='flex';
+  if(isReliefOn){ isReliefOn=false; toggleRelief(); }
+  if(isDeductOn){ isDeductOn=false; toggleDeductions(); }
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  showToast('↺ Calculator reset', 'info');
+}
+
+/* ── COPY RESULT ── */
+function copyResult(){
+  const revenue = document.getElementById('brRevenue').textContent;
+  const deductions = document.getElementById('brDeductions').textContent;
+  const profit = document.getElementById('brProfit').textContent;
+  const tax = document.getElementById('brTaxTotal').textContent;
+  const text  = `Emunib Corporate Tax Calculation\n———————————————\nAnnual Revenue: ${revenue}\nDeductions: ${deductions}\nTaxable Profit: ${profit}\nCorporate Tax: ${tax}\n\nGenerated by Emunib UAE Tax Platform`;
+  navigator.clipboard.writeText(text).then(()=>showToast('📋 Copied to clipboard!','success')).catch(()=>showToast('❌ Copy failed','error'));
+}
+
+/* ── PRINT ── */
+function printResult(){
+  window.print();
+}
+
+/* ── SHAKE INPUT ── */
+function shakeInput(){
+  const inp = document.getElementById('revenueInput');
+  inp.style.animation='shake 0.4s ease';
+  inp.style.borderColor='rgba(180,79,255,0.6)';
+  setTimeout(()=>{ inp.style.animation=''; inp.style.borderColor=''; },450);
+}
+
+/* ── TOAST ── */
+function showToast(msg, type='success'){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type==='error' ? 'rgba(180,79,255,0.12)' : type==='info' ? 'rgba(180,79,255,0.12)' : 'rgba(6,255,165,0.12)';
+  t.style.borderColor = type==='error' ? 'rgba(180,79,255,0.3)' : type==='info' ? 'rgba(180,79,255,0.3)' : 'rgba(6,255,165,0.3)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('mainNav');
+  const inner=nav.querySelector('.nav-inner');
+  if(window.scrollY>40){ inner.style.background='rgba(4,2,15,0.9)'; } else { inner.style.background='rgba(4,2,15,0.55)'; }
+},{passive:true});
+
+/* ── SHAKE KEYFRAMES ── */
+const style=document.createElement('style');
+style.textContent=`@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}`;
+document.head.appendChild(style);
+
+/* ── INIT ── */
+renderHistory();
+</script>
 </body>
 </html>
