@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>India Tax Calculator — GST & Income Tax | Emunib</title>
+<meta name="description" content="Calculate India GST (0/5/12/18/28%), Income Tax (New & Old Regime), TDS, Surcharge and Cess instantly."/>
+<meta name="robots" content="index, follow"/>
+<meta property="og:title" content="India Tax Calculator — Emunib"/>
+<meta name="theme-color" content="#FF6B35"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --saffron:#FF6B35;
+  --india-green:#138808;
+  --navy:#000080;
+  --pink:#FF2D78;
+  --purple:#B44FFF;
+  --cyan:#00F5FF;
+  --gold:#FFD166;
+  --green:#06FFA5;
+  --orange:#FF7043;
+  --bg:#04020F;
+  --text:#ffffff;
+  --text-muted:rgba(255,255,255,0.45);
+  --text-dim:rgba(255,255,255,0.2);
+  --glass-border:rgba(255,255,255,0.09);
+  --radius-card:28px;
+  --transition:0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Space Grotesk','Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;cursor:none;}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;}
+
+/* CURSOR */
+.cursor-glow{position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.12) 0%,transparent 70%);transform:translate(-50%,-50%);pointer-events:none;z-index:9998;transition:opacity 0.3s;will-change:transform;}
+.cursor-dot{position:fixed;width:8px;height:8px;border-radius:50%;background:var(--saffron);transform:translate(-50%,-50%);pointer-events:none;z-index:9999;transition:transform 0.1s,background 0.2s;box-shadow:0 0 10px var(--saffron),0 0 20px rgba(255,107,53,0.5);}
+
+/* PARTICLE */
+#particleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* BG */
+.bg-root{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.bg-base{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 10% 0%,rgba(255,107,53,0.3) 0%,transparent 55%),radial-gradient(ellipse 70% 55% at 90% 5%,rgba(19,136,8,0.2) 0%,transparent 55%),radial-gradient(ellipse 55% 50% at 5% 90%,rgba(0,0,128,0.2) 0%,transparent 55%),radial-gradient(ellipse 45% 45% at 95% 85%,rgba(255,209,102,0.14) 0%,transparent 50%),#04020F;}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);}
+.bg-vignette{position:absolute;inset:0;background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 40%,rgba(4,2,15,0.85) 100%);}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);animation:orbFloat ease-in-out infinite;will-change:transform;}
+.orb-1{width:700px;height:700px;background:rgba(255,107,53,0.2);top:-200px;left:-150px;animation-duration:14s;}
+.orb-2{width:600px;height:600px;background:rgba(19,136,8,0.15);top:-100px;right:-150px;animation-duration:18s;animation-delay:-5s;}
+.orb-3{width:500px;height:500px;background:rgba(0,0,128,0.12);bottom:-100px;left:10%;animation-duration:20s;animation-delay:-9s;}
+.orb-4{width:400px;height:400px;background:rgba(255,209,102,0.1);bottom:-80px;right:5%;animation-duration:16s;animation-delay:-3s;}
+.scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,60px) scale(1.06)}66%{transform:translate(-30px,20px) scale(0.95)}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 48px;height:76px;display:flex;align-items:center;justify-content:space-between;background:rgba(4,2,15,0.55);backdrop-filter:blur(32px) saturate(200%);border-bottom:1px solid rgba(255,255,255,0.07);}
+.nav-logo{display:flex;align-items:center;gap:14px;cursor:pointer;}
+.logo-crystal{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#FF6B35,#FF2D78,#138808);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(255,255,255,0.2),0 0 24px rgba(255,107,53,0.6),0 0 50px rgba(19,136,8,0.3),inset 0 1px 0 rgba(255,255,255,0.35);animation:crystalPulse 3s ease-in-out infinite;flex-shrink:0;position:relative;overflow:hidden;}
+.crystal-sheen{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.25) 0%,transparent 60%);border-radius:inherit;}
+@keyframes crystalPulse{0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,0.2),0 0 24px rgba(255,107,53,0.6),0 0 50px rgba(19,136,8,0.3),inset 0 1px 0 rgba(255,255,255,0.35)}50%{box-shadow:0 0 0 1px rgba(255,255,255,0.3),0 0 40px rgba(255,107,53,0.9),0 0 80px rgba(19,136,8,0.4),inset 0 1px 0 rgba(255,255,255,0.45)}}
+.logo-wordmark{display:flex;flex-direction:column;gap:1px;}
+.logo-text-main{font-size:24px;font-weight:800;letter-spacing:-0.8px;color:#fff;line-height:1;}
+.logo-text-sub{font-size:9px;font-weight:700;letter-spacing:2.5px;color:rgba(255,255,255,0.35);text-transform:uppercase;}
+.nav-border-glow{position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,53,0.6),rgba(19,136,8,0.5),rgba(0,0,128,0.5),transparent);}
+.nav-back{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:100px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:13px;font-weight:700;color:rgba(255,255,255,0.55);cursor:pointer;transition:all 0.3s;}
+.nav-back:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.nav-badge{display:flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.25);font-size:11px;font-weight:800;letter-spacing:1px;color:var(--saffron);}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--saffron);box-shadow:0 0 8px var(--saffron);animation:badgeBlink 2s ease-in-out infinite;}
+@keyframes badgeBlink{0%,100%{opacity:1}50%{opacity:0.45}}
+.nav-right-group{display:flex;align-items:center;gap:12px;}
+.status-pill{display:flex;align-items:center;gap:7px;padding:6px 14px;border-radius:100px;background:rgba(19,136,8,0.08);border:1px solid rgba(19,136,8,0.25);font-size:11px;font-weight:700;color:#4CAF50;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;box-shadow:0 0 8px #4CAF50;animation:badgeBlink 2s ease-in-out infinite;}
+
+/* TRICOLOR STRIPE */
+.tricolor-stripe{position:fixed;top:76px;left:0;right:0;height:4px;z-index:199;display:flex;}
+.tc-saffron{flex:1;background:var(--saffron);}
+.tc-white{flex:1;background:rgba(255,255,255,0.7);}
+.tc-green{flex:1;background:var(--india-green);}
+
+/* PAGE HERO */
+.page-hero{position:relative;z-index:1;padding:120px 48px 60px;max-width:1400px;margin:0 auto;text-align:center;}
+.page-eyebrow{display:inline-flex;align-items:center;gap:12px;padding:8px 20px;border-radius:100px;background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.25);font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--saffron);margin-bottom:28px;animation:fadeUp 0.7s 0.1s cubic-bezier(0.16,1,0.3,1) both;}
+.page-title{font-size:clamp(44px,6vw,88px);font-weight:900;letter-spacing:-3px;line-height:0.95;margin-bottom:24px;font-family:'Space Grotesk',sans-serif;animation:fadeUp 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) both;}
+.title-main{display:block;color:#fff;}
+.title-grad{display:block;background:linear-gradient(90deg,#FF6B35 0%,#FF2D78 40%,#138808 80%);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradShift 5s linear infinite;}
+@keyframes gradShift{0%{background-position:0%}100%{background-position:300%}}
+.page-sub{font-size:17px;color:var(--text-muted);line-height:1.75;max-width:600px;margin:0 auto 48px;animation:fadeUp 0.7s 0.3s cubic-bezier(0.16,1,0.3,1) both;}
+.page-sub em{font-style:normal;color:rgba(255,255,255,0.75);}
+.feature-pills{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;animation:fadeUp 0.7s 0.4s cubic-bezier(0.16,1,0.3,1) both;margin-bottom:64px;}
+.fpill{display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:100px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);font-size:12px;font-weight:700;color:var(--text-muted);}
+.fpill-dot{width:6px;height:6px;border-radius:50%;}
+@keyframes fadeUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* TAB SWITCHER */
+.tab-switcher{position:relative;z-index:1;max-width:900px;margin:0 auto 40px;padding:0 48px;animation:fadeUp 0.7s 0.4s cubic-bezier(0.16,1,0.3,1) both;}
+.tab-nav{display:flex;gap:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:6px;}
+.tab-nav-btn{flex:1;padding:12px 16px;border-radius:14px;border:none;background:transparent;cursor:pointer;transition:all 0.3s;font-family:inherit;font-size:13px;font-weight:700;color:rgba(255,255,255,0.4);}
+.tab-nav-btn.active{background:linear-gradient(135deg,rgba(255,107,53,0.25),rgba(255,45,120,0.15));border:1px solid rgba(255,107,53,0.4);color:#fff;}
+.tab-nav-btn:hover:not(.active){background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.7);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* CALC LAYOUT */
+.calc-layout{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 48px 80px;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;}
+
+/* GLASS PANEL */
+.panel-glass{background:rgba(255,255,255,0.04);backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--glass-border);border-radius:var(--radius-card);padding:36px;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.1),0 40px 80px rgba(0,0,0,0.5);animation:fadeUp 0.7s 0.5s cubic-bezier(0.16,1,0.3,1) both;}
+.panel-top-streak{position:absolute;top:0;left:15%;right:15%;height:1px;}
+.panel-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:100px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.25);color:var(--saffron);}
+.panel-badge.green-badge{background:rgba(19,136,8,0.1);border-color:rgba(19,136,8,0.3);color:#4CAF50;}
+.panel-title{font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;}
+.panel-sub{font-size:13px;color:var(--text-muted);}
+
+/* FIELDS */
+.field-group{margin-bottom:20px;position:relative;}
+.field-label{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:10px;}
+.field-input-wrap{position:relative;}
+.field-prefix{position:absolute;left:0;top:0;bottom:0;width:60px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:rgba(255,255,255,0.3);border-right:1px solid rgba(255,255,255,0.08);pointer-events:none;}
+.field-input{width:100%;height:60px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding-left:72px;padding-right:20px;font-size:20px;font-weight:700;color:#fff;outline:none;font-family:'Space Grotesk','Inter',sans-serif;transition:border-color 0.3s,box-shadow 0.3s,background 0.3s;-moz-appearance:textfield;}
+.field-input::-webkit-outer-spin-button,.field-input::-webkit-inner-spin-button{-webkit-appearance:none;}
+.field-input::placeholder{color:rgba(255,255,255,0.15);font-size:16px;}
+.field-input:focus{border-color:rgba(255,107,53,0.5);box-shadow:0 0 0 3px rgba(255,107,53,0.1),0 0 30px rgba(255,107,53,0.15);background:rgba(255,107,53,0.04);}
+.field-select{width:100%;height:60px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:0 20px;font-size:15px;font-weight:600;color:#fff;outline:none;font-family:'Space Grotesk','Inter',sans-serif;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='rgba(255,255,255,0.3)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 20px center;transition:border-color 0.3s;}
+.field-select:focus{border-color:rgba(255,107,53,0.5);}
+.field-select option{background:#0a0720;color:#fff;}
+.field-hint{font-size:11px;color:rgba(255,255,255,0.25);margin-top:6px;line-height:1.5;}
+.field-hint span{color:var(--saffron);font-weight:700;}
+
+/* QUICK CHIPS */
+.quick-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.chip{padding:7px 16px;border-radius:100px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);font-size:12px;font-weight:700;color:var(--text-muted);cursor:pointer;transition:var(--transition);font-family:inherit;}
+.chip:hover{background:rgba(255,107,53,0.12);border-color:rgba(255,107,53,0.35);color:var(--saffron);transform:translateY(-2px);}
+.chip.active{background:rgba(255,107,53,0.15);border-color:rgba(255,107,53,0.4);color:var(--saffron);}
+
+/* RADIO CARDS */
+.radio-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.radio-card{position:relative;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);cursor:pointer;transition:var(--transition);}
+.radio-card input[type="radio"]{display:none;}
+.radio-card:hover{transform:translateY(-2px);}
+.radio-card:has(input:checked){background:rgba(255,107,53,0.12);border-color:rgba(255,107,53,0.4);}
+.rc-rate{font-size:22px;font-weight:900;color:#fff;margin-bottom:3px;}
+.rc-name{font-size:11px;color:rgba(255,255,255,0.4);font-weight:600;}
+.radio-card:has(input:checked) .rc-name{color:var(--saffron);}
+.rc-check{position:absolute;top:10px;right:10px;width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;transition:all 0.3s;}
+.radio-card:has(input:checked) .rc-check{background:var(--saffron);border-color:var(--saffron);box-shadow:0 0 8px rgba(255,107,53,0.5);color:#fff;}
+.rc-check::after{content:'';}
+.radio-card:has(input:checked) .rc-check::after{content:'✓';display:block;}
+
+/* GST RATE CARDS */
+.gst-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px;}
+.gst-card{position:relative;padding:12px 8px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);cursor:pointer;transition:var(--transition);text-align:center;}
+.gst-card input[type="radio"]{display:none;}
+.gst-card:has(input:checked){background:rgba(255,107,53,0.15);border-color:rgba(255,107,53,0.4);}
+.gst-card-rate{font-size:20px;font-weight:900;color:#fff;margin-bottom:3px;}
+.gst-card-name{font-size:10px;color:rgba(255,255,255,0.35);font-weight:600;}
+.gst-card:has(input:checked) .gst-card-name{color:var(--saffron);}
+
+/* TOGGLE */
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);cursor:pointer;margin-bottom:16px;transition:all 0.3s;}
+.toggle-row:hover{background:rgba(255,255,255,0.06);}
+.toggle-label{font-size:13px;font-weight:700;color:var(--text-muted);display:flex;align-items:center;gap:10px;}
+.toggle-switch{width:44px;height:24px;border-radius:100px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.1);position:relative;transition:all 0.3s;flex-shrink:0;}
+.toggle-switch.on{background:rgba(255,107,53,0.3);border-color:rgba(255,107,53,0.5);}
+.toggle-knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.5);transition:all 0.3s;}
+.toggle-switch.on .toggle-knob{left:22px;background:var(--saffron);box-shadow:0 0 8px rgba(255,107,53,0.6);}
+.toggle-section{display:none;animation:fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both;}
+.toggle-section.show{display:block;}
+
+/* CALC BUTTON */
+.btn-calc{width:100%;height:64px;border-radius:18px;border:none;cursor:pointer;font-family:inherit;font-size:17px;font-weight:800;color:#fff;position:relative;overflow:hidden;box-shadow:0 4px 0 rgba(180,50,10,0.6),0 12px 40px rgba(255,107,53,0.4),inset 0 1px 0 rgba(255,255,255,0.15);transition:all 0.3s;margin-top:24px;}
+.btn-calc-bg{position:absolute;inset:0;background:linear-gradient(135deg,#FF6B35,#FF2D78,#138808);background-size:200%;animation:btnShift 4s ease-in-out infinite;}
+@keyframes btnShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.btn-calc:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 8px 0 rgba(180,50,10,0.5),0 20px 60px rgba(255,107,53,0.55);}
+.btn-calc-content{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:12px;}
+.btn-calc-shine{position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);transform:skewX(-20deg) translateX(-100%);animation:btnShine 3s ease-in-out infinite;}
+@keyframes btnShine{0%,60%,100%{transform:skewX(-20deg) translateX(-100%)}80%{transform:skewX(-20deg) translateX(200%)}}
+
+/* RESULT PANEL */
+.result-panel{display:flex;flex-direction:column;gap:16px;animation:fadeUp 0.7s 0.6s cubic-bezier(0.16,1,0.3,1) both;}
+.result-card{background:rgba(255,255,255,0.04);backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--glass-border);border-radius:var(--radius-card);padding:32px;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.1),0 40px 80px rgba(0,0,0,0.5);}
+.result-card-streak{position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,53,0.7),transparent);}
+.result-empty{padding:40px 0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;}
+.empty-icon{font-size:48px;opacity:0.3;}
+.empty-text{font-size:15px;color:var(--text-dim);font-weight:600;}
+.result-content{display:none;}
+.result-content.show{display:block;}
+
+/* RESULT HEADER */
+.result-header{margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-start;}
+.result-label-sm{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:6px;}
+.result-amount{font-size:52px;font-weight:900;letter-spacing:-2px;line-height:1;background:linear-gradient(90deg,#FF6B35,#FF2D78);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.result-badge-right{padding:8px 16px;border-radius:100px;background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.3);font-size:20px;font-weight:900;color:var(--saffron);}
+
+/* BREAKDOWN */
+.breakdown-section{margin-bottom:24px;}
+.breakdown-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:14px;}
+.breakdown-rows{display:flex;flex-direction:column;gap:8px;}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;}
+.breakdown-row:hover{background:rgba(255,255,255,0.06);}
+.br-label{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.5);}
+.br-dot{width:8px;height:8px;border-radius:50%;}
+.br-val{font-size:16px;font-weight:800;}
+.br-base .br-dot{background:rgba(255,255,255,0.3);}
+.br-base .br-val{color:rgba(255,255,255,0.7);}
+.br-saffron .br-dot{background:var(--saffron);box-shadow:0 0 6px rgba(255,107,53,0.5);}
+.br-saffron .br-val{color:var(--saffron);}
+.br-green-row .br-dot{background:#4CAF50;box-shadow:0 0 6px rgba(76,175,80,0.5);}
+.br-green-row .br-val{color:#4CAF50;}
+.br-gold-row .br-dot{background:var(--gold);box-shadow:0 0 6px rgba(255,209,102,0.5);}
+.br-gold-row .br-val{color:var(--gold);}
+.br-navy-row .br-dot{background:#5c8eff;box-shadow:0 0 6px rgba(92,142,255,0.5);}
+.br-navy-row .br-val{color:#5c8eff;}
+
+/* TOTAL ROW */
+.total-row{padding:18px 20px;border-radius:16px;margin-top:8px;background:linear-gradient(90deg,rgba(255,107,53,0.1),rgba(19,136,8,0.08));border:1px solid rgba(255,107,53,0.25);display:flex;justify-content:space-between;align-items:center;}
+.tr-label{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);}
+.tr-val{font-size:28px;font-weight:900;color:#fff;}
+
+/* SLAB TABLE */
+.slab-table{width:100%;border-collapse:collapse;margin-top:16px;}
+.slab-table th{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);padding:8px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.08);}
+.slab-table td{font-size:13px;padding:10px 12px;color:rgba(255,255,255,0.65);border-bottom:1px solid rgba(255,255,255,0.04);}
+.slab-table tr:last-child td{border-bottom:none;}
+.slab-table tr:hover td{background:rgba(255,255,255,0.03);}
+.slab-table .current-slab td{background:rgba(255,107,53,0.08);border-color:rgba(255,107,53,0.15);}
+.slab-table .current-slab td:first-child{border-left:2px solid var(--saffron);}
+
+/* EXPORT */
+.export-row{display:flex;gap:10px;margin-top:20px;}
+.btn-export{flex:1;height:48px;border-radius:14px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:var(--transition);}
+.btn-export-primary{background:rgba(255,107,53,0.15);border:1px solid rgba(255,107,53,0.3);color:var(--saffron);}
+.btn-export-primary:hover{background:rgba(255,107,53,0.25);transform:translateY(-3px);box-shadow:0 8px 24px rgba(255,107,53,0.2);}
+.btn-export-ghost{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.45);}
+.btn-export-ghost:hover{background:rgba(255,255,255,0.08);color:#fff;transform:translateY(-3px);}
+
+/* RATE DISPLAY */
+.rate-display{display:flex;gap:12px;margin-top:16px;}
+.rate-box{flex:1;padding:16px;border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);text-align:center;}
+.rate-box-val{font-size:28px;font-weight:900;color:#fff;}
+.rate-box-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:4px;}
+.rate-box.highlight{background:rgba(255,107,53,0.08);border-color:rgba(255,107,53,0.25);}
+.rate-box.highlight .rate-box-val{background:linear-gradient(90deg,#FF6B35,#FF2D78);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* INFO GRID */
+.info-grid{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 48px 40px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;animation:fadeUp 0.7s 0.8s cubic-bezier(0.16,1,0.3,1) both;}
+.info-card{border-radius:20px;padding:24px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);position:relative;overflow:hidden;transition:var(--transition);}
+.info-card:hover{transform:translateY(-6px);}
+.info-card::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;}
+.info-card:nth-child(1)::before{background:linear-gradient(90deg,transparent,rgba(255,107,53,0.5),transparent);}
+.info-card:nth-child(2)::before{background:linear-gradient(90deg,transparent,rgba(19,136,8,0.5),transparent);}
+.info-card:nth-child(3)::before{background:linear-gradient(90deg,transparent,rgba(0,0,128,0.5),transparent);}
+.info-card:nth-child(4)::before{background:linear-gradient(90deg,transparent,rgba(255,209,102,0.4),transparent);}
+.ic-icon{font-size:28px;margin-bottom:12px;}
+.ic-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;}
+.ic-desc{font-size:13px;color:var(--text-muted);line-height:1.65;}
+
+/* HISTORY */
+.history-section{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 48px 80px;}
+.section-head-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.section-head-title{font-size:18px;font-weight:800;color:#fff;}
+.clear-hist-btn{background:none;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;transition:color 0.3s;padding:4px;}
+.clear-hist-btn:hover{color:var(--saffron);}
+.history-list{display:flex;flex-direction:column;gap:10px;}
+.history-item{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-radius:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);transition:all 0.3s;cursor:pointer;}
+.history-item:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,107,53,0.2);transform:translateX(4px);}
+.hi-left{display:flex;align-items:center;gap:14px;}
+.hi-num{width:32px;height:32px;border-radius:10px;background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--saffron);}
+.hi-base{font-size:15px;font-weight:700;color:rgba(255,255,255,0.7);}
+.hi-time{font-size:11px;color:rgba(255,255,255,0.25);margin-top:2px;}
+.hi-right{text-align:right;}
+.hi-tax{font-size:14px;font-weight:800;color:var(--saffron);}
+.hi-total{font-size:12px;color:rgba(255,255,255,0.3);margin-top:2px;}
+.history-empty{padding:32px;text-align:center;font-size:14px;color:rgba(255,255,255,0.2);font-weight:600;}
+
+/* FORMULA CARD */
+.formula-card{background:rgba(255,255,255,0.04);backdrop-filter:blur(40px);border:1px solid var(--glass-border);border-radius:var(--radius-card);padding:28px;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);}
+.formula-title{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;}
+.formula-box{background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;font-family:'Inter',monospace;font-size:13px;line-height:2.2;}
+.f-line{display:flex;align-items:center;gap:8px;}
+.f-key{color:#FF9966;font-weight:700;}
+.f-op{color:rgba(255,255,255,0.3);}
+.f-val{color:#fff;font-weight:600;}
+.f-comment{color:rgba(255,255,255,0.2);font-size:11px;font-style:italic;}
+
+/* COMPARISON TABLE for regimes */
+.regime-compare{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;margin-top:16px;}
+.rc-head,.rc-row{display:grid;grid-template-columns:2fr 1fr 1fr;border-bottom:1px solid rgba(255,255,255,0.06);}
+.rc-row:last-child{border-bottom:none;}
+.rc-head{background:rgba(255,107,53,0.06);}
+.rc-head-cell,.rc-cell{padding:12px 16px;font-size:12px;}
+.rc-head-cell{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+.rc-cell{color:rgba(255,255,255,0.6);font-weight:600;}
+.rc-cell.hl{color:var(--saffron);font-weight:800;}
+.rc-cell.good{color:#4CAF50;font-weight:800;}
+.rc-row:hover .rc-cell{background:rgba(255,255,255,0.02);}
+
+/* TOAST */
+#toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.3);backdrop-filter:blur(20px);border-radius:16px;padding:14px 24px;display:flex;align-items:center;gap:12px;font-size:14px;font-weight:700;color:#fff;z-index:99998;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.4s ease;opacity:0;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* LOADER */
+#pageLoader{position:fixed;inset:0;background:#04020F;z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity 0.6s ease;}
+.loader-inner{text-align:center;}
+.loader-logo{width:64px;height:64px;border-radius:22px;background:linear-gradient(135deg,#FF6B35,#FF2D78,#138808);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;animation:loaderPulse 1s ease-in-out infinite;box-shadow:0 0 40px rgba(255,107,53,0.5);}
+@keyframes loaderPulse{0%,100%{transform:scale(1);box-shadow:0 0 40px rgba(255,107,53,0.5)}50%{transform:scale(1.1);box-shadow:0 0 70px rgba(255,107,53,0.8)}}
+.loader-text{color:rgba(255,255,255,0.4);font-size:12px;font-weight:700;letter-spacing:3px;}
+.loader-bar{width:40px;height:2px;background:linear-gradient(90deg,#FF6B35,#138808);border-radius:1px;margin:12px auto 0;animation:loaderBar 0.8s ease-in-out infinite alternate;}
+@keyframes loaderBar{from{transform:scaleX(0.4)}to{transform:scaleX(1)}}
+
+/* FOOTER */
+.site-footer{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,0.07);padding:40px 0;}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 48px;display:flex;justify-content:space-between;align-items:center;}
+.footer-left{font-size:13px;color:rgba(255,255,255,0.2);}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-size:12px;font-weight:600;color:rgba(255,255,255,0.25);transition:color 0.3s;}
+.footer-links a:hover{color:rgba(255,255,255,0.6);}
+.footer-tags{display:flex;gap:8px;}
+.footer-tag{padding:4px 12px;border-radius:100px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);font-size:10px;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:1px;}
+
+/* RESET */
+.reset-row{text-align:center;margin-top:14px;}
+.reset-btn{background:none;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;transition:color 0.3s;padding:6px;}
+.reset-btn:hover{color:rgba(255,255,255,0.5);}
+
+@media(max-width:960px){.calc-layout{grid-template-columns:1fr;gap:20px;padding:0 24px 80px;}.info-grid{grid-template-columns:1fr 1fr;padding:0 24px 40px;}.history-section{padding:0 24px 60px;}.page-hero{padding:100px 24px 40px;}.nav-inner{padding:0 20px;}.footer-inner{flex-direction:column;gap:16px;text-align:center;}.footer-links{display:none;}.gst-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.info-grid{grid-template-columns:1fr;}.radio-grid{grid-template-columns:1fr 1fr;}.gst-grid{grid-template-columns:repeat(3,1fr);}.tab-switcher{padding:0 20px;}.rate-display{flex-wrap:wrap;}}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="pageLoader">
+  <div class="loader-inner">
+    <div class="loader-logo">🇮🇳</div>
+    <div class="loader-text">EMUNIB INDIA</div>
+    <div class="loader-bar"></div>
+  </div>
+</div>
+
+<!-- CURSOR -->
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- TRICOLOR STRIPE -->
+<div class="tricolor-stripe">
+  <div class="tc-saffron"></div>
+  <div class="tc-white"></div>
+  <div class="tc-green"></div>
+</div>
+
+<!-- BACKGROUND -->
+<div class="bg-root">
+  <div class="bg-base"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+  <div class="scanlines"></div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <div class="logo-crystal">
+        <div class="crystal-sheen"></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="logo-wordmark">
+        <span class="logo-text-main">Emunib</span>
+        <span class="logo-text-sub">India Tax Platform</span>
+      </div>
+    </a>
+    <div class="nav-right-group">
+      <div class="nav-badge"><span class="badge-dot"></span>🇮🇳 INDIA TAX</div>
+      <div class="status-pill"><span class="status-dot"></span>FY 2024-25</div>
+      <button class="nav-back" onclick="history.back()">← Back</button>
+    </div>
+  </div>
+  <div class="nav-border-glow"></div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-eyebrow"><span>🇮🇳</span> INDIA GST & INCOME TAX CALCULATOR · FY 2024-25</div>
+  <h1 class="page-title">
+    <span class="title-main">Calculate India</span>
+    <span class="title-grad">GST & Income Tax</span>
+  </h1>
+  <p class="page-sub">
+    Accurate <em>GST at 0/5/12/18/28%</em> slabs, Income Tax under New & Old Regime,
+    TDS, Surcharge, Education Cess — built for Indian businesses and individuals.
+  </p>
+  <div class="feature-pills">
+    <div class="fpill"><span class="fpill-dot" style="background:#FF6B35;box-shadow:0 0 6px #FF6B35;"></span>All GST Slabs</div>
+    <div class="fpill"><span class="fpill-dot" style="background:#4CAF50;box-shadow:0 0 6px #4CAF50;"></span>New + Old Tax Regime</div>
+    <div class="fpill"><span class="fpill-dot" style="background:#5c8eff;box-shadow:0 0 6px #5c8eff;"></span>Surcharge + Cess</div>
+    <div class="fpill"><span class="fpill-dot" style="background:var(--gold);box-shadow:0 0 6px var(--gold);"></span>TDS Calculator</div>
+    <div class="fpill"><span class="fpill-dot" style="background:#B44FFF;box-shadow:0 0 6px #B44FFF;"></span>HRA Exemption</div>
+  </div>
+</div>
+
+<!-- TAB SWITCHER -->
+<div class="tab-switcher">
+  <div class="tab-nav">
+    <button class="tab-nav-btn active" onclick="switchTab('gst')">🧾 GST Calculator</button>
+    <button class="tab-nav-btn" onclick="switchTab('income')">💼 Income Tax</button>
+    <button class="tab-nav-btn" onclick="switchTab('tds')">📊 TDS Calculator</button>
+    <button class="tab-nav-btn" onclick="switchTab('hra')">🏠 HRA Exemption</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ GST TAB ═══════════════════════════════ -->
+<div id="tab-gst" class="tab-content active">
+<div class="calc-layout">
+
+  <!-- INPUT -->
+  <div class="panel-glass">
+    <div class="panel-top-streak" style="background:linear-gradient(90deg,transparent,rgba(255,107,53,0.6),rgba(255,45,120,0.5),transparent);"></div>
+    <div class="panel-badge">📊 GST INPUT</div>
+    <div class="panel-title">Enter Transaction Details</div>
+    <div class="panel-sub">Calculate CGST + SGST (intra-state) or IGST (inter-state) instantly</div>
+
+    <div class="field-group" style="margin-top:24px;">
+      <div class="field-label"><span>Transaction Amount (₹)</span><span style="font-size:10px;color:rgba(255,255,255,0.2);">IN INR</span></div>
+      <div class="field-input-wrap">
+        <div class="field-prefix">₹</div>
+        <input type="number" id="gstAmountInput" class="field-input" placeholder="0.00" min="0" step="1" oninput="onGstInput()"/>
+      </div>
+      <div class="quick-chips">
+        <button class="chip" onclick="setGstAmount(1000)">₹1K</button>
+        <button class="chip" onclick="setGstAmount(5000)">₹5K</button>
+        <button class="chip" onclick="setGstAmount(10000)">₹10K</button>
+        <button class="chip" onclick="setGstAmount(50000)">₹50K</button>
+        <button class="chip" onclick="setGstAmount(100000)">₹1L</button>
+        <button class="chip" onclick="setGstAmount(1000000)">₹10L</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label"><span>GST Slab Rate</span></div>
+      <div class="gst-grid">
+        <label class="gst-card"><input type="radio" name="gstRate" value="0"/><div class="gst-card-rate">0%</div><div class="gst-card-name">Exempt</div></label>
+        <label class="gst-card"><input type="radio" name="gstRate" value="5"/><div class="gst-card-rate">5%</div><div class="gst-card-name">Essential</div></label>
+        <label class="gst-card"><input type="radio" name="gstRate" value="12" id="gst12check"/><div class="gst-card-rate">12%</div><div class="gst-card-name">Standard</div></label>
+        <label class="gst-card"><input type="radio" name="gstRate" value="18" checked/><div class="gst-card-rate">18%</div><div class="gst-card-name">Standard</div></label>
+        <label class="gst-card"><input type="radio" name="gstRate" value="28"/><div class="gst-card-rate">28%</div><div class="gst-card-name">Luxury</div></label>
+      </div>
+      <div class="field-hint" style="margin-top:8px;">0% — Food, health · 5% — Essentials · 12% — Processed food · <span>18%</span> — Most services · 28% — Luxury goods</div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label"><span>Transaction Type</span></div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="gstType" value="intra" checked/><div class="rc-rate" style="font-size:14px;">Intra-State</div><div class="rc-name">CGST + SGST</div><div class="rc-check"></div></label>
+        <label class="radio-card"><input type="radio" name="gstType" value="inter"/><div class="rc-rate" style="font-size:14px;">Inter-State</div><div class="rc-name">IGST Only</div><div class="rc-check"></div></label>
+      </div>
+    </div>
+
+    <div class="toggle-row" id="gstInclusiveToggle" onclick="toggleGstInclusive()">
+      <div class="toggle-label"><span>💡</span> Amount already includes GST</div>
+      <div class="toggle-switch" id="gstInclusiveSwitch"><div class="toggle-knob"></div></div>
+    </div>
+
+    <div class="toggle-row" id="cessToggle" onclick="toggleCess()">
+      <div class="toggle-label"><span>➕</span> Apply Cess (Compensation/Clean Energy)</div>
+      <div class="toggle-switch" id="cessSwitch"><div class="toggle-knob"></div></div>
+    </div>
+    <div class="toggle-section" id="cessSection">
+      <div class="field-group" style="margin-bottom:0;">
+        <div class="field-label"><span>Cess Rate (%)</span></div>
+        <div class="field-input-wrap">
+          <div class="field-prefix">%</div>
+          <input type="number" id="cessInput" class="field-input" placeholder="0.00" min="0" max="50" step="0.1"/>
+        </div>
+        <div class="field-hint">GST Compensation Cess applies on <span>pan masala, tobacco, coal, luxury cars</span></div>
+      </div>
+    </div>
+
+    <button class="btn-calc" onclick="calculateGST()">
+      <div class="btn-calc-bg"></div>
+      <div class="btn-calc-content"><span>⚡</span><span>Calculate GST</span></div>
+      <div class="btn-calc-shine"></div>
+    </button>
+    <div class="reset-row"><button class="reset-btn" onclick="resetGST()">↺ Clear & Reset</button></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-panel">
+    <div class="result-card">
+      <div class="result-card-streak"></div>
+      <div class="result-empty" id="gstResultEmpty">
+        <div class="empty-icon">🇮🇳</div>
+        <div class="empty-text">Enter amount & press Calculate</div>
+      </div>
+      <div class="result-content" id="gstResultContent">
+        <div class="result-header">
+          <div>
+            <div class="result-label-sm">TOTAL GST AMOUNT</div>
+            <div class="result-amount" id="gstResultMain">₹0</div>
+          </div>
+          <div class="result-badge-right" id="gstRateBadge">18%</div>
+        </div>
+        <div class="breakdown-section">
+          <div class="breakdown-title">GST BREAKDOWN</div>
+          <div class="breakdown-rows">
+            <div class="breakdown-row br-base"><div class="br-label"><div class="br-dot"></div>Base Amount (Taxable Value)</div><div class="br-val" id="gstBase">₹0</div></div>
+            <div class="breakdown-row br-saffron" id="cgstRow"><div class="br-label"><div class="br-dot"></div>CGST (<span id="cgstRateLbl">9%</span>)</div><div class="br-val" id="cgstAmt">₹0</div></div>
+            <div class="breakdown-row br-green-row" id="sgstRow"><div class="br-label"><div class="br-dot"></div>SGST / UTGST (<span id="sgstRateLbl">9%</span>)</div><div class="br-val" id="sgstAmt">₹0</div></div>
+            <div class="breakdown-row br-navy-row" id="igstRow" style="display:none;"><div class="br-label"><div class="br-dot"></div>IGST (<span id="igstRateLbl">18%</span>)</div><div class="br-val" id="igstAmt">₹0</div></div>
+            <div class="breakdown-row br-gold-row" id="cessRow" style="display:none;"><div class="br-label"><div class="br-dot"></div>GST Cess (<span id="cessRateLbl">0%</span>)</div><div class="br-val" id="cessAmt">₹0</div></div>
+          </div>
+        </div>
+        <div class="total-row">
+          <div class="tr-label">TOTAL INVOICE VALUE</div>
+          <div class="tr-val" id="gstTotal">₹0</div>
+        </div>
+        <div class="rate-display">
+          <div class="rate-box"><div class="rate-box-val" id="gstEffRate">18%</div><div class="rate-box-label">GST Rate</div></div>
+          <div class="rate-box"><div class="rate-box-val" id="gstTaxBurden">0%</div><div class="rate-box-label">Tax on Invoice</div></div>
+          <div class="rate-box highlight"><div class="rate-box-val" id="gstPerc">0%</div><div class="rate-box-label">% of Base</div></div>
+        </div>
+        <div class="export-row">
+          <button class="btn-export btn-export-primary" onclick="copyGSTResult()">📋 Copy Results</button>
+          <button class="btn-export btn-export-ghost" onclick="window.print()">🖨️ Print PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GST Formula Reference -->
+    <div class="formula-card">
+      <div style="position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,53,0.5),transparent);"></div>
+      <div class="formula-title">GST FORMULA REFERENCE</div>
+      <div class="formula-box">
+        <div class="f-line"><span class="f-key">CGST</span><span class="f-op">=</span><span class="f-val">Base × (Rate/2)</span><span class="f-comment"> // intra-state</span></div>
+        <div class="f-line"><span class="f-key">SGST</span><span class="f-op">=</span><span class="f-val">Base × (Rate/2)</span><span class="f-comment"> // intra-state</span></div>
+        <div class="f-line"><span class="f-key">IGST</span><span class="f-op">=</span><span class="f-val">Base × Rate</span><span class="f-comment"> // inter-state</span></div>
+        <div class="f-line"><span class="f-key">Reverse</span><span class="f-op">→</span><span class="f-val">Incl ÷ (1 + Rate)</span></div>
+        <div class="f-line"><span class="f-key">Cess</span><span class="f-op">=</span><span class="f-val">Base × Cess%</span><span class="f-comment"> // additional</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GST INFO CARDS -->
+<div class="info-grid">
+  <div class="info-card"><div class="ic-icon">📦</div><div class="ic-title">0% — Exempt Supplies</div><div class="ic-desc">Fresh fruits & veg, milk, eggs, unprocessed cereals, books, maps, newspapers. No GST applicable.</div></div>
+  <div class="info-card"><div class="ic-icon">🛒</div><div class="ic-title">5% — Essential Goods</div><div class="ic-desc">Edible oils, sugar, spices, tea, coffee (unroasted), domestic LPG, fertilizers, coal, life-saving drugs.</div></div>
+  <div class="info-card"><div class="ic-icon">🏭</div><div class="ic-title">12% — Standard Goods</div><div class="ic-desc">Processed food, computers, mobile phones, clothing (>₹1000), ayurvedic medicines, business class air tickets.</div></div>
+  <div class="info-card"><div class="ic-icon">💎</div><div class="ic-title">28% — Luxury & Sin</div><div class="ic-desc">Cars, motorcycles, cigarettes, pan masala, aerated drinks, cement, washing machines, air conditioners.</div></div>
+</div>
+
+<!-- GST HISTORY -->
+<div class="history-section">
+  <div class="section-head-row">
+    <div class="section-head-title">Recent GST Calculations</div>
+    <button class="clear-hist-btn" onclick="clearGSTHistory()">Clear All</button>
+  </div>
+  <div class="history-list" id="gstHistoryList">
+    <div class="history-empty" id="gstHistoryEmpty">No calculations yet.</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ INCOME TAX TAB ═══════════════════════════════ -->
+<div id="tab-income" class="tab-content">
+<div class="calc-layout">
+
+  <!-- INPUT -->
+  <div class="panel-glass">
+    <div class="panel-top-streak" style="background:linear-gradient(90deg,transparent,rgba(19,136,8,0.6),rgba(255,107,53,0.5),transparent);"></div>
+    <div class="panel-badge panel-badge green-badge">💼 INCOME TAX</div>
+    <div class="panel-title">Enter Income Details</div>
+    <div class="panel-sub">New Regime (default FY 2024-25) or Old Regime with deductions</div>
+
+    <div class="field-group" style="margin-top:24px;">
+      <div class="field-label"><span>Annual Gross Income (₹)</span><span style="font-size:10px;color:rgba(255,255,255,0.2);">BEFORE DEDUCTIONS</span></div>
+      <div class="field-input-wrap">
+        <div class="field-prefix">₹</div>
+        <input type="number" id="incomeInput" class="field-input" placeholder="0.00" min="0" step="1000" oninput="onIncomeInput()"/>
+      </div>
+      <div class="quick-chips">
+        <button class="chip" onclick="setIncome(500000)">₹5L</button>
+        <button class="chip" onclick="setIncome(700000)">₹7L</button>
+        <button class="chip" onclick="setIncome(1000000)">₹10L</button>
+        <button class="chip" onclick="setIncome(1500000)">₹15L</button>
+        <button class="chip" onclick="setIncome(2000000)">₹20L</button>
+        <button class="chip" onclick="setIncome(5000000)">₹50L</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label"><span>Tax Regime</span></div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="taxRegime" value="new" checked/><div class="rc-rate" style="font-size:13px;">New Regime</div><div class="rc-name">FY 2024-25 Default · Higher Std Deduction</div><div class="rc-check"></div></label>
+        <label class="radio-card"><input type="radio" name="taxRegime" value="old"/><div class="rc-rate" style="font-size:13px;">Old Regime</div><div class="rc-name">With 80C, 80D, HRA deductions</div><div class="rc-check"></div></label>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label"><span>Taxpayer Category</span></div>
+      <select class="field-select" id="taxpayerCategory">
+        <option value="individual">Individual (Below 60 yrs)</option>
+        <option value="senior">Senior Citizen (60-80 yrs)</option>
+        <option value="supersenior">Super Senior Citizen (80+ yrs)</option>
+      </select>
+    </div>
+
+    <!-- Old Regime Deductions -->
+    <div class="toggle-row" id="deductionToggle" onclick="toggleDeductions()">
+      <div class="toggle-label"><span>🔖</span> Old Regime Deductions (80C, 80D, HRA, etc.)</div>
+      <div class="toggle-switch" id="deductionSwitch"><div class="toggle-knob"></div></div>
+    </div>
+    <div class="toggle-section" id="deductionSection">
+      <div class="field-group">
+        <div class="field-label"><span>Section 80C (Max ₹1.5L)</span></div>
+        <div class="field-input-wrap"><div class="field-prefix">₹</div><input type="number" id="deduct80c" class="field-input" placeholder="0" min="0" max="150000" step="1000"/></div>
+        <div class="field-hint">LIC, PPF, ELSS, EPF, NSC, school fees etc. Max ₹1,50,000</div>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><span>Section 80D Health Insurance (Max ₹75K)</span></div>
+        <div class="field-input-wrap"><div class="field-prefix">₹</div><input type="number" id="deduct80d" class="field-input" placeholder="0" min="0" max="75000" step="1000"/></div>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><span>HRA Exemption</span></div>
+        <div class="field-input-wrap"><div class="field-prefix">₹</div><input type="number" id="deductHra" class="field-input" placeholder="0" min="0" step="1000"/></div>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><span>Section 80TTA / 80TTB (Savings Interest)</span></div>
+        <div class="field-input-wrap"><div class="field-prefix">₹</div><input type="number" id="deduct80tta" class="field-input" placeholder="0" min="0" max="50000" step="1000"/></div>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><span>Home Loan Interest (Section 24b)</span></div>
+        <div class="field-input-wrap"><div class="field-prefix">₹</div><input type="number" id="deductHomeLoan" class="field-input" placeholder="0" min="0" max="200000" step="1000"/></div>
+        <div class="field-hint">Max deduction ₹2,00,000 for self-occupied property</div>
+      </div>
+      <div class="field-group" style="margin-bottom:0;">
+        <div class="field-label"><span>Other Deductions (80G, NPS, etc.)</span></div>
+        <div class="field-input-wrap"><div class="field-prefix">₹</div><input type="number" id="deductOther" class="field-input" placeholder="0" min="0" step="1000"/></div>
+      </div>
+    </div>
+
+    <button class="btn-calc" onclick="calculateIncomeTax()">
+      <div class="btn-calc-bg"></div>
+      <div class="btn-calc-content"><span>💼</span><span>Calculate Income Tax</span></div>
+      <div class="btn-calc-shine"></div>
+    </button>
+    <div class="reset-row"><button class="reset-btn" onclick="resetIncomeTax()">↺ Clear & Reset</button></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-panel">
+    <div class="result-card">
+      <div class="result-card-streak" style="background:linear-gradient(90deg,transparent,rgba(19,136,8,0.7),transparent);"></div>
+      <div class="result-empty" id="incomeResultEmpty">
+        <div class="empty-icon">💼</div>
+        <div class="empty-text">Enter income & press Calculate</div>
+      </div>
+      <div class="result-content" id="incomeResultContent">
+        <div class="result-header">
+          <div>
+            <div class="result-label-sm">TOTAL TAX PAYABLE</div>
+            <div class="result-amount" id="incomeTaxResult" style="background:linear-gradient(90deg,#138808,#4CAF50);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹0</div>
+          </div>
+          <div class="result-badge-right" id="taxRegimeBadge" style="background:rgba(19,136,8,0.12);border-color:rgba(19,136,8,0.3);color:#4CAF50;">New</div>
+        </div>
+
+        <div class="breakdown-section">
+          <div class="breakdown-title">INCOME TAX BREAKDOWN</div>
+          <div class="breakdown-rows">
+            <div class="breakdown-row br-base"><div class="br-label"><div class="br-dot"></div>Gross Income</div><div class="br-val" id="itGrossIncome">₹0</div></div>
+            <div class="breakdown-row br-green-row"><div class="br-label"><div class="br-dot"></div>Standard Deduction</div><div class="br-val" id="itStdDeduction">₹0</div></div>
+            <div class="breakdown-row br-gold-row" id="itOtherDeductRow" style="display:none;"><div class="br-label"><div class="br-dot"></div>Other Deductions (80C, 80D, etc.)</div><div class="br-val" id="itOtherDeductions">₹0</div></div>
+            <div class="breakdown-row br-navy-row"><div class="br-label"><div class="br-dot"></div>Taxable Income</div><div class="br-val" id="itTaxableIncome">₹0</div></div>
+            <div class="breakdown-row br-saffron"><div class="br-label"><div class="br-dot"></div>Basic Tax</div><div class="br-val" id="itBasicTax">₹0</div></div>
+            <div class="breakdown-row br-gold-row" id="itSurchargeRow" style="display:none;"><div class="br-label"><div class="br-dot"></div>Surcharge</div><div class="br-val" id="itSurcharge">₹0</div></div>
+            <div class="breakdown-row br-green-row"><div class="br-label"><div class="br-dot"></div>Education Cess (4%)</div><div class="br-val" id="itCess">₹0</div></div>
+          </div>
+        </div>
+
+        <div class="total-row" style="background:linear-gradient(90deg,rgba(19,136,8,0.1),rgba(255,107,53,0.08));border-color:rgba(19,136,8,0.25);">
+          <div class="tr-label">NET TAX PAYABLE (AFTER REBATE)</div>
+          <div class="tr-val" id="itFinalTax">₹0</div>
+        </div>
+
+        <div class="rate-display">
+          <div class="rate-box"><div class="rate-box-val" id="itEffRate">0%</div><div class="rate-box-label">Effective Rate</div></div>
+          <div class="rate-box"><div class="rate-box-val" id="itMarginalRate">0%</div><div class="rate-box-label">Marginal Rate</div></div>
+          <div class="rate-box highlight" style="background:rgba(19,136,8,0.08);border-color:rgba(19,136,8,0.25);">
+            <div class="rate-box-val" id="itTakeHome" style="background:linear-gradient(90deg,#138808,#4CAF50);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹0</div>
+            <div class="rate-box-label">Monthly Take-Home</div>
+          </div>
+        </div>
+
+        <!-- Slab breakdown table -->
+        <div style="margin-top:20px;">
+          <div class="breakdown-title">TAX SLAB CALCULATION</div>
+          <table class="slab-table" id="slabTable">
+            <thead><tr><th>Income Range</th><th>Rate</th><th>Tax Amount</th></tr></thead>
+            <tbody id="slabTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Regime comparison -->
+        <div style="margin-top:20px;">
+          <div class="breakdown-title">REGIME COMPARISON</div>
+          <div class="regime-compare">
+            <div class="rc-head"><div class="rc-head-cell">Metric</div><div class="rc-head-cell">New Regime</div><div class="rc-head-cell">Old Regime</div></div>
+            <div class="rc-row"><div class="rc-cell">Std Deduction</div><div class="rc-cell hl" id="cmpNewStd">₹75,000</div><div class="rc-cell" id="cmpOldStd">₹50,000</div></div>
+            <div class="rc-row"><div class="rc-cell">Taxable Income</div><div class="rc-cell" id="cmpNewTaxable">—</div><div class="rc-cell" id="cmpOldTaxable">—</div></div>
+            <div class="rc-row"><div class="rc-cell">Tax Payable</div><div class="rc-cell" id="cmpNewTax">—</div><div class="rc-cell" id="cmpOldTax">—</div></div>
+            <div class="rc-row"><div class="rc-cell">Recommended</div><div class="rc-cell" id="cmpNewRec">—</div><div class="rc-cell" id="cmpOldRec">—</div></div>
+          </div>
+        </div>
+
+        <div class="export-row">
+          <button class="btn-export btn-export-primary" onclick="copyIncomeResult()" style="background:rgba(19,136,8,0.15);border-color:rgba(19,136,8,0.3);color:#4CAF50;">📋 Copy Results</button>
+          <button class="btn-export btn-export-ghost" onclick="window.print()">🖨️ Print PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Regime Slab Reference -->
+    <div class="formula-card">
+      <div style="position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(19,136,8,0.5),transparent);"></div>
+      <div class="formula-title">NEW REGIME SLABS FY 2024-25</div>
+      <div class="formula-box">
+        <div class="f-line"><span class="f-key">0 – 3L</span><span class="f-op">→</span><span class="f-val">0% (Nil)</span></div>
+        <div class="f-line"><span class="f-key">3L – 7L</span><span class="f-op">→</span><span class="f-val">5%</span><span class="f-comment"> + 87A Rebate if ≤7L</span></div>
+        <div class="f-line"><span class="f-key">7L – 10L</span><span class="f-op">→</span><span class="f-val">10%</span></div>
+        <div class="f-line"><span class="f-key">10L – 12L</span><span class="f-op">→</span><span class="f-val">15%</span></div>
+        <div class="f-line"><span class="f-key">12L – 15L</span><span class="f-op">→</span><span class="f-val">20%</span></div>
+        <div class="f-line"><span class="f-key">Above 15L</span><span class="f-op">→</span><span class="f-val">30%</span></div>
+        <div class="f-line"><span class="f-key">Cess</span><span class="f-op">→</span><span class="f-val">4% on tax</span><span class="f-comment"> (Health + Education)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Income Tax History -->
+<div class="history-section">
+  <div class="section-head-row">
+    <div class="section-head-title">Recent Income Tax Calculations</div>
+    <button class="clear-hist-btn" onclick="clearIncomeHistory()">Clear All</button>
+  </div>
+  <div class="history-list" id="incomeHistoryList">
+    <div class="history-empty" id="incomeHistoryEmpty">No calculations yet.</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ TDS TAB ═══════════════════════════════ -->
+<div id="tab-tds" class="tab-content">
+<div class="calc-layout">
+  <div class="panel-glass">
+    <div class="panel-top-streak" style="background:linear-gradient(90deg,transparent,rgba(92,142,255,0.6),transparent);"></div>
+    <div class="panel-badge" style="background:rgba(92,142,255,0.1);border-color:rgba(92,142,255,0.25);color:#5c8eff;">📊 TDS CALCULATOR</div>
+    <div class="panel-title">Calculate TDS</div>
+    <div class="panel-sub">Tax Deducted at Source — Section-wise rates as per Income Tax Act</div>
+
+    <div class="field-group" style="margin-top:24px;">
+      <div class="field-label"><span>Payment Amount (₹)</span></div>
+      <div class="field-input-wrap">
+        <div class="field-prefix">₹</div>
+        <input type="number" id="tdsAmtInput" class="field-input" placeholder="0.00" min="0" step="1000"/>
+      </div>
+      <div class="quick-chips">
+        <button class="chip" onclick="document.getElementById('tdsAmtInput').value=10000">₹10K</button>
+        <button class="chip" onclick="document.getElementById('tdsAmtInput').value=50000">₹50K</button>
+        <button class="chip" onclick="document.getElementById('tdsAmtInput').value=100000">₹1L</button>
+        <button class="chip" onclick="document.getElementById('tdsAmtInput').value=500000">₹5L</button>
+        <button class="chip" onclick="document.getElementById('tdsAmtInput').value=1000000">₹10L</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label"><span>TDS Section</span></div>
+      <select class="field-select" id="tdsSectionSelect">
+        <option value="192" data-rate="0" data-thresh="250000">192 — Salary (Slab Rate)</option>
+        <option value="193" data-rate="10" data-thresh="5000">193 — Interest on Securities (10%)</option>
+        <option value="194" data-rate="10" data-thresh="2500">194 — Dividend (10%)</option>
+        <option value="194A" data-rate="10" data-thresh="40000">194A — Interest other than Securities (10%)</option>
+        <option value="194B" data-rate="30" data-thresh="10000">194B — Lottery/Crossword (30%)</option>
+        <option value="194C" data-rate="1" data-thresh="30000">194C — Contractor (1% Individual / 2% Others)</option>
+        <option value="194D" data-rate="5" data-thresh="15000">194D — Insurance Commission (5%)</option>
+        <option value="194H" data-rate="5" data-thresh="15000">194H — Commission/Brokerage (5%)</option>
+        <option value="194I" data-rate="10" data-thresh="240000">194I — Rent (10% Plant/Equip 2%)</option>
+        <option value="194J" data-rate="10" data-thresh="30000">194J — Professional/Technical Services (10%)</option>
+        <option value="194LA" data-rate="10" data-thresh="250000">194LA — Compensation on Land Acquisition (10%)</option>
+        <option value="194N" data-rate="2" data-thresh="10000000">194N — Cash Withdrawal > ₹1Cr (2%)</option>
+        <option value="194Q" data-rate="0.1" data-thresh="5000000">194Q — Purchase of Goods (0.1%)</option>
+        <option value="206C" data-rate="1" data-thresh="0">206C — TCS on Sale of Goods (1%)</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label"><span>Deductee Type</span></div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="tdsDeductee" value="resident" checked/><div class="rc-rate" style="font-size:13px;">Resident</div><div class="rc-name">PAN available</div><div class="rc-check"></div></label>
+        <label class="radio-card"><input type="radio" name="tdsDeductee" value="nopan"/><div class="rc-rate" style="font-size:13px;">No PAN</div><div class="rc-name">Higher 20% rate</div><div class="rc-check"></div></label>
+      </div>
+    </div>
+
+    <div class="toggle-row" id="tdsInclToggle" onclick="toggleTdsInclusive()">
+      <div class="toggle-label"><span>💡</span> Amount is TDS-inclusive (gross up)</div>
+      <div class="toggle-switch" id="tdsInclSwitch"><div class="toggle-knob"></div></div>
+    </div>
+
+    <button class="btn-calc" onclick="calculateTDS()" style="background:none;">
+      <div class="btn-calc-bg" style="background:linear-gradient(135deg,#5c8eff,#B44FFF);"></div>
+      <div class="btn-calc-content"><span>📊</span><span>Calculate TDS</span></div>
+      <div class="btn-calc-shine"></div>
+    </button>
+    <div class="reset-row"><button class="reset-btn" onclick="resetTDS()">↺ Clear & Reset</button></div>
+  </div>
+
+  <div class="result-panel">
+    <div class="result-card">
+      <div class="result-card-streak" style="background:linear-gradient(90deg,transparent,rgba(92,142,255,0.7),transparent);"></div>
+      <div class="result-empty" id="tdsResultEmpty"><div class="empty-icon">📊</div><div class="empty-text">Enter details & press Calculate</div></div>
+      <div class="result-content" id="tdsResultContent">
+        <div class="result-header">
+          <div>
+            <div class="result-label-sm">TDS AMOUNT</div>
+            <div class="result-amount" id="tdsResultMain" style="background:linear-gradient(90deg,#5c8eff,#B44FFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹0</div>
+          </div>
+          <div class="result-badge-right" id="tdsSectionBadge" style="background:rgba(92,142,255,0.12);border-color:rgba(92,142,255,0.3);color:#5c8eff;">194J</div>
+        </div>
+        <div class="breakdown-section">
+          <div class="breakdown-title">TDS BREAKDOWN</div>
+          <div class="breakdown-rows">
+            <div class="breakdown-row br-base"><div class="br-label"><div class="br-dot"></div>Gross Payment</div><div class="br-val" id="tdsGross">₹0</div></div>
+            <div class="breakdown-row br-navy-row"><div class="br-label"><div class="br-dot"></div>TDS Rate Applied</div><div class="br-val" id="tdsRateApplied">0%</div></div>
+            <div class="breakdown-row br-saffron"><div class="br-label"><div class="br-dot"></div>TDS Amount</div><div class="br-val" id="tdsDedAmount">₹0</div></div>
+            <div class="breakdown-row br-green-row"><div class="br-label"><div class="br-dot"></div>Net Payment to Deductee</div><div class="br-val" id="tdsNet">₹0</div></div>
+          </div>
+        </div>
+        <div class="total-row" style="background:linear-gradient(90deg,rgba(92,142,255,0.1),rgba(180,79,255,0.08));border-color:rgba(92,142,255,0.25);">
+          <div class="tr-label">TDS PAYABLE TO GOVT</div>
+          <div class="tr-val" id="tdsFinalPayable">₹0</div>
+        </div>
+        <div class="rate-display">
+          <div class="rate-box"><div class="rate-box-val" id="tdsSectionDisplay">—</div><div class="rate-box-label">Section</div></div>
+          <div class="rate-box"><div class="rate-box-val" id="tdsThreshDisplay">₹0</div><div class="rate-box-label">Threshold</div></div>
+          <div class="rate-box highlight" style="background:rgba(92,142,255,0.08);border-color:rgba(92,142,255,0.25);">
+            <div class="rate-box-val" id="tdsDueDateDisplay" style="font-size:16px;background:linear-gradient(90deg,#5c8eff,#B44FFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">7th Next Month</div>
+            <div class="rate-box-label">TDS Due Date</div>
+          </div>
+        </div>
+        <div class="export-row">
+          <button class="btn-export btn-export-primary" onclick="copyTDSResult()" style="background:rgba(92,142,255,0.15);border-color:rgba(92,142,255,0.3);color:#5c8eff;">📋 Copy</button>
+          <button class="btn-export btn-export-ghost" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div style="position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(92,142,255,0.5),transparent);"></div>
+      <div class="formula-title">TDS QUICK REFERENCE</div>
+      <div class="formula-box">
+        <div class="f-line"><span class="f-key">TDS</span><span class="f-op">=</span><span class="f-val">Gross × TDS Rate</span></div>
+        <div class="f-line"><span class="f-key">Net Pay</span><span class="f-op">=</span><span class="f-val">Gross − TDS</span></div>
+        <div class="f-line"><span class="f-key">No PAN</span><span class="f-op">→</span><span class="f-val">Max(Rate, 20%)</span></div>
+        <div class="f-line"><span class="f-key">Due Date</span><span class="f-op">→</span><span class="f-val">7th of next month</span></div>
+        <div class="f-line"><span class="f-key">March TDS</span><span class="f-op">→</span><span class="f-val">30th April deadline</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════ HRA TAB ═══════════════════════════════ -->
+<div id="tab-hra" class="tab-content">
+<div class="calc-layout">
+  <div class="panel-glass">
+    <div class="panel-top-streak" style="background:linear-gradient(90deg,transparent,rgba(180,79,255,0.6),transparent);"></div>
+    <div class="panel-badge" style="background:rgba(180,79,255,0.1);border-color:rgba(180,79,255,0.25);color:#B44FFF;">🏠 HRA EXEMPTION</div>
+    <div class="panel-title">Calculate HRA Exemption</div>
+    <div class="panel-sub">Section 10(13A) — Minimum of 3 conditions rule</div>
+
+    <div class="field-group" style="margin-top:24px;">
+      <div class="field-label"><span>Monthly Basic Salary (₹)</span></div>
+      <div class="field-input-wrap"><div class="field-prefix">₹</div><input type="number" id="hraBasic" class="field-input" placeholder="0" min="0" step="1000"/></div>
+    </div>
+    <div class="field-group">
+      <div class="field-label"><span>Monthly HRA Received from Employer (₹)</span></div>
+      <div class="field-input-wrap"><div class="field-prefix">₹</div><input type="number" id="hraReceived" class="field-input" placeholder="0" min="0" step="1000"/></div>
+    </div>
+    <div class="field-group">
+      <div class="field-label"><span>Monthly Rent Actually Paid (₹)</span></div>
+      <div class="field-input-wrap"><div class="field-prefix">₹</div><input type="number" id="hraPaid" class="field-input" placeholder="0" min="0" step="1000"/></div>
+    </div>
+    <div class="field-group">
+      <div class="field-label"><span>City Type</span></div>
+      <div class="radio-grid">
+        <label class="radio-card"><input type="radio" name="hraCity" value="metro" checked/><div class="rc-rate" style="font-size:13px;">Metro City</div><div class="rc-name">Delhi, Mumbai, Kolkata, Chennai — 50% of Basic</div><div class="rc-check"></div></label>
+        <label class="radio-card"><input type="radio" name="hraCity" value="nonmetro"/><div class="rc-rate" style="font-size:13px;">Non-Metro</div><div class="rc-name">All other cities — 40% of Basic</div><div class="rc-check"></div></label>
+      </div>
+    </div>
+
+    <button class="btn-calc" onclick="calculateHRA()" style="background:none;">
+      <div class="btn-calc-bg" style="background:linear-gradient(135deg,#B44FFF,#FF2D78);"></div>
+      <div class="btn-calc-content"><span>🏠</span><span>Calculate HRA Exemption</span></div>
+      <div class="btn-calc-shine"></div>
+    </button>
+    <div class="reset-row"><button class="reset-btn" onclick="resetHRA()">↺ Clear & Reset</button></div>
+  </div>
+
+  <div class="result-panel">
+    <div class="result-card">
+      <div class="result-card-streak" style="background:linear-gradient(90deg,transparent,rgba(180,79,255,0.7),transparent);"></div>
+      <div class="result-empty" id="hraResultEmpty"><div class="empty-icon">🏠</div><div class="empty-text">Enter details & press Calculate</div></div>
+      <div class="result-content" id="hraResultContent">
+        <div class="result-header">
+          <div>
+            <div class="result-label-sm">ANNUAL HRA EXEMPTION</div>
+            <div class="result-amount" id="hraResultMain" style="background:linear-gradient(90deg,#B44FFF,#FF2D78);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹0</div>
+          </div>
+          <div class="result-badge-right" id="hraCityBadge" style="background:rgba(180,79,255,0.12);border-color:rgba(180,79,255,0.3);color:#B44FFF;">Metro</div>
+        </div>
+        <div class="breakdown-section">
+          <div class="breakdown-title">HRA CALCULATION (MINIMUM OF 3 CONDITIONS)</div>
+          <div class="breakdown-rows">
+            <div class="breakdown-row br-saffron"><div class="br-label"><div class="br-dot"></div>Condition 1: Actual HRA Received (Annual)</div><div class="br-val" id="hraC1">₹0</div></div>
+            <div class="breakdown-row br-green-row"><div class="br-label"><div class="br-dot"></div>Condition 2: 50%/40% of Basic Salary (Annual)</div><div class="br-val" id="hraC2">₹0</div></div>
+            <div class="breakdown-row br-navy-row"><div class="br-label"><div class="br-dot"></div>Condition 3: Rent Paid − 10% of Basic (Annual)</div><div class="br-val" id="hraC3">₹0</div></div>
+          </div>
+        </div>
+        <div class="total-row" style="background:linear-gradient(90deg,rgba(180,79,255,0.1),rgba(255,45,120,0.08));border-color:rgba(180,79,255,0.25);">
+          <div class="tr-label">HRA EXEMPT (MIN OF 3)</div>
+          <div class="tr-val" id="hraExemptFinal">₹0</div>
+        </div>
+        <div class="rate-display">
+          <div class="rate-box"><div class="rate-box-val" id="hraTaxable">₹0</div><div class="rate-box-label">Taxable HRA</div></div>
+          <div class="rate-box highlight" style="background:rgba(180,79,255,0.08);border-color:rgba(180,79,255,0.25);">
+            <div class="rate-box-val" id="hraSaved" style="background:linear-gradient(90deg,#B44FFF,#FF2D78);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₹0</div>
+            <div class="rate-box-label">Monthly HRA Saved</div>
+          </div>
+        </div>
+        <div class="export-row">
+          <button class="btn-export btn-export-primary" onclick="copyHRAResult()" style="background:rgba(180,79,255,0.15);border-color:rgba(180,79,255,0.3);color:#B44FFF;">📋 Copy</button>
+          <button class="btn-export btn-export-ghost" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+    </div>
+    <div class="formula-card">
+      <div style="position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(180,79,255,0.5),transparent);"></div>
+      <div class="formula-title">HRA EXEMPTION FORMULA</div>
+      <div class="formula-box">
+        <div class="f-line"><span class="f-key">C1</span><span class="f-op">=</span><span class="f-val">Actual HRA Received</span></div>
+        <div class="f-line"><span class="f-key">C2</span><span class="f-op">=</span><span class="f-val">50% of Basic (Metro)</span></div>
+        <div class="f-line"><span class="f-key">   </span><span class="f-op">=</span><span class="f-val">40% of Basic (Non-Metro)</span></div>
+        <div class="f-line"><span class="f-key">C3</span><span class="f-op">=</span><span class="f-val">Rent Paid − 10% of Basic</span></div>
+        <div class="f-line"><span class="f-key">Exempt</span><span class="f-op">=</span><span class="f-val">MIN(C1, C2, C3)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-left">© 2026 Emunib. All Rights Reserved.</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="nepal-tax.html">Nepal Tax</a>
+      <a href="vat.html">UAE VAT</a>
+      <a href="ai-assistant.html">AI Assistant</a>
+    </div>
+    <div class="footer-tags">
+      <span class="footer-tag">🇮🇳 India</span>
+      <span class="footer-tag">FY 2024-25</span>
+      <span class="footer-tag">GST Act</span>
+    </div>
+  </div>
+</footer>
+
+<div id="toast">✅ Done!</div>
+
+<script>
+'use strict';
+
+/* ── PAGE LOADER ── */
+window.addEventListener('load',()=>{setTimeout(()=>{const l=document.getElementById('pageLoader');l.style.opacity='0';setTimeout(()=>l.remove(),600);},700);});
+
+/* ── CURSOR ── */
+(function(){
+  const glow=document.getElementById('cursorGlow'),dot=document.getElementById('cursorDot');
+  if(!glow||!dot||window.matchMedia('(hover:none)').matches)return;
+  let mx=0,my=0,dx=0,dy=0,gx=0,gy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  const ia='a,button,input,select,label,[role="button"],.chip,.radio-card,.gst-card,.toggle-row';
+  document.addEventListener('mouseover',e=>{if(e.target.closest(ia)){dot.style.transform='translate(-50%,-50%) scale(2.5)';dot.style.background='var(--saffron)';}});
+  document.addEventListener('mouseout',e=>{if(e.target.closest(ia)){dot.style.transform='translate(-50%,-50%) scale(1)';}});
+  (function loop(){dx+=(mx-dx)*0.92;dy+=(my-dy)*0.92;gx+=(mx-gx)*0.1;gy+=(my-gy)*0.1;dot.style.left=dx+'px';dot.style.top=dy+'px';glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(loop);})();
+})();
+
+/* ── PARTICLES ── */
+(function(){
+  const canvas=document.getElementById('particleCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');let W,H,pts=[],mouse={x:-9999,y:-9999};
+  const COLORS=['#FF6B35','#138808','#FF2D78','#FFD166','#5c8eff'];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  function mkPt(){const a=Math.random()*Math.PI*2,s=0.12+Math.random()*0.3;return{x:Math.random()*W,y:Math.random()*H,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:0.7+Math.random()*1.5,alpha:0.2+Math.random()*0.4,color:COLORS[~~(Math.random()*COLORS.length)],pulse:Math.random()*Math.PI*2,ps:0.015+Math.random()*0.02};}
+  function hexRgb(h){return parseInt(h.slice(1,3),16)+','+parseInt(h.slice(3,5),16)+','+parseInt(h.slice(5,7),16);}
+  function init(){resize();pts=[];for(let i=0;i<90;i++)pts.push(mkPt());}
+  function draw(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{const dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<130&&d>0){const f=(130-d)/130;p.vx+=(dx/d)*f*0.12;p.vy+=(dy/d)*f*0.12;}p.vx*=0.993;p.vy*=0.993;const sp=Math.sqrt(p.vx*p.vx+p.vy*p.vy);if(sp>1.3){p.vx=p.vx/sp*1.3;p.vy=p.vy/sp*1.3;}p.x+=p.vx;p.y+=p.vy;p.pulse+=p.ps;if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;const a=p.alpha*(0.6+0.4*Math.sin(p.pulse));ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${hexRgb(p.color)},${a})`;ctx.fill();});for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2);if(d<110){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(255,107,53,${(1-d/110)*0.08})`;ctx.lineWidth=0.5;ctx.stroke();}}requestAnimationFrame(draw);}
+  window.addEventListener('resize',()=>{resize();pts.forEach(p=>{if(p.x>W)p.x=Math.random()*W;if(p.y>H)p.y=Math.random()*H;});});
+  document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+  init();draw();
+})();
+
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll',()=>{const inner=document.querySelector('#mainNav .nav-inner');inner.style.background=window.scrollY>40?'rgba(4,2,15,0.9)':'rgba(4,2,15,0.55)';},{passive:true});
+
+/* ── TAB SWITCHER ── */
+function switchTab(tab){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* ── STATE ── */
+let gstInclusive=false,gstCessOn=false,itDeductOn=false,tdsInclusive=false;
+let gstHistory=JSON.parse(localStorage.getItem('india_gst_hist')||'[]');
+let incomeHistory=JSON.parse(localStorage.getItem('india_it_hist')||'[]');
+
+/* ── TOGGLES ── */
+function toggleGstInclusive(){gstInclusive=!gstInclusive;document.getElementById('gstInclusiveSwitch').classList.toggle('on',gstInclusive);}
+function toggleCess(){gstCessOn=!gstCessOn;document.getElementById('cessSwitch').classList.toggle('on',gstCessOn);document.getElementById('cessSection').classList.toggle('show',gstCessOn);}
+function toggleDeductions(){itDeductOn=!itDeductOn;document.getElementById('deductionSwitch').classList.toggle('on',itDeductOn);document.getElementById('deductionSection').classList.toggle('show',itDeductOn);}
+function toggleTdsInclusive(){tdsInclusive=!tdsInclusive;document.getElementById('tdsInclSwitch').classList.toggle('on',tdsInclusive);}
+function onGstInput(){document.getElementById('gstAmountInput').style.borderColor='rgba(255,107,53,0.35)';}
+function onIncomeInput(){document.getElementById('incomeInput').style.borderColor='rgba(19,136,8,0.35)';}
+
+/* ── QUICK AMOUNTS ── */
+function setGstAmount(v){document.getElementById('gstAmountInput').value=v;document.querySelectorAll('.quick-chips .chip').forEach(c=>c.classList.remove('active'));event.target.classList.add('active');}
+function setIncome(v){document.getElementById('incomeInput').value=v;document.querySelectorAll('.quick-chips .chip').forEach(c=>c.classList.remove('active'));event.target.classList.add('active');}
+
+/* ── FORMAT ── */
+function fmtINR(n){return '₹'+Math.round(n).toLocaleString('en-IN');}
+function fmtINRDec(n){return '₹'+n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+/* ── GST CALCULATOR ── */
+function calculateGST(){
+  const raw=parseFloat(document.getElementById('gstAmountInput').value);
+  if(isNaN(raw)||raw<=0){shakeEl('gstAmountInput');showToast('⚠️ Enter valid amount','error');return;}
+  const rateEl=document.querySelector('input[name="gstRate"]:checked');
+  if(!rateEl){showToast('⚠️ Select GST rate','error');return;}
+  const rate=parseFloat(rateEl.value)/100;
+  const isInter=document.querySelector('input[name="gstType"]:checked').value==='inter';
+  const cessRate=gstCessOn?(parseFloat(document.getElementById('cessInput').value)||0)/100:0;
+
+  let base,gstAmt;
+  if(gstInclusive){base=raw/(1+rate+cessRate);gstAmt=base*rate;}
+  else{base=raw;gstAmt=base*rate;}
+  const cessAmt=base*cessRate;
+  const cgst=isInter?0:gstAmt/2;
+  const sgst=isInter?0:gstAmt/2;
+  const igst=isInter?gstAmt:0;
+  const total=base+gstAmt+cessAmt;
+  const taxBurden=total>0?(gstAmt+cessAmt)/total*100:0;
+
+  document.getElementById('gstResultEmpty').style.display='none';
+  document.getElementById('gstResultContent').classList.add('show');
+  document.getElementById('gstResultMain').textContent=fmtINR(gstAmt+cessAmt);
+  document.getElementById('gstRateBadge').textContent=(parseFloat(rateEl.value))+'%';
+  document.getElementById('gstBase').textContent=fmtINRDec(base);
+  document.getElementById('gstTotal').textContent=fmtINRDec(total);
+  document.getElementById('gstEffRate').textContent=(parseFloat(rateEl.value))+'%';
+  document.getElementById('gstTaxBurden').textContent=taxBurden.toFixed(2)+'%';
+  document.getElementById('gstPerc').textContent=((gstAmt/base)*100).toFixed(2)+'%';
+
+  if(isInter){
+    document.getElementById('cgstRow').style.display='none';
+    document.getElementById('sgstRow').style.display='none';
+    document.getElementById('igstRow').style.display='flex';
+    document.getElementById('igstAmt').textContent=fmtINRDec(igst);
+    document.getElementById('igstRateLbl').textContent=(parseFloat(rateEl.value))+'%';
+  } else {
+    document.getElementById('cgstRow').style.display='flex';
+    document.getElementById('sgstRow').style.display='flex';
+    document.getElementById('igstRow').style.display='none';
+    document.getElementById('cgstAmt').textContent=fmtINRDec(cgst);
+    document.getElementById('sgstAmt').textContent=fmtINRDec(sgst);
+    document.getElementById('cgstRateLbl').textContent=(parseFloat(rateEl.value)/2)+'%';
+    document.getElementById('sgstRateLbl').textContent=(parseFloat(rateEl.value)/2)+'%';
+  }
+  if(cessAmt>0){document.getElementById('cessRow').style.display='flex';document.getElementById('cessAmt').textContent=fmtINRDec(cessAmt);document.getElementById('cessRateLbl').textContent=(cessRate*100).toFixed(1)+'%';}
+  else{document.getElementById('cessRow').style.display='none';}
+
+  const entry={base:Math.round(base),gst:Math.round(gstAmt),total:Math.round(total),rate:parseFloat(rateEl.value),type:isInter?'IGST':'CGST+SGST',time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})};
+  gstHistory.unshift(entry);if(gstHistory.length>10)gstHistory.pop();
+  localStorage.setItem('india_gst_hist',JSON.stringify(gstHistory));
+  renderGSTHistory();showToast('✅ GST calculated!','success');
+}
+
+function resetGST(){
+  document.getElementById('gstAmountInput').value='';
+  document.getElementById('gstResultContent').classList.remove('show');
+  document.getElementById('gstResultEmpty').style.display='flex';
+  if(gstCessOn)toggleCess();if(gstInclusive)toggleGstInclusive();
+  showToast('↺ Reset','info');
+}
+
+function renderGSTHistory(){
+  const list=document.getElementById('gstHistoryList');
+  const empty=document.getElementById('gstHistoryEmpty');
+  list.querySelectorAll('.history-item').forEach(i=>i.remove());
+  if(gstHistory.length===0){empty.style.display='block';return;}
+  empty.style.display='none';
+  gstHistory.forEach((e,i)=>{
+    const el=document.createElement('div');el.className='history-item';
+    el.innerHTML=`<div class="hi-left"><div class="hi-num">${i+1}</div><div><div class="hi-base">${fmtINR(e.base)} · ${e.rate}% ${e.type}</div><div class="hi-time">${e.time}</div></div></div><div class="hi-right"><div class="hi-tax">+${fmtINR(e.gst)}</div><div class="hi-total">Total: ${fmtINR(e.total)}</div></div>`;
+    el.onclick=()=>{document.getElementById('gstAmountInput').value=e.base;calculateGST();};
+    list.appendChild(el);
+  });
+}
+function clearGSTHistory(){gstHistory=[];localStorage.removeItem('india_gst_hist');renderGSTHistory();showToast('🗑️ Cleared','info');}
+function copyGSTResult(){const t=`Emunib India GST\nBase: ${document.getElementById('gstBase').textContent}\nGST: ${document.getElementById('gstResultMain').textContent}\nTotal: ${document.getElementById('gstTotal').textContent}`;navigator.clipboard.writeText(t).then(()=>showToast('📋 Copied!','success'));}
+
+/* ── INCOME TAX CALCULATOR ── */
+const NEW_REGIME_SLABS=[{min:0,max:300000,rate:0},{min:300000,max:700000,rate:5},{min:700000,max:1000000,rate:10},{min:1000000,max:1200000,rate:15},{min:1200000,max:1500000,rate:20},{min:1500000,max:Infinity,rate:30}];
+const OLD_REGIME_SLABS={individual:[{min:0,max:250000,rate:0},{min:250000,max:500000,rate:5},{min:500000,max:1000000,rate:20},{min:1000000,max:Infinity,rate:30}],senior:[{min:0,max:300000,rate:0},{min:300000,max:500000,rate:5},{min:500000,max:1000000,rate:20},{min:1000000,max:Infinity,rate:30}],supersenior:[{min:0,max:500000,rate:0},{min:500000,max:1000000,rate:20},{min:1000000,max:Infinity,rate:30}]};
+
+function calcSlabTax(income,slabs){
+  let tax=0;const breakdown=[];
+  slabs.forEach(s=>{
+    if(income>s.min){const taxable=Math.min(income,s.max)-s.min;const t=taxable*s.rate/100;tax+=t;if(t>0||s.rate===0)breakdown.push({range:fmtINR(s.min)+' – '+(s.max===Infinity?'Above':fmtINR(s.max)),rate:s.rate+'%',amt:t});}
+  });
+  return{tax,breakdown};
+}
+
+function getSurcharge(income,tax){
+  if(income>50000000)return tax*0.37;
+  if(income>20000000)return tax*0.25;
+  if(income>10000000)return tax*0.15;
+  if(income>5000000)return tax*0.10;
+  return 0;
+}
+
+function calculateIncomeTax(){
+  const gross=parseFloat(document.getElementById('incomeInput').value);
+  if(isNaN(gross)||gross<=0){shakeEl('incomeInput');showToast('⚠️ Enter valid income','error');return;}
+  const regime=document.querySelector('input[name="taxRegime"]:checked').value;
+  const category=document.getElementById('taxpayerCategory').value;
+
+  let stdDeduction=regime==='new'?75000:50000;
+  let otherDeductions=0;
+
+  if(itDeductOn&&regime==='old'){
+    const c80=Math.min(parseFloat(document.getElementById('deduct80c').value)||0,150000);
+    const c80d=Math.min(parseFloat(document.getElementById('deduct80d').value)||0,75000);
+    const hra=parseFloat(document.getElementById('deductHra').value)||0;
+    const c80tta=Math.min(parseFloat(document.getElementById('deduct80tta').value)||0,50000);
+    const hl=Math.min(parseFloat(document.getElementById('deductHomeLoan').value)||0,200000);
+    const other=parseFloat(document.getElementById('deductOther').value)||0;
+    otherDeductions=c80+c80d+hra+c80tta+hl+other;
+  }
+
+  const taxableIncome=Math.max(0,gross-stdDeduction-otherDeductions);
+  let slabs=regime==='new'?NEW_REGIME_SLABS:OLD_REGIME_SLABS[category]||OLD_REGIME_SLABS.individual;
+  const {tax:basicTax,breakdown}=calcSlabTax(taxableIncome,slabs);
+
+  /* Rebate 87A: new regime ≤7L taxable → full rebate; old regime ≤5L taxable → full rebate */
+  const rebateLimit=regime==='new'?700000:500000;
+  const rebate=taxableIncome<=rebateLimit?basicTax:0;
+  const taxAfterRebate=Math.max(0,basicTax-rebate);
+
+  const surcharge=getSurcharge(gross,taxAfterRebate);
+  const taxWithSurcharge=taxAfterRebate+surcharge;
+  const cess=taxWithSurcharge*0.04;
+  const finalTax=Math.round(taxWithSurcharge+cess);
+
+  const marginalRate=taxableIncome>1500000?30:taxableIncome>1200000?20:taxableIncome>1000000?15:taxableIncome>700000?10:taxableIncome>300000?5:0;
+  const effectiveRate=gross>0?(finalTax/gross*100).toFixed(2):0;
+  const monthlyTakeHome=Math.round((gross-finalTax)/12);
+
+  /* OLD REGIME comparison */
+  let oldTaxable=Math.max(0,gross-50000-(itDeductOn?otherDeductions:0));
+  const {tax:oldBasic}=calcSlabTax(oldTaxable,OLD_REGIME_SLABS[category]||OLD_REGIME_SLABS.individual);
+  const oldRebate=oldTaxable<=500000?oldBasic:0;
+  const oldFinal=Math.round(Math.max(0,oldBasic-oldRebate)*1.04);
+  const newFinal=finalTax;
+
+  /* Render */
+  document.getElementById('incomeResultEmpty').style.display='none';
+  document.getElementById('incomeResultContent').classList.add('show');
+  document.getElementById('incomeTaxResult').textContent=fmtINR(finalTax);
+  document.getElementById('taxRegimeBadge').textContent=regime==='new'?'New':'Old';
+  document.getElementById('itGrossIncome').textContent=fmtINR(gross);
+  document.getElementById('itStdDeduction').textContent='-'+fmtINR(stdDeduction);
+  document.getElementById('itTaxableIncome').textContent=fmtINR(taxableIncome);
+  document.getElementById('itBasicTax').textContent=fmtINR(basicTax);
+  document.getElementById('itCess').textContent=fmtINR(cess);
+  document.getElementById('itEffRate').textContent=effectiveRate+'%';
+  document.getElementById('itMarginalRate').textContent=marginalRate+'%';
+  document.getElementById('itTakeHome').textContent=fmtINR(monthlyTakeHome);
+  document.getElementById('itFinalTax').textContent=fmtINR(finalTax);
+
+  if(otherDeductions>0){document.getElementById('itOtherDeductRow').style.display='flex';document.getElementById('itOtherDeductions').textContent='-'+fmtINR(otherDeductions);}
+  else{document.getElementById('itOtherDeductRow').style.display='none';}
+  if(surcharge>0){document.getElementById('itSurchargeRow').style.display='flex';document.getElementById('itSurcharge').textContent=fmtINR(surcharge);}
+  else{document.getElementById('itSurchargeRow').style.display='none';}
+
+  /* Slab table */
+  const tbody=document.getElementById('slabTableBody');tbody.innerHTML='';
+  breakdown.forEach(s=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${s.range}</td><td>${s.rate}</td><td>${fmtINR(s.amt)}</td>`;
+    tbody.appendChild(tr);
+  });
+  const totalTr=document.createElement('tr');
+  totalTr.style.fontWeight='800';totalTr.style.color='#fff';
+  totalTr.innerHTML=`<td colspan="2">Total Basic Tax</td><td>${fmtINR(basicTax)}</td>`;
+  tbody.appendChild(totalTr);
+
+  /* Comparison */
+  const newTaxableC=Math.max(0,gross-75000);
+  document.getElementById('cmpNewStd').textContent='₹75,000';
+  document.getElementById('cmpOldStd').textContent='₹50,000';
+  document.getElementById('cmpNewTaxable').textContent=fmtINR(newTaxableC);
+  document.getElementById('cmpOldTaxable').textContent=fmtINR(oldTaxable);
+  document.getElementById('cmpNewTax').textContent=fmtINR(newFinal);
+  document.getElementById('cmpOldTax').textContent=fmtINR(oldFinal);
+  const newBetter=newFinal<=oldFinal;
+  document.getElementById('cmpNewRec').textContent=newBetter?'✅ Better':'';
+  document.getElementById('cmpOldRec').textContent=!newBetter?'✅ Better':'';
+  document.getElementById('cmpNewRec').style.color=newBetter?'#4CAF50':'rgba(255,255,255,0.3)';
+  document.getElementById('cmpOldRec').style.color=!newBetter?'#4CAF50':'rgba(255,255,255,0.3)';
+
+  const entry={gross,finalTax,regime,effRate:effectiveRate,time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})};
+  incomeHistory.unshift(entry);if(incomeHistory.length>10)incomeHistory.pop();
+  localStorage.setItem('india_it_hist',JSON.stringify(incomeHistory));
+  renderIncomeHistory();
+  showToast(newBetter?'✅ New Regime is better for you!':'✅ Old Regime saves more tax!','success');
+}
+
+function resetIncomeTax(){
+  document.getElementById('incomeInput').value='';
+  document.getElementById('incomeResultContent').classList.remove('show');
+  document.getElementById('incomeResultEmpty').style.display='flex';
+  if(itDeductOn)toggleDeductions();
+  showToast('↺ Reset','info');
+}
+
+function renderIncomeHistory(){
+  const list=document.getElementById('incomeHistoryList');
+  const empty=document.getElementById('incomeHistoryEmpty');
+  list.querySelectorAll('.history-item').forEach(i=>i.remove());
+  if(incomeHistory.length===0){empty.style.display='block';return;}
+  empty.style.display='none';
+  incomeHistory.forEach((e,i)=>{
+    const el=document.createElement('div');el.className='history-item';
+    el.innerHTML=`<div class="hi-left"><div class="hi-num">${i+1}</div><div><div class="hi-base">${fmtINR(e.gross)} · ${e.regime==='new'?'New Regime':'Old Regime'}</div><div class="hi-time">${e.time} · Eff: ${e.effRate}%</div></div></div><div class="hi-right"><div class="hi-tax">${fmtINR(e.finalTax)}</div><div class="hi-total">Take-home: ${fmtINR(Math.round((e.gross-e.finalTax)/12))}/mo</div></div>`;
+    el.onclick=()=>{document.getElementById('incomeInput').value=e.gross;calculateIncomeTax();};
+    list.appendChild(el);
+  });
+}
+function clearIncomeHistory(){incomeHistory=[];localStorage.removeItem('india_it_hist');renderIncomeHistory();showToast('🗑️ Cleared','info');}
+function copyIncomeResult(){const t=`Emunib India Income Tax\nGross: ${document.getElementById('itGrossIncome').textContent}\nTaxable: ${document.getElementById('itTaxableIncome').textContent}\nFinal Tax: ${document.getElementById('itFinalTax').textContent}\nEff Rate: ${document.getElementById('itEffRate').textContent}`;navigator.clipboard.writeText(t).then(()=>showToast('📋 Copied!','success'));}
+
+/* ── TDS CALCULATOR ── */
+function calculateTDS(){
+  const gross=parseFloat(document.getElementById('tdsAmtInput').value);
+  if(isNaN(gross)||gross<=0){showToast('⚠️ Enter valid amount','error');return;}
+  const sel=document.getElementById('tdsSectionSelect');
+  const opt=sel.options[sel.selectedIndex];
+  let rate=parseFloat(opt.dataset.rate)/100;
+  const thresh=parseFloat(opt.dataset.thresh)||0;
+  const noPan=document.querySelector('input[name="tdsDeductee"]:checked').value==='nopan';
+  if(noPan&&rate<0.20)rate=0.20;
+  let base=gross;
+  if(tdsInclusive)base=gross/(1+rate);
+  const tds=base*rate;
+  const net=base-tds;
+
+  document.getElementById('tdsResultEmpty').style.display='none';
+  document.getElementById('tdsResultContent').classList.add('show');
+  document.getElementById('tdsResultMain').textContent=fmtINR(tds);
+  document.getElementById('tdsSectionBadge').textContent=opt.value;
+  document.getElementById('tdsGross').textContent=fmtINRDec(base);
+  document.getElementById('tdsRateApplied').textContent=(rate*100).toFixed(1)+'%'+(noPan?' (No PAN 20%)':'');
+  document.getElementById('tdsDedAmount').textContent=fmtINRDec(tds);
+  document.getElementById('tdsNet').textContent=fmtINRDec(net);
+  document.getElementById('tdsFinalPayable').textContent=fmtINRDec(tds);
+  document.getElementById('tdsSectionDisplay').textContent='Sec '+opt.value;
+  document.getElementById('tdsThreshDisplay').textContent=thresh>0?fmtINR(thresh):'No limit';
+  showToast('✅ TDS calculated!','success');
+}
+function resetTDS(){document.getElementById('tdsAmtInput').value='';document.getElementById('tdsResultContent').classList.remove('show');document.getElementById('tdsResultEmpty').style.display='flex';showToast('↺ Reset','info');}
+function copyTDSResult(){const t=`TDS Calculation\nGross: ${document.getElementById('tdsGross').textContent}\nTDS: ${document.getElementById('tdsDedAmount').textContent}\nNet: ${document.getElementById('tdsNet').textContent}`;navigator.clipboard.writeText(t).then(()=>showToast('📋 Copied!','success'));}
+
+/* ── HRA CALCULATOR ── */
+function calculateHRA(){
+  const basic=parseFloat(document.getElementById('hraBasic').value)||0;
+  const received=parseFloat(document.getElementById('hraReceived').value)||0;
+  const paid=parseFloat(document.getElementById('hraPaid').value)||0;
+  if(!basic||!received||!paid){showToast('⚠️ Fill all fields','error');return;}
+  const isMetro=document.querySelector('input[name="hraCity"]:checked').value==='metro';
+  const c1=received*12;
+  const c2=basic*12*(isMetro?0.5:0.4);
+  const c3=Math.max(0,(paid-basic*0.1)*12);
+  const exempt=Math.min(c1,c2,c3);
+  const taxable=c1-exempt;
+
+  document.getElementById('hraResultEmpty').style.display='none';
+  document.getElementById('hraResultContent').classList.add('show');
+  document.getElementById('hraResultMain').textContent=fmtINR(exempt);
+  document.getElementById('hraCityBadge').textContent=isMetro?'Metro (50%)':'Non-Metro (40%)';
+  document.getElementById('hraC1').textContent=fmtINR(c1);
+  document.getElementById('hraC2').textContent=fmtINR(c2);
+  document.getElementById('hraC3').textContent=fmtINR(c3);
+  document.getElementById('hraExemptFinal').textContent=fmtINR(exempt);
+  document.getElementById('hraTaxable').textContent=fmtINR(taxable);
+  document.getElementById('hraSaved').textContent=fmtINR(Math.round(received));
+  showToast('✅ HRA exemption calculated!','success');
+}
+function resetHRA(){['hraBasic','hraReceived','hraPaid'].forEach(id=>document.getElementById(id).value='');document.getElementById('hraResultContent').classList.remove('show');document.getElementById('hraResultEmpty').style.display='flex';showToast('↺ Reset','info');}
+function copyHRAResult(){const t=`HRA Exemption\nAnnual Exempt: ${document.getElementById('hraResultMain').textContent}\nTaxable HRA: ${document.getElementById('hraTaxable').textContent}`;navigator.clipboard.writeText(t).then(()=>showToast('📋 Copied!','success'));}
+
+/* ── SHAKE ── */
+function shakeEl(id){const el=document.getElementById(id);el.style.animation='shake 0.4s ease';setTimeout(()=>el.style.animation='',450);}
+const s=document.createElement('style');s.textContent='@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}';document.head.appendChild(s);
+
+/* ── TOAST ── */
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='error'?'rgba(255,45,120,0.12)':type==='info'?'rgba(180,79,255,0.12)':'rgba(19,136,8,0.12)';
+  t.style.borderColor=type==='error'?'rgba(255,45,120,0.3)':type==='info'?'rgba(180,79,255,0.3)':'rgba(19,136,8,0.3)';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+/* ── INIT ── */
+renderGSTHistory();renderIncomeHistory();
+</script>
+</body>
+</html>
