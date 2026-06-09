@@ -15,6 +15,62 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="style.css"/>
+
+<style>
+/* ── HERO FLOAT BADGES — FIXED POSITIONING ── */
+.hero-float-badge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-radius: 16px;
+  background: rgba(4, 2, 15, 0.55);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+}
+
+.badge-tl {
+  top: -60px !important;
+  left: 0;
+}
+
+.badge-tr {
+  top: 80px;
+  right: 0;
+}
+
+.badge-br {
+  bottom: 120px;
+  right: 0;
+}
+
+.fb-icon {
+  font-size: 20px;
+}
+
+.fb-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fb-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.fb-val {
+  font-size: 14px;
+  font-weight: 800;
+}
+</style>
 </head>
 <body>
 
