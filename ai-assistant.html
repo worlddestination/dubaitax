@@ -1,49 +1,1589 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Tax Assistant — Emunib UAE Tax Platform</title>
+<meta name="description" content="AI-powered UAE Tax Assistant by Emunib. Ask anything about VAT, Corporate Tax, Free Zone — get instant expert-level answers 24/7."/>
+<meta name="robots" content="index, follow"/>
+<meta property="og:title" content="AI Tax Assistant — Emunib"/>
+<meta property="og:type" content="website"/>
+<meta name="theme-color" content="#B44FFF"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 
-  <meta charset="UTF-8">
+<style>
+/* ══════════════════════════════════════════════════════════
+   EMUNIB — AI TAX ASSISTANT  |  v3.0
+   Dark · Glassmorphism · Neon · Cinematic
+══════════════════════════════════════════════════════════ */
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-  <title>AI Assistant</title>
+:root {
+  --pink:   #FF2D78;
+  --purple: #B44FFF;
+  --cyan:   #00F5FF;
+  --gold:   #FFD166;
+  --green:  #06FFA5;
+  --orange: #FF7043;
+  --bg:     #04020F;
+  --glass-bg:     rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.09);
+  --text:   #ffffff;
+  --text-muted: rgba(255,255,255,0.45);
+  --text-dim:   rgba(255,255,255,0.2);
+  --radius-card: 28px;
+  --radius-pill: 100px;
+  --transition: 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
 
-  <link rel="stylesheet" href="assistant.css">
+html { scroll-behavior:smooth; }
 
+body {
+  font-family:'Space Grotesk','Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  height:100vh;
+  cursor:none;
+  display:flex;
+  flex-direction:column;
+}
+
+a { text-decoration:none; color:inherit; }
+
+/* ── CURSOR ── */
+.cursor-glow {
+  position:fixed; width:400px; height:400px; border-radius:50%;
+  background:radial-gradient(circle,rgba(180,79,255,0.12) 0%,transparent 70%);
+  transform:translate(-50%,-50%); pointer-events:none; z-index:9998;
+  transition:opacity 0.3s; will-change:transform;
+}
+.cursor-dot {
+  position:fixed; width:8px; height:8px; border-radius:50%;
+  background:var(--purple); transform:translate(-50%,-50%);
+  pointer-events:none; z-index:9999;
+  transition:transform 0.1s, background 0.2s;
+  box-shadow:0 0 10px var(--purple),0 0 20px rgba(180,79,255,0.5);
+}
+
+/* ── PARTICLE CANVAS ── */
+#particleCanvas {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+}
+
+/* ── BACKGROUND ── */
+.bg-root { position:fixed; inset:0; z-index:0; pointer-events:none; }
+.bg-base {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 70% 55% at 10% 0%,   rgba(180,79,255,0.3)  0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 5%,   rgba(0,245,255,0.2)   0%, transparent 55%),
+    radial-gradient(ellipse 55% 50% at 5%  90%,  rgba(255,45,120,0.15) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 45% at 95% 85%,  rgba(6,255,165,0.1)   0%, transparent 50%),
+    #04020F;
+}
+.bg-grid {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
+}
+.bg-vignette {
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 40%,rgba(4,2,15,0.85) 100%);
+}
+.orb { position:absolute; border-radius:50%; filter:blur(100px); animation:orbFloat ease-in-out infinite; will-change:transform; }
+.orb-1 { width:700px;height:700px;background:rgba(180,79,255,0.2);top:-200px;left:-150px;animation-duration:14s; }
+.orb-2 { width:600px;height:600px;background:rgba(0,245,255,0.15);top:-100px;right:-150px;animation-duration:18s;animation-delay:-5s; }
+.orb-3 { width:500px;height:500px;background:rgba(255,45,120,0.12);bottom:-100px;left:10%;animation-duration:20s;animation-delay:-9s; }
+.orb-4 { width:400px;height:400px;background:rgba(6,255,165,0.08);bottom:-80px;right:5%;animation-duration:16s;animation-delay:-3s; }
+.scanlines {
+  position:absolute; inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);
+}
+@keyframes orbFloat {
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(40px,60px) scale(1.06)}
+  66%{transform:translate(-30px,20px) scale(0.95)}
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0;left:0;right:0; z-index:200; flex-shrink:0;
+}
+.nav-inner {
+  max-width:1400px; margin:0 auto; padding:0 48px; height:76px;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(4,2,15,0.55);
+  backdrop-filter:blur(32px) saturate(200%);
+  -webkit-backdrop-filter:blur(32px) saturate(200%);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.nav-logo { display:flex; align-items:center; gap:14px; cursor:pointer; }
+.logo-crystal {
+  width:46px; height:46px; border-radius:16px;
+  background:linear-gradient(135deg,var(--purple),var(--pink),var(--cyan));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.2),0 0 24px rgba(180,79,255,0.6),0 0 50px rgba(255,45,120,0.3),inset 0 1px 0 rgba(255,255,255,0.35);
+  animation:crystalPulse 3s ease-in-out infinite; flex-shrink:0; position:relative; overflow:hidden;
+}
+.crystal-sheen { position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.25) 0%,transparent 60%); border-radius:inherit; }
+@keyframes crystalPulse {
+  0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,0.2),0 0 24px rgba(180,79,255,0.6),0 0 50px rgba(255,45,120,0.3),inset 0 1px 0 rgba(255,255,255,0.35)}
+  50%{box-shadow:0 0 0 1px rgba(255,255,255,0.3),0 0 40px rgba(180,79,255,0.9),0 0 80px rgba(0,245,255,0.4),inset 0 1px 0 rgba(255,255,255,0.45)}
+}
+.logo-wordmark { display:flex; flex-direction:column; gap:1px; }
+.logo-text-main { font-size:24px; font-weight:800; letter-spacing:-0.8px; color:#fff; line-height:1; }
+.logo-text-sub { font-size:9px; font-weight:700; letter-spacing:2.5px; color:rgba(255,255,255,0.35); text-transform:uppercase; }
+.nav-border-glow {
+  position:absolute; bottom:0; left:10%; right:10%; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(180,79,255,0.6),rgba(0,245,255,0.5),rgba(255,45,120,0.5),transparent);
+}
+.nav-right-group { display:flex; align-items:center; gap:12px; }
+.nav-badge {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 16px; border-radius:100px;
+  background:rgba(180,79,255,0.1); border:1px solid rgba(180,79,255,0.25);
+  font-size:11px; font-weight:800; letter-spacing:1px; color:var(--purple);
+}
+.badge-dot { width:6px;height:6px;border-radius:50%;background:var(--purple);box-shadow:0 0 8px var(--purple);animation:badgeBlink 2s ease-in-out infinite; }
+@keyframes badgeBlink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.status-pill {
+  display:flex; align-items:center; gap:7px;
+  padding:6px 14px; border-radius:100px;
+  background:rgba(6,255,165,0.08); border:1px solid rgba(6,255,165,0.2);
+  font-size:11px; font-weight:700; color:var(--green);
+}
+.status-dot { width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:badgeBlink 2s ease-in-out infinite; }
+.nav-back {
+  display:flex; align-items:center; gap:8px;
+  padding:10px 20px; border-radius:100px;
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+  font-size:13px; font-weight:700; color:rgba(255,255,255,0.55);
+  cursor:pointer; transition:all 0.3s;
+}
+.nav-back:hover { background:rgba(255,255,255,0.1); color:#fff; }
+
+/* ── MAIN LAYOUT ── */
+.app-layout {
+  position:relative; z-index:1;
+  display:flex;
+  height:100vh;
+  padding-top:76px;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width:320px; flex-shrink:0;
+  display:flex; flex-direction:column;
+  background:rgba(255,255,255,0.025);
+  backdrop-filter:blur(40px);
+  border-right:1px solid rgba(255,255,255,0.07);
+  overflow:hidden; position:relative;
+  transition:width 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.sidebar.collapsed { width:0; }
+.sidebar-inner { width:320px; height:100%; display:flex; flex-direction:column; overflow:hidden; }
+
+.sidebar-top {
+  padding:24px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.sidebar-brand {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px; border-radius:18px;
+  background:linear-gradient(135deg,rgba(180,79,255,0.15),rgba(0,245,255,0.1));
+  border:1px solid rgba(180,79,255,0.25);
+  margin-bottom:20px; position:relative; overflow:hidden;
+}
+.sidebar-brand::before {
+  content:''; position:absolute; top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(180,79,255,0.7),rgba(0,245,255,0.5),transparent);
+}
+.ai-avatar {
+  width:44px;height:44px;border-radius:14px;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+  box-shadow:0 0 20px rgba(180,79,255,0.5);
+  animation:avatarPulse 3s ease-in-out infinite;
+}
+@keyframes avatarPulse {
+  0%,100%{box-shadow:0 0 20px rgba(180,79,255,0.5)}
+  50%{box-shadow:0 0 35px rgba(180,79,255,0.9),0 0 60px rgba(0,245,255,0.3)}
+}
+.sidebar-brand-text {}
+.sb-name { font-size:14px;font-weight:800;color:#fff; }
+.sb-model {
+  font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.online-indicator {
+  margin-left:auto;display:flex;align-items:center;gap:6px;
+  font-size:10px;font-weight:700;color:var(--green);
+  padding:4px 10px;border-radius:100px;
+  background:rgba(6,255,165,0.08);border:1px solid rgba(6,255,165,0.2);
+}
+.online-dot { width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:badgeBlink 1.5s infinite; }
+
+.new-chat-btn {
+  width:100%;height:48px;border-radius:14px;border:none;
+  cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;
+  color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(180,79,255,0.25),rgba(0,245,255,0.15));
+  border:1px solid rgba(180,79,255,0.3);
+  transition:all 0.3s;
+}
+.new-chat-btn:hover { background:linear-gradient(135deg,rgba(180,79,255,0.4),rgba(0,245,255,0.25)); transform:translateY(-2px); box-shadow:0 8px 24px rgba(180,79,255,0.3); }
+.new-chat-btn span { position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px; }
+
+/* Topic chips */
+.sidebar-topics { padding:20px 24px; flex:1; overflow-y:auto; }
+.sidebar-topics::-webkit-scrollbar { width:4px; }
+.sidebar-topics::-webkit-scrollbar-track { background:transparent; }
+.sidebar-topics::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1);border-radius:2px; }
+.topics-label { font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:12px; }
+.topic-chip {
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-radius:14px;
+  background:transparent;border:1px solid transparent;
+  cursor:pointer;transition:all 0.3s;margin-bottom:6px;width:100%;text-align:left;
+  font-family:inherit;
+}
+.topic-chip:hover { background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1); }
+.topic-chip.active { background:rgba(180,79,255,0.1);border-color:rgba(180,79,255,0.25); }
+.tc-icon { font-size:16px;flex-shrink:0;width:24px;text-align:center; }
+.tc-text { font-size:13px;font-weight:600;color:rgba(255,255,255,0.6); }
+.topic-chip.active .tc-text { color:#fff; }
+.topic-chip:hover .tc-text { color:rgba(255,255,255,0.85); }
+
+/* Sidebar stats */
+.sidebar-stats {
+  padding:20px 24px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.ss-item {
+  padding:12px;border-radius:12px;
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+  text-align:center;
+}
+.ss-val { font-size:18px;font-weight:900;color:#fff; }
+.ss-label { font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-top:2px; }
+
+/* ── CHAT AREA ── */
+.chat-area {
+  flex:1; display:flex; flex-direction:column; overflow:hidden; position:relative;
+}
+
+/* Chat header */
+.chat-header {
+  padding:20px 32px;
+  background:rgba(255,255,255,0.02);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.chat-header-left { display:flex;align-items:center;gap:12px; }
+.sidebar-toggle {
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s;
+  font-size:16px;
+}
+.sidebar-toggle:hover { background:rgba(180,79,255,0.15);border-color:rgba(180,79,255,0.3); }
+.chat-title { font-size:15px;font-weight:800;color:#fff; }
+.chat-subtitle { font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);margin-top:1px; }
+.chat-header-right { display:flex;align-items:center;gap:10px; }
+.header-btn {
+  height:36px;padding:0 16px;border-radius:100px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
+  font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);
+  cursor:pointer;transition:all 0.3s;font-family:inherit;display:flex;align-items:center;gap:7px;
+}
+.header-btn:hover { background:rgba(255,255,255,0.08);color:#fff; }
+.model-badge {
+  padding:6px 14px;border-radius:100px;
+  background:linear-gradient(90deg,rgba(180,79,255,0.15),rgba(0,245,255,0.1));
+  border:1px solid rgba(180,79,255,0.25);
+  font-size:11px;font-weight:800;letter-spacing:1px;
+  background-clip:text;-webkit-background-clip:text;
+  display:flex;align-items:center;gap:7px;
+}
+.model-badge-text {
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ── MESSAGES ── */
+.messages-wrap {
+  flex:1; overflow-y:auto; padding:32px;
+  display:flex; flex-direction:column; gap:24px;
+  scroll-behavior:smooth;
+}
+.messages-wrap::-webkit-scrollbar { width:6px; }
+.messages-wrap::-webkit-scrollbar-track { background:transparent; }
+.messages-wrap::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.08);border-radius:3px; }
+.messages-wrap::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,0.15); }
+
+/* Welcome screen */
+.welcome-screen {
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;flex:1;padding:40px;
+  animation:fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
+}
+.welcome-orb {
+  width:100px;height:100px;border-radius:30px;
+  background:linear-gradient(135deg,var(--purple),var(--pink),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-size:44px;margin-bottom:28px;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.2),0 0 40px rgba(180,79,255,0.6),0 0 80px rgba(0,245,255,0.3);
+  animation:welcomeFloat 4s ease-in-out infinite;
+}
+@keyframes welcomeFloat {
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  33%{transform:translateY(-12px) rotate(3deg)}
+  66%{transform:translateY(-6px) rotate(-2deg)}
+}
+.welcome-title {
+  font-size:36px;font-weight:900;letter-spacing:-1px;
+  background:linear-gradient(90deg,#fff,rgba(255,255,255,0.7));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:12px;
+}
+.welcome-sub { font-size:15px;color:var(--text-muted);line-height:1.7;max-width:440px;margin-bottom:36px; }
+.welcome-chips { display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:580px; }
+.w-chip {
+  padding:10px 18px;border-radius:100px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
+  font-size:13px;font-weight:600;color:var(--text-muted);
+  cursor:pointer;transition:var(--transition);text-align:left;
+  font-family:inherit;
+}
+.w-chip:hover {
+  background:rgba(180,79,255,0.12);border-color:rgba(180,79,255,0.35);
+  color:#fff;transform:translateY(-3px);box-shadow:0 8px 24px rgba(180,79,255,0.2);
+}
+.w-chip-icon { margin-right:6px; }
+
+/* Message bubbles */
+.msg-row { display:flex;gap:14px;animation:msgFadeIn 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+@keyframes msgFadeIn { from{transform:translateY(16px);opacity:0} to{transform:translateY(0);opacity:1} }
+.msg-row.user-row { flex-direction:row-reverse; }
+
+.msg-avatar {
+  width:36px;height:36px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;margin-top:4px;
+}
+.ai-msg-avatar {
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  box-shadow:0 0 16px rgba(180,79,255,0.4);
+}
+.user-msg-avatar {
+  background:linear-gradient(135deg,rgba(255,45,120,0.5),rgba(180,79,255,0.5));
+  border:1px solid rgba(255,45,120,0.3);
+  font-size:14px;font-weight:800;color:#fff;
+}
+
+.msg-content { max-width:72%;display:flex;flex-direction:column;gap:4px; }
+.user-row .msg-content { align-items:flex-end; }
+
+.msg-bubble {
+  padding:16px 20px;border-radius:20px;
+  font-size:14px;line-height:1.75;
+  position:relative;word-break:break-word;
+}
+.ai-bubble {
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:4px 20px 20px 20px;
+  color:rgba(255,255,255,0.9);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.06),0 4px 20px rgba(0,0,0,0.3);
+}
+.user-bubble {
+  background:linear-gradient(135deg,rgba(255,45,120,0.2),rgba(180,79,255,0.15));
+  border:1px solid rgba(255,45,120,0.25);
+  border-radius:20px 4px 20px 20px;
+  color:#fff;
+}
+.msg-time {
+  font-size:10px;font-weight:600;color:rgba(255,255,255,0.2);
+  padding:0 4px;
+}
+
+/* AI bubble extras */
+.ai-bubble .bubble-top-streak {
+  position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(180,79,255,0.5),rgba(0,245,255,0.4),transparent);
+  border-radius:0 0 100px 100px;
+}
+.ai-bubble strong { color:#fff;font-weight:700; }
+.ai-bubble em { color:var(--cyan);font-style:normal;font-weight:600; }
+.ai-bubble .highlight-pill {
+  display:inline-flex;align-items:center;gap:5px;
+  padding:2px 10px;border-radius:100px;
+  background:rgba(180,79,255,0.15);border:1px solid rgba(180,79,255,0.25);
+  font-size:12px;font-weight:700;color:var(--purple);margin:2px 2px;
+}
+.ai-bubble ul { padding-left:20px;margin:8px 0; }
+.ai-bubble ul li { margin-bottom:6px;color:rgba(255,255,255,0.8); }
+.ai-bubble .info-box {
+  margin-top:12px;padding:12px 16px;border-radius:12px;
+  background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.15);
+  font-size:13px;color:rgba(255,255,255,0.65);
+}
+.ai-bubble .info-box strong { color:var(--cyan); }
+.ai-bubble .warning-box {
+  margin-top:12px;padding:12px 16px;border-radius:12px;
+  background:rgba(255,209,102,0.05);border:1px solid rgba(255,209,102,0.2);
+  font-size:13px;color:rgba(255,255,255,0.65);
+}
+.ai-bubble .warning-box strong { color:var(--gold); }
+
+/* Typing indicator */
+.typing-row { display:flex;gap:14px;align-items:flex-start; }
+.typing-bubble {
+  padding:16px 20px;border-radius:4px 20px 20px 20px;
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);
+  display:flex;align-items:center;gap:6px;
+}
+.typing-dot {
+  width:7px;height:7px;border-radius:50%;
+  background:var(--purple);animation:typingBounce 1.4s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay:0.2s;background:var(--cyan); }
+.typing-dot:nth-child(3) { animation-delay:0.4s;background:var(--pink); }
+@keyframes typingBounce {
+  0%,60%,100%{transform:translateY(0);opacity:0.4}
+  30%{transform:translateY(-8px);opacity:1}
+}
+
+/* Source pills */
+.source-pills { display:flex;flex-wrap:wrap;gap:6px;margin-top:10px; }
+.source-pill {
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 12px;border-radius:100px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);
+  font-size:11px;font-weight:600;color:rgba(255,255,255,0.35);
+}
+.sp-dot { width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 4px var(--green); }
+
+/* Action buttons on AI message */
+.msg-actions { display:flex;gap:6px;margin-top:8px; }
+.msg-action-btn {
+  height:28px;padding:0 12px;border-radius:100px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
+  font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);
+  cursor:pointer;transition:all 0.3s;font-family:inherit;display:flex;align-items:center;gap:5px;
+}
+.msg-action-btn:hover { background:rgba(180,79,255,0.12);border-color:rgba(180,79,255,0.25);color:var(--purple); }
+
+/* ── INPUT AREA ── */
+.input-section {
+  padding:20px 32px;
+  background:rgba(255,255,255,0.02);
+  backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,0.06);
+  flex-shrink:0;
+}
+
+/* Suggested questions */
+.suggest-row {
+  display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;
+}
+.suggest-row::-webkit-scrollbar { display:none; }
+.suggest-chip {
+  flex-shrink:0;padding:7px 14px;border-radius:100px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
+  font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);
+  cursor:pointer;transition:all 0.3s;font-family:inherit;white-space:nowrap;
+}
+.suggest-chip:hover { background:rgba(180,79,255,0.12);border-color:rgba(180,79,255,0.3);color:var(--purple);transform:translateY(-2px); }
+
+/* Input box */
+.input-box {
+  display:flex;gap:12px;align-items:flex-end;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;padding:12px 12px 12px 20px;
+  transition:border-color 0.3s,box-shadow 0.3s;
+  position:relative;
+}
+.input-box:focus-within {
+  border-color:rgba(180,79,255,0.4);
+  box-shadow:0 0 0 3px rgba(180,79,255,0.1),0 0 30px rgba(180,79,255,0.15);
+}
+.input-box::before {
+  content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(180,79,255,0.4),rgba(0,245,255,0.3),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.input-box:focus-within::before { opacity:1; }
+#chatInput {
+  flex:1;background:none;border:none;outline:none;
+  font-family:inherit;font-size:14px;color:#fff;
+  line-height:1.6;resize:none;max-height:120px;min-height:24px;
+  overflow-y:auto;padding:4px 0;
+}
+#chatInput::placeholder { color:rgba(255,255,255,0.2); }
+#chatInput::-webkit-scrollbar { width:4px; }
+#chatInput::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1);border-radius:2px; }
+
+.input-actions { display:flex;align-items:flex-end;gap:8px; }
+.attach-btn {
+  width:40px;height:40px;border-radius:12px;
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all 0.3s;font-size:16px;
+}
+.attach-btn:hover { background:rgba(255,255,255,0.1);transform:scale(1.05); }
+.send-btn {
+  width:44px;height:44px;border-radius:14px;border:none;
+  cursor:pointer;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  box-shadow:0 4px 16px rgba(180,79,255,0.4);
+  transition:all 0.3s;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+}
+.send-btn:hover { transform:translateY(-3px) scale(1.05);box-shadow:0 8px 24px rgba(180,79,255,0.6); }
+.send-btn:active { transform:scale(0.95); }
+.send-btn:disabled { opacity:0.4;cursor:not-allowed;transform:none; }
+
+.input-footer { display:flex;justify-content:space-between;align-items:center;margin-top:10px; }
+.input-hint { font-size:11px;font-weight:600;color:rgba(255,255,255,0.2); }
+.char-count { font-size:11px;font-weight:600;color:rgba(255,255,255,0.2); }
+
+/* ── RIGHT PANEL ── */
+.right-panel {
+  width:280px;flex-shrink:0;
+  display:flex;flex-direction:column;
+  background:rgba(255,255,255,0.02);
+  border-left:1px solid rgba(255,255,255,0.06);
+  overflow-y:auto;
+  transition:width 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.right-panel::-webkit-scrollbar { width:4px; }
+.right-panel::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.08);border-radius:2px; }
+
+.rp-section { padding:24px; border-bottom:1px solid rgba(255,255,255,0.05); }
+.rp-title { font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:16px; }
+
+/* Quick rates */
+.rate-cards { display:flex;flex-direction:column;gap:8px; }
+.rate-card {
+  padding:14px;border-radius:14px;
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+  cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;
+}
+.rate-card:hover { transform:translateX(4px); }
+.rate-card::before { content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:0 2px 2px 0; }
+.rate-card.vat::before { background:var(--pink); }
+.rate-card.corp::before { background:var(--purple); }
+.rate-card.free::before { background:var(--cyan); }
+.rc-top { display:flex;justify-content:space-between;align-items:center;margin-bottom:4px; }
+.rc-name { font-size:12px;font-weight:700;color:rgba(255,255,255,0.6); }
+.rc-rate { font-size:18px;font-weight:900;color:#fff; }
+.rc-rate.vat { color:var(--pink); }
+.rc-rate.corp { color:var(--purple); }
+.rc-rate.free { color:var(--cyan); }
+.rc-desc { font-size:11px;color:rgba(255,255,255,0.25); }
+
+/* UAE laws quick ref */
+.law-items { display:flex;flex-direction:column;gap:8px; }
+.law-item {
+  padding:12px 14px;border-radius:12px;
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
+  font-size:12px;font-weight:600;color:rgba(255,255,255,0.5);
+  cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:8px;
+}
+.law-item:hover { background:rgba(180,79,255,0.08);border-color:rgba(180,79,255,0.2);color:#fff; }
+.law-icon { font-size:14px;flex-shrink:0; }
+
+/* FTA alert */
+.fta-alert {
+  padding:14px;border-radius:14px;
+  background:rgba(255,209,102,0.06);border:1px solid rgba(255,209,102,0.2);
+  display:flex;gap:10px;align-items:flex-start;
+}
+.fa-icon { font-size:16px;flex-shrink:0;margin-top:2px; }
+.fa-text { font-size:12px;color:rgba(255,255,255,0.5);line-height:1.55; }
+.fa-text strong { color:var(--gold);display:block;margin-bottom:3px; }
+
+/* ── TOAST ── */
+#toast {
+  position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(80px);
+  background:rgba(6,255,165,0.1); border:1px solid rgba(6,255,165,0.3);
+  backdrop-filter:blur(20px); border-radius:16px;
+  padding:14px 24px; display:flex; align-items:center; gap:12px;
+  font-size:14px; font-weight:700; color:#fff; z-index:99998;
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.4s ease; opacity:0;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+#toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+/* ── LOADER ── */
+#pageLoader {
+  position:fixed; inset:0; background:#04020F; z-index:99999;
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity 0.6s ease;
+}
+.loader-inner { text-align:center; }
+.loader-logo {
+  width:64px; height:64px; border-radius:22px;
+  background:linear-gradient(135deg,var(--purple),var(--pink),var(--cyan));
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 16px; font-size:28px;
+  animation:loaderPulse 1s ease-in-out infinite;
+  box-shadow:0 0 40px rgba(180,79,255,0.6);
+}
+@keyframes loaderPulse {
+  0%,100%{transform:scale(1);box-shadow:0 0 40px rgba(180,79,255,0.5)}
+  50%{transform:scale(1.1);box-shadow:0 0 70px rgba(180,79,255,0.9)}
+}
+.loader-text { color:rgba(255,255,255,0.4); font-size:12px; font-weight:700; letter-spacing:3px; }
+.loader-bar {
+  width:40px; height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  border-radius:1px; margin:12px auto 0;
+  animation:loaderBar 0.8s ease-in-out infinite alternate;
+}
+@keyframes loaderBar { from{transform:scaleX(0.4)} to{transform:scaleX(1)} }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
+@keyframes gradShift { 0%{background-position:0%} 100%{background-position:300%} }
+
+/* ── RESPONSIVE ── */
+@media (max-width:1100px) {
+  .right-panel { display:none; }
+}
+@media (max-width:768px) {
+  .sidebar { width:0; }
+  .sidebar.mobile-open { width:280px; position:absolute; z-index:100; height:100%; }
+  .nav-inner { padding:0 20px; }
+  .chat-header { padding:16px 20px; }
+  .messages-wrap { padding:20px; }
+  .input-section { padding:16px 20px; }
+  .logo-text-main { font-size:20px; }
+}
+
+/* ── ERROR STATE ── */
+.error-bubble {
+  background:rgba(255,45,120,0.08) !important;
+  border-color:rgba(255,45,120,0.25) !important;
+}
+.error-bubble .error-icon { font-size:18px; margin-bottom:6px; display:block; }
+
+/* ── RESPONSE FORMATTING ── */
+.response-section { margin-bottom:12px; }
+.response-section:last-child { margin-bottom:0; }
+.rs-heading {
+  font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,0.3);margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.rs-heading::after { content:'';flex:1;height:1px;background:rgba(255,255,255,0.06); }
+.data-table { width:100%;border-collapse:collapse;margin:8px 0; }
+.data-table th {
+  font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,0.3);padding:8px 12px;text-align:left;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.data-table td { font-size:13px;padding:8px 12px;color:rgba(255,255,255,0.7);border-bottom:1px solid rgba(255,255,255,0.04); }
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tr:hover td { background:rgba(255,255,255,0.03); }
+
+/* ── THINKING ANIMATION ── */
+.thinking-text {
+  font-size:12px;font-weight:600;color:var(--purple);
+  display:flex;align-items:center;gap:8px;margin-top:8px;
+  padding:8px 12px;border-radius:10px;
+  background:rgba(180,79,255,0.06);border:1px solid rgba(180,79,255,0.15);
+}
+.think-spin {
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid rgba(180,79,255,0.3);border-top-color:var(--purple);
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* ── COPY FEEDBACK ── */
+.copied-flash {
+  position:absolute;top:-30px;left:50%;transform:translateX(-50%);
+  background:rgba(6,255,165,0.9);color:#000;
+  padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;
+  pointer-events:none;animation:copyFade 1.5s forwards;
+}
+@keyframes copyFade { 0%{opacity:1;transform:translateX(-50%) translateY(0)} 100%{opacity:0;transform:translateX(-50%) translateY(-10px)} }
+
+/* ── NIGHT MODE PING ── */
+.ping-ring {
+  position:absolute;width:100%;height:100%;border-radius:50%;
+  border:1px solid var(--purple);animation:pingRing 2s cubic-bezier(0,0,0.2,1) infinite;
+}
+@keyframes pingRing {
+  0%{transform:scale(0.8);opacity:1}
+  100%{transform:scale(2.5);opacity:0}
+}
+
+/* Gradient text util */
+.grad-text {
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  background-size:300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:gradShift 5s linear infinite;
+}
+</style>
 </head>
-
 <body>
 
-  <div class="chat-container">
+<!-- LOADER -->
+<div id="pageLoader">
+  <div class="loader-inner">
+    <div class="loader-logo">🤖</div>
+    <div class="loader-text">EMUNIB AI</div>
+    <div class="loader-bar"></div>
+  </div>
+</div>
 
-    <h1>Dubai AI Tax Assistant</h1>
+<!-- CURSOR -->
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="cursor-dot" id="cursorDot"></div>
 
-    <div class="chat-box" id="chatBox">
+<!-- PARTICLE CANVAS -->
+<canvas id="particleCanvas"></canvas>
 
-      <div class="bot">
-        Hello 👋 Ask me about UAE Tax.
+<!-- BACKGROUND -->
+<div class="bg-root">
+  <div class="bg-base"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+  <div class="scanlines"></div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <div class="logo-crystal">
+        <div class="crystal-sheen"></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="logo-wordmark">
+        <span class="logo-text-main">Emunib</span>
+        <span class="logo-text-sub">UAE Tax Platform</span>
+      </div>
+    </a>
+    <div class="nav-right-group">
+      <div class="nav-badge">
+        <span class="badge-dot"></span>
+        AI ASSISTANT
+      </div>
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        Online · FTA 2026
+      </div>
+      <button class="nav-back" onclick="history.back()">← Back</button>
+    </div>
+  </div>
+  <div class="nav-border-glow"></div>
+</nav>
+
+<!-- APP LAYOUT -->
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+
+      <div class="sidebar-top">
+        <div class="sidebar-brand">
+          <div class="ai-avatar" style="position:relative;">
+            🤖
+            <div class="ping-ring"></div>
+          </div>
+          <div class="sidebar-brand-text">
+            <div class="sb-name">Emunib AI</div>
+            <div class="sb-model">CLAUDE POWERED</div>
+          </div>
+          <div class="online-indicator">
+            <div class="online-dot"></div>
+            Live
+          </div>
+        </div>
+        <button class="new-chat-btn" onclick="newChat()">
+          <span>✦ New Conversation</span>
+        </button>
+      </div>
+
+      <div class="sidebar-topics">
+        <div class="topics-label">Quick Topics</div>
+
+        <button class="topic-chip active" onclick="setTopic(this,'VAT Basics')">
+          <span class="tc-icon">🧮</span>
+          <span class="tc-text">VAT Calculation & Filing</span>
+        </button>
+        <button class="topic-chip" onclick="setTopic(this,'Corporate Tax')">
+          <span class="tc-icon">🏦</span>
+          <span class="tc-text">Corporate Tax 9%</span>
+        </button>
+        <button class="topic-chip" onclick="setTopic(this,'Free Zone')">
+          <span class="tc-icon">🏙️</span>
+          <span class="tc-text">Free Zone & QFZP</span>
+        </button>
+        <button class="topic-chip" onclick="setTopic(this,'Registration')">
+          <span class="tc-icon">📝</span>
+          <span class="tc-text">VAT Registration</span>
+        </button>
+        <button class="topic-chip" onclick="setTopic(this,'Penalties')">
+          <span class="tc-icon">⚠️</span>
+          <span class="tc-text">FTA Penalties & Fines</span>
+        </button>
+        <button class="topic-chip" onclick="setTopic(this,'Exemptions')">
+          <span class="tc-icon">✅</span>
+          <span class="tc-text">Zero-Rated & Exempt</span>
+        </button>
+        <button class="topic-chip" onclick="setTopic(this,'Filing Deadlines')">
+          <span class="tc-icon">📅</span>
+          <span class="tc-text">Filing Deadlines 2026</span>
+        </button>
+        <button class="topic-chip" onclick="setTopic(this,'Transfer Pricing')">
+          <span class="tc-icon">🔄</span>
+          <span class="tc-text">Transfer Pricing Rules</span>
+        </button>
+        <button class="topic-chip" onclick="setTopic(this,'Small Business')">
+          <span class="tc-icon">🏪</span>
+          <span class="tc-text">Small Business Relief</span>
+        </button>
+        <button class="topic-chip" onclick="setTopic(this,'Import Export')">
+          <span class="tc-icon">🚢</span>
+          <span class="tc-text">Import / Export VAT</span>
+        </button>
+
+        <div class="topics-label" style="margin-top:20px;">Recent</div>
+        <div id="recentList">
+          <div style="font-size:12px;color:rgba(255,255,255,0.2);padding:8px 0;">No recent conversations</div>
+        </div>
+      </div>
+
+      <div class="sidebar-stats">
+        <div class="ss-item">
+          <div class="ss-val grad-text" id="statQuestions">0</div>
+          <div class="ss-label">Questions</div>
+        </div>
+        <div class="ss-item">
+          <div class="ss-val" style="color:var(--green)">99%</div>
+          <div class="ss-label">Accuracy</div>
+        </div>
+        <div class="ss-item">
+          <div class="ss-val" style="color:var(--gold)">FTA</div>
+          <div class="ss-label">Verified</div>
+        </div>
+        <div class="ss-item">
+          <div class="ss-val" style="color:var(--cyan)">24/7</div>
+          <div class="ss-label">Online</div>
+        </div>
       </div>
 
     </div>
+  </div>
 
-    <div class="input-area">
+  <!-- CHAT AREA -->
+  <div class="chat-area">
 
-      <input
-        type="text"
-        id="userInput"
-        placeholder="Ask Something..."
-      >
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <div class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">☰</div>
+        <div>
+          <div class="chat-title">🤖 UAE Tax Expert</div>
+          <div class="chat-subtitle">Powered by Claude · FTA Knowledge Base 2026</div>
+        </div>
+      </div>
+      <div class="chat-header-right">
+        <button class="header-btn" onclick="clearChat()">🗑️ Clear</button>
+        <button class="header-btn" onclick="exportChat()">📤 Export</button>
+        <div class="model-badge">
+          <span class="status-dot"></span>
+          <span class="model-badge-text">Emunib AI v3.0</span>
+        </div>
+      </div>
+    </div>
 
-      <button onclick="sendMessage()">
-        Send
-      </button>
+    <!-- Messages -->
+    <div class="messages-wrap" id="messagesWrap">
+      <!-- Welcome Screen -->
+      <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-orb">🤖</div>
+        <h1 class="welcome-title">Your UAE Tax Expert</h1>
+        <p class="welcome-sub">Ask me anything about UAE VAT, Corporate Tax, Free Zone regulations, FTA compliance and more. I'm trained on the latest 2026 UAE tax laws.</p>
+        <div class="welcome-chips">
+          <button class="w-chip" onclick="sendQuick('What is UAE VAT rate and how is it calculated?')"><span class="w-chip-icon">🧮</span>What is UAE VAT rate?</button>
+          <button class="w-chip" onclick="sendQuick('When do I need to register for VAT in UAE?')"><span class="w-chip-icon">📝</span>When to register for VAT?</button>
+          <button class="w-chip" onclick="sendQuick('How does UAE Corporate Tax 9% work?')"><span class="w-chip-icon">🏦</span>How does Corporate Tax work?</button>
+          <button class="w-chip" onclick="sendQuick('What are zero-rated supplies in UAE VAT?')"><span class="w-chip-icon">✅</span>Zero-rated VAT supplies?</button>
+          <button class="w-chip" onclick="sendQuick('What are the FTA penalties for late VAT filing?')"><span class="w-chip-icon">⚠️</span>FTA penalties & fines?</button>
+          <button class="w-chip" onclick="sendQuick('How do Dubai Free Zone companies benefit from 0% tax?')"><span class="w-chip-icon">🏙️</span>Free Zone 0% tax benefit?</button>
+          <button class="w-chip" onclick="sendQuick('What is Small Business Relief under UAE Corporate Tax?')"><span class="w-chip-icon">🏪</span>Small Business Relief?</button>
+          <button class="w-chip" onclick="sendQuick('What are VAT filing deadlines in UAE 2026?')"><span class="w-chip-icon">📅</span>VAT filing deadlines 2026?</button>
+        </div>
+      </div>
+    </div>
 
+    <!-- Suggest row -->
+    <div class="input-section">
+      <div class="suggest-row" id="suggestRow">
+        <button class="suggest-chip" onclick="sendQuick('What is the VAT rate on food items?')">🍎 Food VAT rate</button>
+        <button class="suggest-chip" onclick="sendQuick('How to claim VAT refund in UAE?')">💰 VAT refund</button>
+        <button class="suggest-chip" onclick="sendQuick('What is QFZP status?')">🏙️ QFZP status</button>
+        <button class="suggest-chip" onclick="sendQuick('What records must I keep for VAT?')">📁 Record keeping</button>
+        <button class="suggest-chip" onclick="sendQuick('How is reverse charge VAT calculated?')">🔄 Reverse charge</button>
+        <button class="suggest-chip" onclick="sendQuick('What is transfer pricing in UAE?')">📊 Transfer pricing</button>
+      </div>
+
+      <div class="input-box" id="inputBox">
+        <textarea
+          id="chatInput"
+          placeholder="Ask anything about UAE VAT, Corporate Tax, Free Zone regulations..."
+          rows="1"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this); updateCharCount()"
+        ></textarea>
+        <div class="input-actions">
+          <div class="attach-btn" title="Quick topic" onclick="cycleQuickTopic()">💡</div>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Send message">
+            ➤
+          </button>
+        </div>
+      </div>
+
+      <div class="input-footer">
+        <span class="input-hint">⏎ Send · Shift+⏎ New line · FTA-verified answers</span>
+        <span class="char-count" id="charCount">0 / 1000</span>
+      </div>
     </div>
 
   </div>
 
-  <script src="assistant.js"></script>
+  <!-- RIGHT PANEL -->
+  <div class="right-panel" id="rightPanel">
 
+    <div class="rp-section">
+      <div class="rp-title">UAE Tax Rates</div>
+      <div class="rate-cards">
+        <div class="rate-card vat" onclick="sendQuick('Explain UAE VAT 5% standard rate in detail')">
+          <div class="rc-top">
+            <span class="rc-name">🧮 VAT</span>
+            <span class="rc-rate vat">5%</span>
+          </div>
+          <div class="rc-desc">Standard Rate · Most goods & services</div>
+        </div>
+        <div class="rate-card corp" onclick="sendQuick('Explain UAE Corporate Tax 9% with all details')">
+          <div class="rc-top">
+            <span class="rc-name">🏦 Corporate Tax</span>
+            <span class="rc-rate corp">9%</span>
+          </div>
+          <div class="rc-desc">Over AED 375,000 taxable income</div>
+        </div>
+        <div class="rate-card free" onclick="sendQuick('How can a Free Zone company qualify for 0% corporate tax in UAE?')">
+          <div class="rc-top">
+            <span class="rc-name">🏙️ Free Zone</span>
+            <span class="rc-rate free">0%</span>
+          </div>
+          <div class="rc-desc">QFZP eligible businesses</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-title">FTA Key Rules</div>
+      <div class="law-items">
+        <div class="law-item" onclick="sendQuick('What is the VAT registration threshold in UAE?')">
+          <span class="law-icon">📋</span>
+          Registration: AED 375K
+        </div>
+        <div class="law-item" onclick="sendQuick('What is the voluntary VAT registration threshold in UAE?')">
+          <span class="law-icon">✋</span>
+          Voluntary: AED 187.5K
+        </div>
+        <div class="law-item" onclick="sendQuick('What is the VAT return filing period in UAE?')">
+          <span class="law-icon">📅</span>
+          Monthly/Quarterly filing
+        </div>
+        <div class="law-item" onclick="sendQuick('What are the penalties for late VAT payment in UAE?')">
+          <span class="law-icon">⚠️</span>
+          Late penalty: 2% immediate
+        </div>
+        <div class="law-item" onclick="sendQuick('What is the small business relief threshold for UAE corporate tax?')">
+          <span class="law-icon">🏪</span>
+          SME Relief: AED 3M
+        </div>
+        <div class="law-item" onclick="sendQuick('How long should I keep VAT records in UAE?')">
+          <span class="law-icon">📁</span>
+          Records: 5 years minimum
+        </div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-title">FTA Notice</div>
+      <div class="fta-alert">
+        <span class="fa-icon">📢</span>
+        <div class="fa-text">
+          <strong>2026 Update</strong>
+          Transfer Pricing documentation requirements are now mandatory for related-party transactions above AED 4M.
+        </div>
+      </div>
+    </div>
+
+    <div class="rp-section" style="border-bottom:none;">
+      <div class="rp-title">Quick Actions</div>
+      <div class="law-items">
+        <div class="law-item" onclick="location.href='vat.html'">
+          <span class="law-icon">🧮</span>
+          Open VAT Calculator
+        </div>
+        <div class="law-item" onclick="location.href='corporate-tax.html'">
+          <span class="law-icon">🏦</span>
+          Corporate Tax Tool
+        </div>
+        <div class="law-item" onclick="location.href='freezone.html'">
+          <span class="law-icon">🏙️</span>
+          Free Zone Checker
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast">✅ Done!</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   EMUNIB AI ASSISTANT — Powered by Anthropic Claude
+   v3.0 · FTA Knowledge 2026
+══════════════════════════════════════════════════════════ */
+'use strict';
+
+/* ── CONFIG ── */
+const API_URL = 'https://api.anthropic.com/v1/messages';
+const MODEL   = 'claude-sonnet-4-20250514';
+const MAX_TOKENS = 1000;
+const SYSTEM_PROMPT = `You are Emunib AI, an expert UAE tax assistant built into the Emunib UAE Tax Platform. You specialize in:
+- UAE VAT (Value Added Tax) at 5% standard rate
+- UAE Corporate Tax at 9% (effective June 2023)
+- Dubai & UAE Free Zone taxation and QFZP eligibility
+- FTA (Federal Tax Authority) compliance and regulations
+- VAT registration, filing, and returns
+- Tax penalties, exemptions, and zero-rated supplies
+- Transfer pricing rules
+- Small Business Relief
+- Import/Export VAT rules
+
+You are knowledgeable, precise, and always give practical advice. Format responses clearly with:
+- Use **bold** for key terms, rates, and thresholds
+- Use bullet points for lists
+- Include specific AED amounts and percentages where relevant
+- Always mention FTA compliance when relevant
+- Keep responses concise but comprehensive
+- If a calculation is needed, show the formula and example
+- Mention relevant deadlines when applicable
+
+Always stay focused on UAE tax topics. If asked about non-UAE tax topics, politely redirect to UAE context.
+Be friendly and professional — you are serving UAE business owners and accountants.`;
+
+/* ── STATE ── */
+let messages = [];
+let questionCount = 0;
+let isTyping = false;
+let sidebarOpen = true;
+
+/* ── PAGE LOADER ── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const l = document.getElementById('pageLoader');
+    l.style.opacity = '0';
+    setTimeout(() => l.remove(), 600);
+  }, 700);
+});
+
+/* ── CURSOR ── */
+(function() {
+  const glow = document.getElementById('cursorGlow');
+  const dot  = document.getElementById('cursorDot');
+  if (!glow || !dot || window.matchMedia('(hover:none)').matches) return;
+  let mx=0,my=0,dx=0,dy=0,gx=0,gy=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+  const interactable = 'a,button,textarea,input,label,[role="button"],.topic-chip,.rate-card,.law-item,.w-chip,.suggest-chip';
+  document.addEventListener('mouseover', e => {
+    if(e.target.closest(interactable)){ dot.style.transform='translate(-50%,-50%) scale(2.5)'; dot.style.background='var(--purple)'; }
+  });
+  document.addEventListener('mouseout', e => {
+    if(e.target.closest(interactable)){ dot.style.transform='translate(-50%,-50%) scale(1)'; }
+  });
+  (function loop(){
+    dx+=(mx-dx)*0.92; dy+=(my-dy)*0.92;
+    gx+=(mx-gx)*0.1;  gy+=(my-gy)*0.1;
+    dot.style.left=dx+'px'; dot.style.top=dy+'px';
+    glow.style.left=gx+'px'; glow.style.top=gy+'px';
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* ── PARTICLES ── */
+(function(){
+  const canvas=document.getElementById('particleCanvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H,pts=[],mouse={x:-9999,y:-9999};
+  const COLORS=['#B44FFF','#00F5FF','#FF2D78','#06FFA5','#FFD166'];
+  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function mkPt(){ const a=Math.random()*Math.PI*2,s=0.1+Math.random()*0.3; return {x:Math.random()*W,y:Math.random()*H,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:0.6+Math.random()*1.4,alpha:0.2+Math.random()*0.4,color:COLORS[~~(Math.random()*COLORS.length)],pulse:Math.random()*Math.PI*2,ps:0.01+Math.random()*0.02}; }
+  function hexRgb(h){ return parseInt(h.slice(1,3),16)+','+parseInt(h.slice(3,5),16)+','+parseInt(h.slice(5,7),16); }
+  function init(){ resize(); pts=[]; for(let i=0;i<80;i++) pts.push(mkPt()); }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      const dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<120&&d>0){const f=(120-d)/120;p.vx+=(dx/d)*f*0.12;p.vy+=(dy/d)*f*0.12;}
+      p.vx*=0.993;p.vy*=0.993;
+      const sp=Math.sqrt(p.vx*p.vx+p.vy*p.vy);if(sp>1.2){p.vx=p.vx/sp*1.2;p.vy=p.vy/sp*1.2;}
+      p.x+=p.vx;p.y+=p.vy;p.pulse+=p.ps;
+      if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;
+      const a=p.alpha*(0.5+0.5*Math.sin(p.pulse));
+      const rgb=hexRgb(p.color);
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${rgb},${a})`;ctx.fill();
+    });
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+      const a=pts[i],b=pts[j],d=Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2);
+      if(d<100){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(180,79,255,${(1-d/100)*0.08})`;ctx.lineWidth=0.5;ctx.stroke();}
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',()=>{resize();});
+  document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+  init(); draw();
+})();
+
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('mainNav');
+  const inner=nav?.querySelector('.nav-inner');
+  if(inner){ inner.style.background=window.scrollY>40?'rgba(4,2,15,0.9)':'rgba(4,2,15,0.55)'; }
+},{passive:true});
+
+/* ── SIDEBAR TOGGLE ── */
+function toggleSidebar(){
+  sidebarOpen = !sidebarOpen;
+  const sb = document.getElementById('sidebar');
+  sb.classList.toggle('collapsed', !sidebarOpen);
+}
+
+/* ── TOPIC CLICK ── */
+function setTopic(el, topic){
+  document.querySelectorAll('.topic-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const topicQuestions = {
+    'VAT Basics': 'Give me a complete overview of UAE VAT — rates, what it covers, and how it works',
+    'Corporate Tax': 'Explain UAE Corporate Tax 9% — who pays it, thresholds, and how to calculate it',
+    'Free Zone': 'How do Dubai and UAE Free Zones work for tax? What is QFZP and 0% tax eligibility?',
+    'Registration': 'When and how do I register for VAT in UAE? Walk me through the process',
+    'Penalties': 'What are all the FTA penalties and fines for UAE tax violations?',
+    'Exemptions': 'What supplies are zero-rated and what are exempt from UAE VAT? Give full list',
+    'Filing Deadlines': 'What are all the UAE VAT and Corporate Tax filing deadlines for 2026?',
+    'Transfer Pricing': 'Explain UAE transfer pricing rules and documentation requirements for 2026',
+    'Small Business': 'How does Small Business Relief work under UAE Corporate Tax? Who qualifies?',
+    'Import Export': 'How does VAT work on imports and exports in UAE? What are the rules?',
+  };
+  if(topicQuestions[topic]){
+    sendQuick(topicQuestions[topic]);
+  }
+}
+
+/* ── NEW CHAT ── */
+function newChat(){
+  messages = [];
+  const wrap = document.getElementById('messagesWrap');
+  wrap.innerHTML = `
+    <div class="welcome-screen" id="welcomeScreen">
+      <div class="welcome-orb">🤖</div>
+      <h1 class="welcome-title">Your UAE Tax Expert</h1>
+      <p class="welcome-sub">Ask me anything about UAE VAT, Corporate Tax, Free Zone regulations, FTA compliance and more. I'm trained on the latest 2026 UAE tax laws.</p>
+      <div class="welcome-chips">
+        <button class="w-chip" onclick="sendQuick('What is UAE VAT rate and how is it calculated?')"><span class="w-chip-icon">🧮</span>What is UAE VAT rate?</button>
+        <button class="w-chip" onclick="sendQuick('When do I need to register for VAT in UAE?')"><span class="w-chip-icon">📝</span>When to register for VAT?</button>
+        <button class="w-chip" onclick="sendQuick('How does UAE Corporate Tax 9% work?')"><span class="w-chip-icon">🏦</span>How does Corporate Tax work?</button>
+        <button class="w-chip" onclick="sendQuick('What are zero-rated supplies in UAE VAT?')"><span class="w-chip-icon">✅</span>Zero-rated VAT supplies?</button>
+        <button class="w-chip" onclick="sendQuick('What are the FTA penalties for late VAT filing?')"><span class="w-chip-icon">⚠️</span>FTA penalties & fines?</button>
+        <button class="w-chip" onclick="sendQuick('How do Dubai Free Zone companies benefit from 0% tax?')"><span class="w-chip-icon">🏙️</span>Free Zone 0% tax benefit?</button>
+      </div>
+    </div>`;
+  showToast('✦ New conversation started', 'info');
+}
+
+/* ── CLEAR CHAT ── */
+function clearChat(){
+  if(messages.length===0) return;
+  newChat();
+}
+
+/* ── EXPORT CHAT ── */
+function exportChat(){
+  if(messages.length===0){ showToast('⚠️ No conversation to export','error'); return; }
+  let text = 'EMUNIB AI — UAE Tax Assistant Chat Export\n';
+  text += '═'.repeat(50)+'\n\n';
+  messages.forEach(m=>{
+    text += (m.role==='user'?'YOU':'EMUNIB AI') + ':\n';
+    text += m.content + '\n\n';
+  });
+  text += '─'.repeat(50)+'\nGenerated by Emunib UAE Tax Platform · '+new Date().toLocaleString('en-AE');
+  const blob = new Blob([text], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='emunib-ai-chat.txt'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('📤 Chat exported successfully!','success');
+}
+
+/* ── AUTO RESIZE TEXTAREA ── */
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,120)+'px';
+}
+
+/* ── CHAR COUNT ── */
+function updateCharCount(){
+  const v = document.getElementById('chatInput').value.length;
+  const el = document.getElementById('charCount');
+  el.textContent = v+' / 1000';
+  el.style.color = v>900?'var(--pink)':v>700?'var(--gold)':'rgba(255,255,255,0.2)';
+}
+
+/* ── KEY HANDLER ── */
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+/* ── QUICK SEND ── */
+function sendQuick(text){
+  document.getElementById('chatInput').value = text;
+  autoResize(document.getElementById('chatInput'));
+  sendMessage();
+}
+
+/* ── CYCLE QUICK TOPIC ── */
+const quickTopics = [
+  'What is the VAT rate on restaurant meals in UAE?',
+  'How do I calculate reverse charge VAT?',
+  'What documents are needed for VAT refund?',
+  'Is rental income subject to UAE VAT?',
+  'How does VAT work for freelancers in UAE?',
+  'What is a tax group under UAE VAT law?',
+];
+let qtIndex = 0;
+function cycleQuickTopic(){
+  const inp = document.getElementById('chatInput');
+  inp.value = quickTopics[qtIndex % quickTopics.length];
+  qtIndex++;
+  autoResize(inp);
+  inp.focus();
+}
+
+/* ── SEND MESSAGE ── */
+async function sendMessage(){
+  const inp = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if(!text || isTyping) return;
+
+  // Hide welcome screen
+  const welcome = document.getElementById('welcomeScreen');
+  if(welcome) welcome.remove();
+
+  // Add user message
+  messages.push({role:'user', content:text});
+  appendUserMessage(text);
+  inp.value=''; autoResize(inp); updateCharCount();
+
+  // Update stats
+  questionCount++;
+  document.getElementById('statQuestions').textContent = questionCount;
+
+  // Update recent list
+  updateRecentList(text);
+
+  // Show typing
+  const typingId = showTyping();
+  isTyping = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  try {
+    const response = await fetch(API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model: MODEL,
+        max_tokens: MAX_TOKENS,
+        system: SYSTEM_PROMPT,
+        messages: messages
+      })
+    });
+
+    removeTyping(typingId);
+
+    if(!response.ok){
+      const err = await response.json().catch(()=>({}));
+      throw new Error(err?.error?.message || `API error ${response.status}`);
+    }
+
+    const data = await response.json();
+    const aiText = data.content?.map(b=>b.type==='text'?b.text:'').join('')||'';
+
+    messages.push({role:'assistant', content:aiText});
+    appendAIMessage(aiText);
+
+  } catch(err) {
+    removeTyping(typingId);
+    appendErrorMessage(err.message);
+  } finally {
+    isTyping = false;
+    document.getElementById('sendBtn').disabled = false;
+  }
+}
+
+/* ── APPEND USER MESSAGE ── */
+function appendUserMessage(text){
+  const wrap = document.getElementById('messagesWrap');
+  const row = document.createElement('div');
+  row.className = 'msg-row user-row';
+  row.innerHTML = `
+    <div class="msg-content">
+      <div class="msg-bubble user-bubble">${escHtml(text)}</div>
+      <div class="msg-time">${getTime()}</div>
+    </div>
+    <div class="msg-avatar user-msg-avatar">U</div>`;
+  wrap.appendChild(row);
+  scrollBottom();
+}
+
+/* ── APPEND AI MESSAGE ── */
+function appendAIMessage(text){
+  const wrap = document.getElementById('messagesWrap');
+  const row = document.createElement('div');
+  row.className = 'msg-row';
+  const formatted = formatResponse(text);
+  row.innerHTML = `
+    <div class="msg-avatar ai-msg-avatar">🤖</div>
+    <div class="msg-content">
+      <div class="msg-bubble ai-bubble">
+        <div class="bubble-top-streak"></div>
+        <div class="response-body">${formatted}</div>
+        <div class="source-pills">
+          <span class="source-pill"><span class="sp-dot"></span>FTA UAE Law 2026</span>
+          <span class="source-pill"><span class="sp-dot"></span>Emunib Knowledge Base</span>
+        </div>
+      </div>
+      <div class="msg-actions">
+        <button class="msg-action-btn" onclick="copyMsgText(this, ${JSON.stringify(text)})">📋 Copy</button>
+        <button class="msg-action-btn" onclick="sendQuick('Can you explain this in simpler terms?')">🔄 Simplify</button>
+        <button class="msg-action-btn" onclick="sendQuick('Give me a practical example of this')">💡 Example</button>
+      </div>
+      <div class="msg-time">${getTime()} · Emunib AI</div>
+    </div>`;
+  wrap.appendChild(row);
+  scrollBottom();
+}
+
+/* ── APPEND ERROR MESSAGE ── */
+function appendErrorMessage(errMsg){
+  const wrap = document.getElementById('messagesWrap');
+  const row = document.createElement('div');
+  row.className = 'msg-row';
+  row.innerHTML = `
+    <div class="msg-avatar ai-msg-avatar">🤖</div>
+    <div class="msg-content">
+      <div class="msg-bubble ai-bubble error-bubble">
+        <span class="error-icon">⚠️</span>
+        <strong>Connection error.</strong> Could not reach the AI service. Please check your API key setup and try again.<br><br>
+        <small style="color:rgba(255,255,255,0.3);">Error: ${escHtml(errMsg)}</small>
+      </div>
+      <div class="msg-time">${getTime()}</div>
+    </div>`;
+  wrap.appendChild(row);
+  scrollBottom();
+  showToast('❌ Could not connect to AI', 'error');
+}
+
+/* ── FORMAT RESPONSE ── */
+function formatResponse(text){
+  // Escape HTML first
+  let t = escHtml(text);
+
+  // Bold **text**
+  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  // Italic *text* or _text_
+  t = t.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  t = t.replace(/_(.+?)_/g, '<em>$1</em>');
+
+  // Convert AED amounts to highlight
+  t = t.replace(/(AED\s[\d,]+(?:\.\d+)?(?:\s?(?:million|billion|K|M|B))?)/g,
+    '<span class="highlight-pill">💰 $1</span>');
+
+  // Percentage highlights
+  t = t.replace(/(\b[0-9]+(?:\.[0-9]+)?%)/g,
+    '<span class="highlight-pill">$1</span>');
+
+  // Unordered lists
+  t = t.replace(/^[-•]\s+(.+)/gm, '<li>$1</li>');
+  t = t.replace(/(<li>.*<\/li>(\n|$))+/g, m=>`<ul>${m}</ul>`);
+
+  // Numbered lists
+  t = t.replace(/^\d+\.\s+(.+)/gm, '<li>$1</li>');
+
+  // Headers ## and ###
+  t = t.replace(/^###\s+(.+)/gm, '<div class="rs-heading">$1</div>');
+  t = t.replace(/^##\s+(.+)/gm, '<div class="rs-heading">$1</div>');
+
+  // Info boxes (lines starting with ℹ️ or 📌)
+  t = t.replace(/^[ℹ️📌]\s*(.+)$/gm,
+    '<div class="info-box"><strong>📌 Note:</strong> $1</div>');
+
+  // Warning boxes
+  t = t.replace(/^[⚠️🚨]\s*(.+)$/gm,
+    '<div class="warning-box"><strong>⚠️ Important:</strong> $1</div>');
+
+  // Newlines to <br>
+  t = t.replace(/\n/g, '<br>');
+
+  // Clean up double <br>
+  t = t.replace(/(<br>){3,}/g, '<br><br>');
+
+  return t;
+}
+
+/* ── SHOW TYPING ── */
+function showTyping(){
+  const wrap = document.getElementById('messagesWrap');
+  const id = 'typing_'+Date.now();
+  const el = document.createElement('div');
+  el.className='typing-row msg-row';
+  el.id=id;
+  el.innerHTML=`
+    <div class="msg-avatar ai-msg-avatar">🤖</div>
+    <div class="msg-content">
+      <div class="typing-bubble">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+      <div class="thinking-text">
+        <div class="think-spin"></div>
+        Analyzing UAE tax regulations…
+      </div>
+    </div>`;
+  wrap.appendChild(el);
+  scrollBottom();
+  return id;
+}
+
+/* ── REMOVE TYPING ── */
+function removeTyping(id){
+  const el = document.getElementById(id);
+  if(el){ el.style.animation='msgFadeIn 0.3s reverse'; setTimeout(()=>el.remove(), 300); }
+}
+
+/* ── COPY MESSAGE ── */
+async function copyMsgText(btn, text){
+  try {
+    await navigator.clipboard.writeText(text);
+    const orig = btn.innerHTML;
+    btn.innerHTML='✅ Copied!';
+    btn.style.color='var(--green)';
+    setTimeout(()=>{ btn.innerHTML=orig; btn.style.color=''; }, 2000);
+  } catch(e){ showToast('❌ Copy failed','error'); }
+}
+
+/* ── SCROLL BOTTOM ── */
+function scrollBottom(){
+  const wrap = document.getElementById('messagesWrap');
+  setTimeout(()=>{ wrap.scrollTop = wrap.scrollHeight; }, 50);
+}
+
+/* ── ESCAPE HTML ── */
+function escHtml(str){
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+/* ── GET TIME ── */
+function getTime(){
+  return new Date().toLocaleTimeString('en-AE',{hour:'2-digit',minute:'2-digit'});
+}
+
+/* ── UPDATE RECENT LIST ── */
+function updateRecentList(text){
+  const list = document.getElementById('recentList');
+  const existing = list.querySelectorAll('.topic-chip.recent-item');
+  if(existing.length >= 5){ existing[existing.length-1].remove(); }
+  const el = document.createElement('button');
+  el.className='topic-chip recent-item';
+  el.onclick = ()=>sendQuick(text);
+  const short = text.length>36 ? text.slice(0,36)+'…' : text;
+  el.innerHTML=`<span class="tc-icon">💬</span><span class="tc-text">${escHtml(short)}</span>`;
+  list.insertBefore(el, list.firstChild);
+  const empty = list.querySelector('div');
+  if(empty) empty.remove();
+}
+
+/* ── TOAST ── */
+function showToast(msg, type='success'){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type==='error'?'rgba(255,45,120,0.12)':type==='info'?'rgba(180,79,255,0.12)':'rgba(6,255,165,0.12)';
+  t.style.borderColor = type==='error'?'rgba(255,45,120,0.3)':type==='info'?'rgba(180,79,255,0.3)':'rgba(6,255,165,0.3)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+/* ── KEYBOARD SHORTCUT: / to focus input ── */
+document.addEventListener('keydown', e=>{
+  if(e.key==='/'&&document.activeElement.tagName!=='TEXTAREA'){
+    e.preventDefault();
+    document.getElementById('chatInput').focus();
+  }
+  if(e.key==='Escape'){
+    document.getElementById('chatInput').blur();
+  }
+});
+
+/* ── SMOOTH GREETING on load ── */
+setTimeout(()=>{
+  const inp = document.getElementById('chatInput');
+  if(inp) inp.focus();
+}, 900);
+</script>
 </body>
 </html>
