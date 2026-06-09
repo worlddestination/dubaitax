@@ -18,55 +18,38 @@
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════
-     CANVAS — 3D WEBGL PARTICLE SYSTEM
-═══════════════════════════════════════════ -->
+<!-- PARTICLE CANVAS -->
 <canvas id="particleCanvas"></canvas>
 
-<!-- ═══════════════════════════════════════════
-     CINEMATIC BACKGROUND LAYERS
-═══════════════════════════════════════════ -->
+<!-- CINEMATIC BACKGROUND -->
 <div class="bg-root">
   <div class="bg-base"></div>
   <div class="bg-noise"></div>
   <div class="bg-grid"></div>
   <div class="bg-vignette"></div>
-
-  <!-- Animated orbs -->
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
   <div class="orb orb-4"></div>
   <div class="orb orb-5"></div>
   <div class="orb orb-6"></div>
-
-  <!-- Scan lines -->
   <div class="scanlines"></div>
-
-  <!-- Light beam -->
   <div class="light-beam beam-1"></div>
   <div class="light-beam beam-2"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     CURSOR GLOW
-═══════════════════════════════════════════ -->
+<!-- CURSOR -->
 <div class="cursor-glow" id="cursorGlow"></div>
 <div class="cursor-dot" id="cursorDot"></div>
 
-<!-- ═══════════════════════════════════════════
-     NAVIGATION
-═══════════════════════════════════════════ -->
+<!-- NAVIGATION -->
 <nav id="mainNav">
   <div class="nav-inner">
-    <a class="nav-logo" href="#">
+    <a class="nav-logo" href="index.html">
       <div class="logo-crystal">
         <div class="crystal-face face-front"></div>
         <div class="crystal-face face-back"></div>
-        <div class="crystal-face face-left"></div>
-        <div class="crystal-face face-right"></div>
         <div class="crystal-face face-top"></div>
-        <div class="crystal-face face-bottom"></div>
         <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
           <polyline points="9 22 9 12 15 12 15 22"/>
@@ -80,10 +63,10 @@
 
     <div class="nav-center">
       <div class="nav-pill">
-        <a href="#" class="nav-link active">Platform</a>
+        <a href="index.html" class="nav-link active">Platform</a>
         <a href="#services" class="nav-link">Tools</a>
         <a href="#blog" class="nav-link">Insights</a>
-        <a href="#" class="nav-link">Company</a>
+        <a href="#how" class="nav-link">How It Works</a>
         <div class="nav-active-indicator"></div>
       </div>
     </div>
@@ -99,23 +82,37 @@
         <div class="btn-cta-shine"></div>
       </button>
     </div>
+
+    <!-- Mobile hamburger -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
   <div class="nav-border-glow"></div>
 </nav>
 
-<!-- ═══════════════════════════════════════════
-     HERO SECTION
-═══════════════════════════════════════════ -->
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-inner">
+    <a href="index.html" class="mm-link active">Platform</a>
+    <a href="#services" class="mm-link">Tools</a>
+    <a href="#blog" class="mm-link">Insights</a>
+    <a href="#how" class="mm-link">How It Works</a>
+    <div class="mm-divider"></div>
+    <a href="vat.html" class="mm-cta">⚡ Start Filing Free</a>
+    <a href="ai-assistant.html" class="mm-ghost">🤖 Talk to AI Expert</a>
+  </div>
+</div>
+
+<!-- HERO SECTION -->
 <section class="hero" id="hero">
 
-  <!-- Floating data badges -->
   <div class="hero-float-badge badge-tl" data-depth="0.3">
     <span class="fb-icon">🇦🇪</span>
     <div class="fb-text">
       <span class="fb-label">UAE FTA</span>
       <span class="fb-val">Compliant</span>
     </div>
-    <span class="fb-badge-glow"></span>
   </div>
 
   <div class="hero-float-badge badge-tr" data-depth="0.5">
@@ -124,7 +121,6 @@
       <span class="fb-label">Processing</span>
       <span class="fb-val">Real-time</span>
     </div>
-    <span class="fb-badge-glow"></span>
   </div>
 
   <div class="hero-float-badge badge-br" data-depth="0.2">
@@ -133,10 +129,8 @@
       <span class="fb-label">AI Powered</span>
       <span class="fb-val">24/7 Active</span>
     </div>
-    <span class="fb-badge-glow"></span>
   </div>
 
-  <!-- Hero content -->
   <div class="hero-layout">
 
     <!-- LEFT -->
@@ -151,21 +145,23 @@
           <span>1,240+ Businesses</span>
           <span class="divider">·</span>
           <span>99% Accuracy</span>
+          <span class="divider">·</span>
+          <span>FTA Verified</span>
         </div>
       </div>
 
       <h1 class="hero-headline">
-        <span class="headline-line line-1" data-reveal="0">
+        <span class="headline-line line-1">
           <span class="word">Dubai</span>
-          <span class="word">&</span>
+          <span class="word">&amp;</span>
           <span class="word">UAE</span>
         </span>
-        <span class="headline-line line-2 line-gradient" data-reveal="100">
+        <span class="headline-line line-2 line-gradient">
           <span class="word">Tax</span>
           <span class="word">&amp;</span>
           <span class="word">VAT</span>
         </span>
-        <span class="headline-line line-3" data-reveal="200">
+        <span class="headline-line line-3">
           <span class="word">Platform</span>
         </span>
       </h1>
@@ -194,7 +190,6 @@
         </button>
       </div>
 
-      <!-- Trust strip -->
       <div class="trust-strip">
         <div class="trust-item">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -216,18 +211,13 @@
       <div class="card-3d-scene">
         <div class="card-3d-wrap" id="heroCard3D">
 
-          <!-- Glow rings behind card -->
           <div class="card-ring ring-1"></div>
           <div class="card-ring ring-2"></div>
           <div class="card-ring ring-3"></div>
 
-          <!-- Main card -->
           <div class="vat-card" id="vatCard">
-
-            <!-- Card top light streak -->
             <div class="card-top-streak"></div>
 
-            <!-- Card header -->
             <div class="card-head">
               <div class="card-head-left">
                 <div class="card-badge-icon">🧮</div>
@@ -242,7 +232,6 @@
               </div>
             </div>
 
-            <!-- Amount input -->
             <div class="card-amount-section">
               <div class="amount-label-row">
                 <span class="amount-label">INVOICE AMOUNT</span>
@@ -251,7 +240,6 @@
               <div class="amount-display-row">
                 <div class="amount-big" id="amountDisplay">10,000</div>
               </div>
-              <!-- Range slider -->
               <input type="range" class="amount-slider" id="amountSlider"
                 min="1000" max="500000" step="1000" value="10000"/>
               <div class="slider-track-labels">
@@ -260,7 +248,6 @@
               </div>
             </div>
 
-            <!-- Rate selector -->
             <div class="rate-section">
               <div class="rate-label">TAX REGIME</div>
               <div class="rate-pills-row">
@@ -282,7 +269,6 @@
               </div>
             </div>
 
-            <!-- Result -->
             <div class="card-result" id="cardResult">
               <div class="result-row">
                 <div class="result-item">
@@ -301,47 +287,22 @@
               </div>
             </div>
 
-            <!-- Mini bar chart -->
             <div class="mini-chart">
               <div class="mc-label">Monthly Tax Overview</div>
               <div class="mc-bars">
-                <div class="mc-bar-wrap">
-                  <div class="mc-bar" style="height:55%"></div>
-                  <span>Jan</span>
-                </div>
-                <div class="mc-bar-wrap">
-                  <div class="mc-bar" style="height:72%"></div>
-                  <span>Feb</span>
-                </div>
-                <div class="mc-bar-wrap">
-                  <div class="mc-bar" style="height:48%"></div>
-                  <span>Mar</span>
-                </div>
-                <div class="mc-bar-wrap">
-                  <div class="mc-bar" style="height:88%"></div>
-                  <span>Apr</span>
-                </div>
-                <div class="mc-bar-wrap">
-                  <div class="mc-bar active-bar" style="height:100%"></div>
-                  <span>May</span>
-                </div>
-                <div class="mc-bar-wrap">
-                  <div class="mc-bar" style="height:65%"></div>
-                  <span>Jun</span>
-                </div>
-                <div class="mc-bar-wrap">
-                  <div class="mc-bar loading-bar" style="height:30%"></div>
-                  <span>Jul</span>
-                </div>
+                <div class="mc-bar-wrap"><div class="mc-bar" style="height:55%"></div><span>Jan</span></div>
+                <div class="mc-bar-wrap"><div class="mc-bar" style="height:72%"></div><span>Feb</span></div>
+                <div class="mc-bar-wrap"><div class="mc-bar" style="height:48%"></div><span>Mar</span></div>
+                <div class="mc-bar-wrap"><div class="mc-bar" style="height:88%"></div><span>Apr</span></div>
+                <div class="mc-bar-wrap"><div class="mc-bar active-bar" style="height:100%"></div><span>May</span></div>
+                <div class="mc-bar-wrap"><div class="mc-bar" style="height:65%"></div><span>Jun</span></div>
+                <div class="mc-bar-wrap"><div class="mc-bar loading-bar" style="height:30%"></div><span>Jul</span></div>
               </div>
             </div>
 
-            <!-- Card bottom glow -->
             <div class="card-bottom-glow" id="cardGlow"></div>
           </div>
-          <!-- end .vat-card -->
 
-          <!-- Floating mini cards -->
           <div class="float-card fc-1">
             <span>✅</span>
             <div>
@@ -360,14 +321,11 @@
         </div>
       </div>
     </div>
-    <!-- end hero-right -->
 
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     TICKER / MARQUEE
-═══════════════════════════════════════════ -->
+<!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker-track">
     <span class="tick-item"><span class="tick-dot pink"></span>VAT 5% — UAE Standard Rate</span>
@@ -375,7 +333,7 @@
     <span class="tick-item"><span class="tick-dot cyan"></span>Free Zone QFZP — 0% Eligible</span>
     <span class="tick-item"><span class="tick-dot gold"></span>FTA Filing — Monthly &amp; Quarterly</span>
     <span class="tick-item"><span class="tick-dot green"></span>Small Business Relief — AED 3M Threshold</span>
-    <span class="tick-item"><span class="tick-dot pink"></span>VAT 5% — UAE Standard Rate</span>
+    <span class="tick-item"><span class="tick-dot pink"></span>Transfer Pricing — New Rules 2026</span>
     <span class="tick-item"><span class="tick-dot purple"></span>Corporate Tax 9% — Effective June 2023</span>
     <span class="tick-item"><span class="tick-dot cyan"></span>Free Zone QFZP — 0% Eligible</span>
     <span class="tick-item"><span class="tick-dot gold"></span>FTA Filing — Monthly &amp; Quarterly</span>
@@ -385,12 +343,9 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     STATS
-═══════════════════════════════════════════ -->
+<!-- STATS -->
 <section class="stats-section" id="stats">
   <div class="section-wrap">
-
     <div class="stats-grid">
       <div class="stat-card" data-index="0">
         <div class="stat-card-inner">
@@ -404,12 +359,11 @@
               <span class="stat-plus">+</span>
             </div>
             <div class="stat-label">Businesses Served</div>
-            <div class="stat-sublabel">Across UAE & GCC</div>
+            <div class="stat-sublabel">Across UAE &amp; GCC</div>
           </div>
           <div class="stat-graph">
             <svg viewBox="0 0 80 30" preserveAspectRatio="none">
-              <polyline points="0,28 15,22 25,25 38,14 50,18 62,8 75,4 80,2"
-                fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="0,28 15,22 25,25 38,14 50,18 62,8 75,4 80,2" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
         </div>
@@ -432,8 +386,7 @@
           </div>
           <div class="stat-graph">
             <svg viewBox="0 0 80 30" preserveAspectRatio="none">
-              <polyline points="0,24 12,20 22,22 32,12 44,16 55,6 68,10 80,2"
-                fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="0,24 12,20 22,22 32,12 44,16 55,6 68,10 80,2" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
         </div>
@@ -456,8 +409,7 @@
           </div>
           <div class="stat-graph">
             <svg viewBox="0 0 80 30" preserveAspectRatio="none">
-              <polyline points="0,20 20,18 35,14 50,12 65,8 80,4"
-                fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="0,20 20,18 35,14 50,12 65,8 80,4" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
         </div>
@@ -479,21 +431,17 @@
           </div>
           <div class="stat-graph">
             <svg viewBox="0 0 80 30" preserveAspectRatio="none">
-              <polyline points="0,15 10,15 10,5 20,5 20,15 30,15 30,5 40,5 40,15 50,15 50,5 60,5 60,15 70,15 70,5 80,5"
-                fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="0,15 10,15 10,5 20,5 20,15 30,15 30,5 40,5 40,15 50,15 50,5 60,5 60,15 70,15 70,5 80,5" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
         </div>
         <div class="stat-card-glow"></div>
       </div>
     </div>
-
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     SERVICES
-═══════════════════════════════════════════ -->
+<!-- SERVICES -->
 <section class="services-section" id="services">
   <div class="section-wrap">
 
@@ -509,7 +457,6 @@
 
     <div class="svc-bento">
 
-      <!-- Card 1 — VAT (large) -->
       <a class="svc-bento-card card-vat" href="vat.html">
         <div class="sbc-bg-effect"></div>
         <div class="sbc-top">
@@ -529,9 +476,9 @@
         </div>
         <div class="sbc-visual">
           <div class="sbc-bar-preview">
-            <div class="sbp-bar" style="width:100%"><span>Base</span><span>10,000</span></div>
-            <div class="sbp-bar sbp-tax" style="width:5%"><span>VAT 5%</span><span>500</span></div>
-            <div class="sbp-bar sbp-total" style="width:100%"><span>Total</span><span>10,500</span></div>
+            <div class="sbp-bar" style="width:100%"><span>Base Amount</span><span>10,000</span></div>
+            <div class="sbp-bar sbp-tax"><span>VAT 5%</span><span>500</span></div>
+            <div class="sbp-bar sbp-total" style="width:100%"><span>Total Payable</span><span>10,500</span></div>
           </div>
         </div>
         <div class="sbc-footer">
@@ -542,7 +489,6 @@
         <div class="sbc-border-glow"></div>
       </a>
 
-      <!-- Card 2 — Corporate Tax -->
       <a class="svc-bento-card card-corp" href="corporate-tax.html">
         <div class="sbc-bg-effect"></div>
         <div class="sbc-top">
@@ -551,6 +497,9 @@
               <span>🏦</span>
               <div class="icon-shadow"></div>
             </div>
+          </div>
+          <div class="sbc-meta">
+            <span class="sbc-tag tag-purple">9% Rate</span>
           </div>
         </div>
         <div class="sbc-body">
@@ -565,7 +514,6 @@
         <div class="sbc-border-glow"></div>
       </a>
 
-      <!-- Card 3 — Free Zone -->
       <a class="svc-bento-card card-free" href="freezone.html">
         <div class="sbc-bg-effect"></div>
         <div class="sbc-top">
@@ -591,7 +539,6 @@
         <div class="sbc-border-glow"></div>
       </a>
 
-      <!-- Card 4 — AI Assistant (wide) -->
       <a class="svc-bento-card card-ai" href="ai-assistant.html">
         <div class="sbc-bg-effect"></div>
         <div class="sbc-top">
@@ -607,13 +554,13 @@
         </div>
         <div class="sbc-body">
           <h3 class="sbc-title">AI Tax Assistant</h3>
-          <p class="sbc-desc">AI-powered UAE tax advisor — ask anything, get instant expert-level answers 24/7. Trained on FTA regulations, UAE law & case studies.</p>
+          <p class="sbc-desc">AI-powered UAE tax advisor — ask anything, get instant expert-level answers 24/7. Trained on FTA regulations, UAE law &amp; case studies.</p>
         </div>
         <div class="sbc-chat-preview">
           <div class="chat-bubble user-bubble">What is the VAT rate for exported services?</div>
           <div class="chat-bubble ai-bubble">
             <span class="ai-dot"></span>
-            Exported services are zero-rated (0%) under UAE VAT law, provided the recipient is outside the UAE and the services are consumed outside the UAE...
+            Exported services are zero-rated (0%) under UAE VAT law, provided the recipient is outside the UAE and services are consumed abroad...
           </div>
         </div>
         <div class="sbc-footer">
@@ -625,13 +572,10 @@
       </a>
 
     </div>
-
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     HOW IT WORKS — 3D STEPS
-═══════════════════════════════════════════ -->
+<!-- HOW IT WORKS -->
 <section class="how-section" id="how">
   <div class="section-wrap">
 
@@ -665,7 +609,7 @@
           <div class="step-num-shadow"></div>
         </div>
         <div class="step-icon-3d">🤖</div>
-        <h3 class="step-title">AI Calculates & Checks</h3>
+        <h3 class="step-title">AI Calculates &amp; Checks</h3>
         <p class="step-desc">Our AI engine validates against FTA rules, applies correct rates, exemptions and deductions automatically.</p>
         <div class="step-connector">
           <div class="connector-line"></div>
@@ -680,22 +624,67 @@
         </div>
         <div class="step-icon-3d">✅</div>
         <h3 class="step-title">Get Your Report</h3>
-        <p class="step-desc">Download your FTA-ready report, get your tax breakdown and file directly. Done.</p>
+        <p class="step-desc">Download your FTA-ready report, get your tax breakdown and file directly. Done in minutes.</p>
       </div>
     </div>
 
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     BLOG / INSIGHTS
-═══════════════════════════════════════════ -->
+<!-- FEATURES STRIP (NEW) -->
+<section class="features-strip-section">
+  <div class="section-wrap">
+    <div class="features-strip">
+      <div class="feature-item">
+        <div class="fi-icon">🔒</div>
+        <div class="fi-text">
+          <div class="fi-title">Bank-Grade Security</div>
+          <div class="fi-sub">256-bit SSL encryption</div>
+        </div>
+      </div>
+      <div class="fi-divider"></div>
+      <div class="feature-item">
+        <div class="fi-icon">🇦🇪</div>
+        <div class="fi-text">
+          <div class="fi-title">FTA Compliant</div>
+          <div class="fi-sub">Always up-to-date with UAE law</div>
+        </div>
+      </div>
+      <div class="fi-divider"></div>
+      <div class="feature-item">
+        <div class="fi-icon">⚡</div>
+        <div class="fi-text">
+          <div class="fi-title">Instant Results</div>
+          <div class="fi-sub">Calculate in under 10 seconds</div>
+        </div>
+      </div>
+      <div class="fi-divider"></div>
+      <div class="feature-item">
+        <div class="fi-icon">📄</div>
+        <div class="fi-text">
+          <div class="fi-title">Export Ready</div>
+          <div class="fi-sub">PDF &amp; FTA portal format</div>
+        </div>
+      </div>
+      <div class="fi-divider"></div>
+      <div class="feature-item">
+        <div class="fi-icon">🆓</div>
+        <div class="fi-text">
+          <div class="fi-title">Free to Use</div>
+          <div class="fi-sub">No credit card required</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG / INSIGHTS -->
 <section class="blog-section" id="blog">
   <div class="section-wrap">
 
     <div class="section-header blog-header-row">
       <div>
-        <div class="section-eyebrow">
+        <div class="section-eyebrow" style="text-align:left">
           <span class="ey-line"></span>
           <span>Latest News</span>
           <span class="ey-line"></span>
@@ -728,7 +717,6 @@
       </article>
 
       <div class="blog-stack">
-
         <article class="blog-post bp-small">
           <div class="bp-content">
             <span class="bp-category cat-vat">VAT</span>
@@ -767,17 +755,70 @@
           </div>
           <div class="bp-glow"></div>
         </article>
-
       </div>
 
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS (NEW) -->
+<section class="testimonials-section" id="testimonials">
+  <div class="section-wrap">
+
+    <div class="section-header">
+      <div class="section-eyebrow">
+        <span class="ey-line"></span>
+        <span>Trusted By</span>
+        <span class="ey-line"></span>
+      </div>
+      <h2 class="section-title">What businesses <span class="title-accent">say about us</span></h2>
+    </div>
+
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Cut our VAT filing time from 4 hours to under 10 minutes. The AI catches errors we used to miss every quarter."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#FF2D78,#B44FFF)">A</div>
+          <div>
+            <div class="testi-name">Ahmed Al-Rashidi</div>
+            <div class="testi-role">CFO, Dubai Retail Group</div>
+          </div>
+        </div>
+        <div class="testi-glow"></div>
+      </div>
+
+      <div class="testi-card testi-featured">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"We manage 14 free zone entities. Emunib's QFZP eligibility checker saves us thousands in consultant fees annually."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#00F5FF,#06FFA5)">S</div>
+          <div>
+            <div class="testi-name">Sara Mahmoud</div>
+            <div class="testi-role">Tax Director, DMCC Licensed</div>
+          </div>
+        </div>
+        <div class="testi-glow"></div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"Finally a platform that understands UAE corporate tax nuances. The AI assistant answered questions my accountant charged AED 800 to answer."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#FFD166,#FF7043)">R</div>
+          <div>
+            <div class="testi-name">Raj Patel</div>
+            <div class="testi-role">Founder, Sharjah SME</div>
+          </div>
+        </div>
+        <div class="testi-glow"></div>
+      </div>
     </div>
 
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     CTA BANNER
-═══════════════════════════════════════════ -->
+<!-- CTA BANNER -->
 <section class="cta-section">
   <div class="section-wrap">
     <div class="cta-card">
@@ -816,15 +857,13 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════
-     FOOTER
-═══════════════════════════════════════════ -->
+<!-- FOOTER -->
 <footer class="site-footer">
   <div class="footer-glow-bar"></div>
   <div class="section-wrap">
     <div class="footer-top">
       <div class="footer-brand">
-        <a class="nav-logo footer-logo-link" href="#">
+        <a class="nav-logo footer-logo-link" href="index.html">
           <div class="logo-crystal logo-crystal-sm">
             <div class="crystal-face face-front"></div>
             <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
