@@ -3,976 +3,1584 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Emunib — UAE Tax Platform</title>
-<meta name="description" content="AI-powered UAE tax and business platform by Emunib. Calculate VAT, Corporate Tax and Free Zone tax instantly."/>
-<meta name="robots" content="index, follow"/>
-<meta name="author" content="Emunib"/>
-<meta property="og:title" content="Emunib — UAE Tax Platform"/>
-<meta property="og:description" content="AI-powered UAE tax and business platform"/>
-<meta property="og:type" content="website"/>
-<meta name="theme-color" content="#B44FFF"/>
+<title>Emunib — Multi Country Tax Platform</title>
+<meta name="description" content="UAE, India & Nepal Tax Calculator — VAT, GST, Income Tax, Corporate Tax and more"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css"/>
-
 <style>
-/* ── HERO FLOAT BADGES — FIXED POSITIONING ── */
-.hero-float-badge {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 20px;
-  border-radius: 16px;
-  background: rgba(4, 2, 15, 0.55);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 13px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
-  z-index: 10;
+/* ── RESET ── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --pink:#FF2D78;--purple:#B44FFF;--cyan:#00F5FF;--gold:#FFD166;
+  --green:#06FFA5;--orange:#FF7043;--blue:#4F8BFF;
+  --india:#FF9933;--india2:#138808;--india3:#000080;
+  --nepal:#DC143C;--nepal2:#003580;
+  --bg:#04020F;--glass:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.09);--text:rgba(255,255,255,0.45);
+  --radius:24px;
 }
-
-.badge-tl {
-  top: -60px !important;
-  left: 0;
+html{scroll-behavior:smooth;}
+body{font-family:'Space Grotesk','Inter',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden;min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+/* ── CANVAS ── */
+#particleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+/* ── BG ── */
+.bg-root{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.bg-base{position:absolute;inset:0;background:
+  radial-gradient(ellipse 90% 70% at 15% 5%,rgba(180,79,255,0.35) 0%,transparent 55%),
+  radial-gradient(ellipse 70% 55% at 90% 10%,rgba(255,45,120,0.25) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 50% at 5% 85%,rgba(0,245,255,0.18) 0%,transparent 55%),
+  #04020F;}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);animation:orbFloat ease-in-out infinite;pointer-events:none;}
+.orb-1{width:700px;height:700px;background:rgba(180,79,255,0.18);top:-250px;left:-150px;animation-duration:14s;}
+.orb-2{width:600px;height:600px;background:rgba(255,45,120,0.14);top:-150px;right:-150px;animation-duration:17s;animation-delay:-5s;}
+.orb-3{width:500px;height:500px;background:rgba(0,245,255,0.12);bottom:-100px;left:5%;animation-duration:20s;animation-delay:-9s;}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(40px,60px) scale(1.06);}}
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 40px;height:72px;display:flex;align-items:center;justify-content:space-between;background:rgba(4,2,15,0.7);backdrop-filter:blur(32px);border-bottom:1px solid rgba(255,255,255,0.07);}
+.nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.logo-crystal{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--purple),var(--pink),var(--cyan));display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(180,79,255,0.5);animation:crystalPulse 3s ease-in-out infinite;}
+@keyframes crystalPulse{0%,100%{box-shadow:0 0 24px rgba(180,79,255,0.5);}50%{box-shadow:0 0 40px rgba(180,79,255,0.85);}}
+.logo-text-main{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+.logo-text-sub{font-size:9px;font-weight:700;letter-spacing:2.5px;color:rgba(255,255,255,0.3);text-transform:uppercase;display:block;}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-country-select{padding:8px 18px;border-radius:100px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;outline:none;transition:all 0.3s;}
+.nav-country-select:hover{background:rgba(255,255,255,0.1);}
+.btn-nav-cta{padding:9px 22px;border-radius:100px;border:none;cursor:pointer;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;font-size:13px;font-weight:700;font-family:inherit;transition:all 0.3s;}
+.btn-nav-cta:hover{transform:scale(1.05);box-shadow:0 6px 24px rgba(255,45,120,0.45);}
+/* ── SECTION WRAP ── */
+.section-wrap{max-width:1400px;margin:0 auto;padding:0 40px;}
+/* ── COUNTRY SELECTOR HERO ── */
+.country-hero{position:relative;z-index:1;padding-top:72px;min-height:300px;display:flex;align-items:center;}
+.country-hero-inner{width:100%;padding:60px 40px 40px;max-width:1400px;margin:0 auto;}
+.hero-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:20px;}
+.eyebrow-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+.eyebrow-text{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);}
+.hero-title{font-size:clamp(38px,5vw,72px);font-weight:900;letter-spacing:-2px;line-height:0.95;margin-bottom:20px;}
+.hero-title .grad{background:linear-gradient(135deg,var(--pink),var(--purple),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:300%;animation:gradShift 5s linear infinite;}
+@keyframes gradShift{0%{background-position:0%}100%{background-position:300%}}
+.hero-desc{font-size:16px;color:rgba(255,255,255,0.45);max-width:560px;line-height:1.7;margin-bottom:40px;}
+/* ── COUNTRY PILLS ── */
+.country-pills{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px;}
+.cpill{display:flex;align-items:center;gap:10px;padding:14px 28px;border-radius:100px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;font-size:15px;font-weight:700;color:rgba(255,255,255,0.5);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);position:relative;overflow:hidden;}
+.cpill:hover{transform:translateY(-4px);}
+.cpill.active{color:#fff;}
+.cpill.uae.active{border-color:rgba(255,45,120,0.6);background:rgba(255,45,120,0.12);box-shadow:0 8px 32px rgba(255,45,120,0.25);}
+.cpill.india.active{border-color:rgba(255,153,51,0.6);background:rgba(255,153,51,0.1);box-shadow:0 8px 32px rgba(255,153,51,0.2);}
+.cpill.nepal.active{border-color:rgba(220,20,60,0.6);background:rgba(220,20,60,0.1);box-shadow:0 8px 32px rgba(220,20,60,0.2);}
+.cpill-flag{font-size:20px;}
+/* ── TICKER ── */
+.ticker-wrap{position:relative;z-index:1;overflow:hidden;background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);padding:12px 0;mask-image:linear-gradient(90deg,transparent,black 8%,black 92%,transparent);}
+.ticker-track{display:inline-flex;white-space:nowrap;animation:tickerScroll 40s linear infinite;}
+.tick-item{display:inline-flex;align-items:center;gap:8px;padding:0 36px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:0.5px;text-transform:uppercase;}
+.tdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.tdot.pink{background:var(--pink);box-shadow:0 0 5px var(--pink);}
+.tdot.purple{background:var(--purple);box-shadow:0 0 5px var(--purple);}
+.tdot.cyan{background:var(--cyan);box-shadow:0 0 5px var(--cyan);}
+.tdot.gold{background:var(--gold);box-shadow:0 0 5px var(--gold);}
+.tdot.india{background:var(--india);box-shadow:0 0 5px var(--india);}
+.tdot.nepal{background:var(--nepal);box-shadow:0 0 5px var(--nepal);}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* ── TAX CONTENT PANELS ── */
+.tax-panels{position:relative;z-index:1;padding:60px 0 100px;}
+.panel{display:none;}
+.panel.active{display:block;}
+/* Section eyebrow + title */
+.sec-eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;padding:6px 16px;border-radius:100px;}
+.sec-eyebrow.uae{background:rgba(255,45,120,0.1);border:1px solid rgba(255,45,120,0.25);color:var(--pink);}
+.sec-eyebrow.india{background:rgba(255,153,51,0.1);border:1px solid rgba(255,153,51,0.3);color:var(--india);}
+.sec-eyebrow.nepal{background:rgba(220,20,60,0.1);border:1px solid rgba(220,20,60,0.3);color:var(--nepal);}
+.sec-title{font-size:clamp(28px,3.5vw,48px);font-weight:900;letter-spacing:-1.5px;margin-bottom:10px;}
+.sec-sub{font-size:15px;color:rgba(255,255,255,0.4);margin-bottom:48px;max-width:600px;line-height:1.65;}
+/* ── TOOL TABS ── */
+.tool-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px;}
+.ttab{padding:10px 24px;border-radius:100px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);cursor:pointer;font-size:13px;font-weight:700;color:rgba(255,255,255,0.4);transition:all 0.3s;}
+.ttab:hover{color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.07);}
+.ttab.active.uae{border-color:rgba(255,45,120,0.5);background:rgba(255,45,120,0.12);color:var(--pink);}
+.ttab.active.india{border-color:rgba(255,153,51,0.5);background:rgba(255,153,51,0.1);color:var(--india);}
+.ttab.active.nepal{border-color:rgba(220,20,60,0.5);background:rgba(220,20,60,0.1);color:var(--nepal);}
+/* ── CALCULATOR GRID ── */
+.calc-grid{display:grid;grid-template-columns:420px 1fr;gap:32px;align-items:start;}
+@media(max-width:960px){.calc-grid{grid-template-columns:1fr;}}
+/* ── CALC CARD ── */
+.calc-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:32px;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,0.1),0 40px 80px rgba(0,0,0,0.5);}
+.calc-card::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);}
+.calc-section{margin-bottom:24px;}
+.calc-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:10px;display:block;}
+.calc-input{width:100%;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:16px;font-weight:700;font-family:inherit;outline:none;transition:all 0.3s;}
+.calc-input:focus{border-color:rgba(255,45,120,0.5);box-shadow:0 0 0 3px rgba(255,45,120,0.1);}
+.calc-input::placeholder{color:rgba(255,255,255,0.2);}
+.calc-select{width:100%;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:rgba(10,5,30,0.9);color:#fff;font-size:14px;font-weight:600;font-family:inherit;outline:none;cursor:pointer;transition:all 0.3s;}
+.calc-select:focus{border-color:rgba(255,45,120,0.5);}
+.calc-select option{background:#0d0820;color:#fff;}
+/* Slider */
+.calc-slider{width:100%;-webkit-appearance:none;height:4px;border-radius:100px;background:rgba(255,255,255,0.1);outline:none;cursor:pointer;}
+.calc-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.4);transition:transform 0.2s;}
+.calc-slider::-webkit-slider-thumb:hover{transform:scale(1.3);}
+/* UAE slider */
+.slider-uae::-webkit-slider-thumb{background:linear-gradient(135deg,var(--pink),var(--purple));}
+.slider-india::-webkit-slider-thumb{background:linear-gradient(135deg,var(--india),var(--india2));}
+.slider-nepal::-webkit-slider-thumb{background:linear-gradient(135deg,var(--nepal),var(--nepal2));}
+/* Amount row */
+.amount-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.amount-big{font-size:38px;font-weight:900;letter-spacing:-1.5px;line-height:1;}
+/* Rate pills */
+.rate-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.rpill{flex:1;min-width:80px;padding:10px 8px;border-radius:12px;text-align:center;cursor:pointer;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);transition:all 0.3s;font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);}
+.rpill:hover{transform:translateY(-3px);}
+.rpill.active.uae{background:rgba(255,45,120,0.15);border-color:rgba(255,45,120,0.45);color:var(--pink);}
+.rpill.active.india{background:rgba(255,153,51,0.15);border-color:rgba(255,153,51,0.45);color:var(--india);}
+.rpill.active.nepal{background:rgba(220,20,60,0.15);border-color:rgba(220,20,60,0.4);color:var(--nepal);}
+.rpill-icon{display:block;font-size:16px;margin-bottom:4px;}
+/* Calculate btn */
+.calc-btn{width:100%;padding:16px;border-radius:14px;border:none;cursor:pointer;font-size:16px;font-weight:800;font-family:inherit;color:#fff;position:relative;overflow:hidden;transition:all 0.3s;margin-top:8px;}
+.calc-btn-bg{position:absolute;inset:0;}
+.calc-btn:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(255,45,120,0.4);}
+.calc-btn span{position:relative;z-index:1;}
+.calc-btn.uae .calc-btn-bg{background:linear-gradient(135deg,var(--pink),var(--purple));}
+.calc-btn.india .calc-btn-bg{background:linear-gradient(135deg,var(--india),var(--india2));}
+.calc-btn.nepal .calc-btn-bg{background:linear-gradient(135deg,var(--nepal),var(--nepal2));}
+/* ── RESULT CARD ── */
+.result-card{background:rgba(255,255,255,0.04);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.09);border-radius:var(--radius);padding:32px;min-height:400px;}
+.result-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:350px;gap:16px;text-align:center;}
+.result-placeholder-icon{font-size:48px;opacity:0.3;}
+.result-placeholder-text{font-size:15px;color:rgba(255,255,255,0.25);font-weight:600;}
+.result-content{display:none;}
+.result-content.show{display:block;}
+/* Result header */
+.result-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.result-title{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+.result-tag{font-size:11px;font-weight:800;padding:5px 14px;border-radius:100px;letter-spacing:1px;}
+.result-tag.uae{background:rgba(255,45,120,0.15);border:1px solid rgba(255,45,120,0.35);color:var(--pink);}
+.result-tag.india{background:rgba(255,153,51,0.15);border:1px solid rgba(255,153,51,0.35);color:var(--india);}
+.result-tag.nepal{background:rgba(220,20,60,0.12);border:1px solid rgba(220,20,60,0.3);color:var(--nepal);}
+/* Result rows */
+.res-rows{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
+.res-row{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);}
+.res-row-label{font-size:13px;font-weight:600;color:rgba(255,255,255,0.4);}
+.res-row-val{font-size:16px;font-weight:800;color:#fff;}
+.res-row-val.highlight-uae{background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.res-row-val.highlight-india{background:linear-gradient(90deg,var(--india),var(--india2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.res-row-val.highlight-nepal{background:linear-gradient(90deg,var(--nepal),var(--nepal2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+/* Total row */
+.res-total{display:flex;justify-content:space-between;align-items:center;padding:20px 22px;border-radius:16px;margin-bottom:20px;}
+.res-total.uae{background:linear-gradient(90deg,rgba(180,79,255,0.1),rgba(0,245,255,0.06));}
+.res-total.india{background:linear-gradient(90deg,rgba(255,153,51,0.1),rgba(19,136,8,0.06));}
+.res-total.nepal{background:linear-gradient(90deg,rgba(220,20,60,0.1),rgba(0,53,128,0.06));}
+.res-total-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+.res-total-val{font-size:28px;font-weight:900;color:#fff;}
+/* Mini chart in result */
+.result-chart{margin-top:20px;}
+.rc-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:12px;}
+.rc-bars{display:flex;gap:6px;height:80px;align-items:flex-end;}
+.rc-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;}
+.rc-bar{width:100%;border-radius:4px 4px 0 0;transition:height 0.6s cubic-bezier(0.34,1.56,0.64,1);}
+.rc-bar-label{font-size:9px;font-weight:700;color:rgba(255,255,255,0.25);}
+/* Result notes */
+.res-notes{margin-top:20px;}
+.res-note{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);margin-bottom:8px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.4);line-height:1.5;}
+.res-note-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+/* Export row */
+.export-row{display:flex;gap:10px;margin-top:20px;}
+.export-btn{flex:1;padding:11px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.5);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s;text-align:center;}
+.export-btn:hover{background:rgba(255,255,255,0.08);color:#fff;}
+/* ── INFO CARDS GRID ── */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:48px;}
+.info-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px;position:relative;overflow:hidden;transition:all 0.35s;}
+.info-card:hover{transform:translateY(-6px);}
+.info-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;}
+.info-card-icon{width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 8px 0 rgba(0,0,0,0.4);}
+.info-card-tag{font-size:10px;font-weight:800;padding:4px 12px;border-radius:100px;letter-spacing:1px;}
+.info-card-title{font-size:17px;font-weight:800;color:#fff;margin-bottom:8px;}
+.info-card-desc{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.65;margin-bottom:16px;}
+.info-card-rates{display:flex;flex-direction:column;gap:6px;}
+.icrate{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);font-size:12px;}
+.icrate-name{color:rgba(255,255,255,0.45);font-weight:600;}
+.icrate-val{font-weight:800;color:#fff;}
+.info-card-cta{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.3s;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;margin-top:12px;background:none;border-left:none;border-right:none;border-bottom:none;color:rgba(255,255,255,0.4);width:100%;font-family:inherit;}
+.info-card-cta:hover{color:#fff;}
+.cta-arrow{transition:transform 0.3s;}
+.info-card-cta:hover .cta-arrow{transform:translateX(4px);}
+/* UAE specific glows */
+.ic-uae .info-card-icon{background:linear-gradient(135deg,var(--pink),var(--orange));}
+.ic-uae .info-card-tag{background:rgba(255,45,120,0.15);border:1px solid rgba(255,45,120,0.3);color:var(--pink);}
+.ic-uae2 .info-card-icon{background:linear-gradient(135deg,var(--purple),#5520CC);}
+.ic-uae2 .info-card-tag{background:rgba(180,79,255,0.15);border:1px solid rgba(180,79,255,0.3);color:var(--purple);}
+.ic-uae3 .info-card-icon{background:linear-gradient(135deg,var(--cyan),var(--green));}
+.ic-uae3 .info-card-tag{background:rgba(0,245,255,0.1);border:1px solid rgba(0,245,255,0.25);color:var(--cyan);}
+.ic-uae4 .info-card-icon{background:linear-gradient(135deg,var(--gold),var(--orange));}
+.ic-uae4 .info-card-tag{background:rgba(255,209,102,0.1);border:1px solid rgba(255,209,102,0.25);color:var(--gold);}
+/* India glows */
+.ic-india .info-card-icon{background:linear-gradient(135deg,#FF9933,#FF6600);}
+.ic-india .info-card-tag{background:rgba(255,153,51,0.15);border:1px solid rgba(255,153,51,0.3);color:var(--india);}
+.ic-india2 .info-card-icon{background:linear-gradient(135deg,#138808,#0a5c06);}
+.ic-india2 .info-card-tag{background:rgba(19,136,8,0.12);border:1px solid rgba(19,136,8,0.25);color:#3bc43b;}
+.ic-india3 .info-card-icon{background:linear-gradient(135deg,#000080,#3333cc);}
+.ic-india3 .info-card-tag{background:rgba(0,0,128,0.2);border:1px solid rgba(51,51,204,0.35);color:#8888ff;}
+.ic-india4 .info-card-icon{background:linear-gradient(135deg,#8B0000,#CC0000);}
+.ic-india4 .info-card-tag{background:rgba(139,0,0,0.15);border:1px solid rgba(204,0,0,0.3);color:#ff6666;}
+/* Nepal glows */
+.ic-nepal .info-card-icon{background:linear-gradient(135deg,#DC143C,#a00020);}
+.ic-nepal .info-card-tag{background:rgba(220,20,60,0.15);border:1px solid rgba(220,20,60,0.35);color:var(--nepal);}
+.ic-nepal2 .info-card-icon{background:linear-gradient(135deg,#003580,#0055cc);}
+.ic-nepal2 .info-card-tag{background:rgba(0,53,128,0.2);border:1px solid rgba(0,85,204,0.35);color:#6688ff;}
+.ic-nepal3 .info-card-icon{background:linear-gradient(135deg,#8B4513,#cc6600);}
+.ic-nepal3 .info-card-tag{background:rgba(139,69,19,0.15);border:1px solid rgba(204,102,0,0.3);color:#ffaa44;}
+/* ── COMPARISON TABLE ── */
+.comp-table-wrap{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden;margin-top:40px;}
+.comp-table{width:100%;border-collapse:collapse;}
+.comp-table th{padding:16px 20px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);text-align:left;border-bottom:1px solid rgba(255,255,255,0.07);}
+.comp-table td{padding:14px 20px;font-size:13px;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.65);}
+.comp-table tr:last-child td{border-bottom:none;}
+.comp-table tr:hover td{background:rgba(255,255,255,0.02);}
+.comp-badge{font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;}
+/* ── FOOTER ── */
+.site-footer{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,0.07);padding:48px 0 36px;}
+.footer-glow{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--purple),var(--pink),var(--cyan),transparent);opacity:0.35;margin-bottom:40px;}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 40px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:32px;}
+.footer-brand-text{font-size:13px;color:rgba(255,255,255,0.25);max-width:320px;line-height:1.65;margin-top:10px;}
+.footer-cols{display:flex;gap:48px;flex-wrap:wrap;}
+.fc-head{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:12px;}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:8px;transition:color 0.2s;}
+.footer-col a:hover{color:rgba(255,255,255,0.7);}
+.footer-bottom{max-width:1400px;margin:32px auto 0;padding:20px 40px 0;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.2);}
+.footer-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.ftag{font-size:10px;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:100px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.25);}
+/* ── UAE SPECIFIC TOOL LINK CARDS ── */
+.uae-tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:40px;}
+.uae-tool-link{display:block;padding:20px 22px;border-radius:18px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);transition:all 0.35s;cursor:pointer;}
+.uae-tool-link:hover{transform:translateY(-6px);}
+.uae-tool-link .tool-icon{font-size:26px;margin-bottom:10px;display:block;}
+.uae-tool-link .tool-name{font-size:14px;font-weight:800;color:#fff;margin-bottom:5px;}
+.uae-tool-link .tool-desc{font-size:12px;color:rgba(255,255,255,0.35);}
+.uae-tool-link .tool-arrow{font-size:12px;color:rgba(255,255,255,0.25);margin-top:10px;display:block;transition:all 0.3s;}
+.uae-tool-link:hover .tool-arrow{color:#fff;transform:translateX(4px);}
+.utl-vat{border-color:rgba(255,45,120,0.2);}
+.utl-vat:hover{border-color:rgba(255,45,120,0.45);background:rgba(255,45,120,0.08);}
+.utl-corp{border-color:rgba(180,79,255,0.2);}
+.utl-corp:hover{border-color:rgba(180,79,255,0.45);background:rgba(180,79,255,0.08);}
+.utl-free{border-color:rgba(0,245,255,0.2);}
+.utl-free:hover{border-color:rgba(0,245,255,0.35);background:rgba(0,245,255,0.05);}
+.utl-ai{border-color:rgba(255,209,102,0.2);}
+.utl-ai:hover{border-color:rgba(255,209,102,0.4);background:rgba(255,209,102,0.06);}
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .country-hero-inner{padding:40px 20px 30px;}
+  .section-wrap{padding:0 20px;}
+  .nav-inner{padding:0 20px;}
+  .country-pills{gap:8px;}
+  .cpill{padding:10px 18px;font-size:13px;}
+  .tool-tabs{gap:6px;}
+  .ttab{padding:8px 16px;font-size:12px;}
+  .calc-grid{grid-template-columns:1fr;}
+  .info-grid{grid-template-columns:1fr;}
+  .uae-tools-grid{grid-template-columns:repeat(2,1fr);}
+  .footer-inner{flex-direction:column;}
+  .footer-cols{gap:24px;}
 }
-
-.badge-tr {
-  top: 80px;
-  right: 0;
-}
-
-.badge-br {
-  bottom: 120px;
-  right: 0;
-}
-
-.fb-icon {
-  font-size: 20px;
-}
-
-.fb-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.fb-label {
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  opacity: 0.6;
-}
-
-.fb-val {
-  font-size: 14px;
-  font-weight: 800;
+@media(max-width:480px){
+  .country-pills{flex-direction:column;}
+  .cpill{width:100%;justify-content:center;}
+  .uae-tools-grid{grid-template-columns:1fr;}
+  .export-row{flex-direction:column;}
 }
 </style>
 </head>
 <body>
 
-<!-- PARTICLE CANVAS -->
 <canvas id="particleCanvas"></canvas>
-
-<!-- CINEMATIC BACKGROUND -->
 <div class="bg-root">
   <div class="bg-base"></div>
-  <div class="bg-noise"></div>
   <div class="bg-grid"></div>
-  <div class="bg-vignette"></div>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
-  <div class="orb orb-4"></div>
-  <div class="orb orb-5"></div>
-  <div class="orb orb-6"></div>
-  <div class="scanlines"></div>
-  <div class="light-beam beam-1"></div>
-  <div class="light-beam beam-2"></div>
 </div>
 
-<!-- CURSOR -->
-<div class="cursor-glow" id="cursorGlow"></div>
-<div class="cursor-dot" id="cursorDot"></div>
-
-<!-- NAVIGATION -->
-<nav id="mainNav">
+<!-- NAV -->
+<nav>
   <div class="nav-inner">
     <a class="nav-logo" href="index.html">
       <div class="logo-crystal">
-        <div class="crystal-face face-front"></div>
-        <div class="crystal-face face-back"></div>
-        <div class="crystal-face face-top"></div>
-        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" width="22" height="22">
           <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
           <polyline points="9 22 9 12 15 12 15 22"/>
         </svg>
       </div>
-      <div class="logo-wordmark">
+      <div>
         <span class="logo-text-main">Emunib</span>
-        <span class="logo-text-sub">UAE TAX PLATFORM</span>
+        <span class="logo-text-sub">Multi-Country Tax</span>
       </div>
     </a>
-
-    <div class="nav-center">
-      <div class="nav-pill">
-        <a href="index.html" class="nav-link active">Platform</a>
-        <a href="#services" class="nav-link">Tools</a>
-        <a href="#blog" class="nav-link">Insights</a>
-        <a href="#how" class="nav-link">How It Works</a>
-        <div class="nav-active-indicator"></div>
-      </div>
-    </div>
-
     <div class="nav-right">
-      <div class="nav-status">
-        <span class="status-orb"></span>
-        <span class="status-text">All Systems Live</span>
-      </div>
-      <button class="btn-cta-nav" onclick="location.href='vat.html'">
-        <span class="btn-cta-text">Start Filing</span>
-        <span class="btn-cta-arrow">→</span>
-        <div class="btn-cta-shine"></div>
-      </button>
+      <select class="nav-country-select" id="navCountrySelect" onchange="switchCountry(this.value)">
+        <option value="uae">🇦🇪 UAE / Dubai</option>
+        <option value="india">🇮🇳 India</option>
+        <option value="nepal">🇳🇵 Nepal</option>
+      </select>
+      <button class="btn-nav-cta" onclick="scrollToCalc()">Calculate Tax ⚡</button>
     </div>
-
-    <!-- Mobile hamburger -->
-    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
   </div>
-  <div class="nav-border-glow"></div>
 </nav>
 
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-  <div class="mobile-menu-inner">
-    <a href="index.html" class="mm-link active">Platform</a>
-    <a href="#services" class="mm-link">Tools</a>
-    <a href="#blog" class="mm-link">Insights</a>
-    <a href="#how" class="mm-link">How It Works</a>
-    <div class="mm-divider"></div>
-    <a href="vat.html" class="mm-cta">⚡ Start Filing Free</a>
-    <a href="ai-assistant.html" class="mm-ghost">🤖 Talk to AI Expert</a>
+<!-- HERO -->
+<div class="country-hero">
+  <div class="country-hero-inner">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-dot"></span>
+      <span class="eyebrow-text">UAE · India · Nepal — Trusted 2022–2026</span>
+    </div>
+    <h1 class="hero-title">
+      <span>Multi-Country</span><br>
+      <span class="grad">Tax Calculator</span>
+    </h1>
+    <p class="hero-desc">
+      Calculate VAT, GST, Income Tax, Corporate Tax, TDS, Excise Duty and more —
+      select your country and start calculating instantly.
+    </p>
+    <!-- Country selector -->
+    <div class="country-pills">
+      <div class="cpill uae active" onclick="switchCountry('uae')">
+        <span class="cpill-flag">🇦🇪</span>
+        <span>UAE / Dubai</span>
+      </div>
+      <div class="cpill india" onclick="switchCountry('india')">
+        <span class="cpill-flag">🇮🇳</span>
+        <span>India</span>
+      </div>
+      <div class="cpill nepal" onclick="switchCountry('nepal')">
+        <span class="cpill-flag">🇳🇵</span>
+        <span>Nepal</span>
+      </div>
+    </div>
   </div>
 </div>
-
-<!-- HERO SECTION -->
-<section class="hero" id="hero">
-
-  <div class="hero-float-badge badge-tl" data-depth="0.3">
-    <span class="fb-icon">🇦🇪</span>
-    <div class="fb-text">
-      <span class="fb-label">UAE FTA</span>
-      <span class="fb-val">Compliant</span>
-    </div>
-  </div>
-
-  <div class="hero-float-badge badge-tr" data-depth="0.5">
-    <span class="fb-icon">⚡</span>
-    <div class="fb-text">
-      <span class="fb-label">Processing</span>
-      <span class="fb-val">Real-time</span>
-    </div>
-  </div>
-
-  <div class="hero-float-badge badge-br" data-depth="0.2">
-    <span class="fb-icon">🤖</span>
-    <div class="fb-text">
-      <span class="fb-label">AI Powered</span>
-      <span class="fb-val">24/7 Active</span>
-    </div>
-  </div>
-
-  <div class="hero-layout">
-
-    <!-- LEFT -->
-    <div class="hero-left">
-
-      <div class="hero-eyebrow">
-        <div class="eyebrow-line">
-          <span class="eyebrow-dot-pulse"></span>
-          <span class="eyebrow-text">Dubai · UAE · Trusted Since 2022</span>
-        </div>
-        <div class="eyebrow-stats-mini">
-          <span>1,240+ Businesses</span>
-          <span class="divider">·</span>
-          <span>99% Accuracy</span>
-          <span class="divider">·</span>
-          <span>FTA Verified</span>
-        </div>
-      </div>
-
-      <h1 class="hero-headline">
-        <span class="headline-line line-1">
-          <span class="word">Dubai</span>
-          <span class="word">&amp;</span>
-          <span class="word">UAE</span>
-        </span>
-        <span class="headline-line line-2 line-gradient">
-          <span class="word">Tax</span>
-          <span class="word">&amp;</span>
-          <span class="word">VAT</span>
-        </span>
-        <span class="headline-line line-3">
-          <span class="word">Platform</span>
-        </span>
-      </h1>
-
-      <p class="hero-sub">
-        Calculate VAT, Corporate Tax, Free Zone exemptions and full business compliance
-        with <em>AI-powered precision</em> built natively for the UAE.
-      </p>
-
-      <div class="hero-actions">
-        <button class="btn-primary" onclick="location.href='vat.html'">
-          <div class="btn-primary-bg"></div>
-          <span class="btn-primary-content">
-            <span class="btn-icon">⚡</span>
-            <span>Start Filing Free</span>
-          </span>
-          <div class="btn-primary-particles">
-            <span></span><span></span><span></span><span></span>
-          </div>
-        </button>
-
-        <button class="btn-ghost" onclick="location.href='ai-assistant.html'">
-          <div class="btn-ghost-border"></div>
-          <span>Talk to AI Expert</span>
-          <span class="btn-ghost-arrow">→</span>
-        </button>
-      </div>
-
-      <div class="trust-strip">
-        <div class="trust-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          <span>No registration required</span>
-        </div>
-        <div class="trust-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <span>Bank-grade security</span>
-        </div>
-        <div class="trust-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span>Instant results</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- RIGHT — 3D CARD -->
-    <div class="hero-right">
-      <div class="card-3d-scene">
-        <div class="card-3d-wrap" id="heroCard3D">
-
-          <div class="card-ring ring-1"></div>
-          <div class="card-ring ring-2"></div>
-          <div class="card-ring ring-3"></div>
-
-          <div class="vat-card" id="vatCard">
-            <div class="card-top-streak"></div>
-
-            <div class="card-head">
-              <div class="card-head-left">
-                <div class="card-badge-icon">🧮</div>
-                <div>
-                  <div class="card-title">Live VAT Calculator</div>
-                  <div class="card-subtitle">UAE Federal Tax Authority</div>
-                </div>
-              </div>
-              <div class="card-live-badge">
-                <span class="live-pulse"></span>
-                <span>LIVE</span>
-              </div>
-            </div>
-
-            <div class="card-amount-section">
-              <div class="amount-label-row">
-                <span class="amount-label">INVOICE AMOUNT</span>
-                <span class="amount-currency">AED</span>
-              </div>
-              <div class="amount-display-row">
-                <div class="amount-big" id="amountDisplay">10,000</div>
-              </div>
-              <input type="range" class="amount-slider" id="amountSlider"
-                min="1000" max="500000" step="1000" value="10000"/>
-              <div class="slider-track-labels">
-                <span>1K</span>
-                <span>500K</span>
-              </div>
-            </div>
-
-            <div class="rate-section">
-              <div class="rate-label">TAX REGIME</div>
-              <div class="rate-pills-row">
-                <div class="rate-pill active" data-rate="5" data-color="pink" onclick="selectRate(this)">
-                  <span class="rp-icon">📊</span>
-                  <span class="rp-name">VAT 5%</span>
-                  <div class="rp-glow"></div>
-                </div>
-                <div class="rate-pill" data-rate="9" data-color="purple" onclick="selectRate(this)">
-                  <span class="rp-icon">🏦</span>
-                  <span class="rp-name">Corp 9%</span>
-                  <div class="rp-glow"></div>
-                </div>
-                <div class="rate-pill" data-rate="0" data-color="cyan" onclick="selectRate(this)">
-                  <span class="rp-icon">🏙️</span>
-                  <span class="rp-name">Free Zone</span>
-                  <div class="rp-glow"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-result" id="cardResult">
-              <div class="result-row">
-                <div class="result-item">
-                  <span class="ri-label">Base Amount</span>
-                  <span class="ri-val ri-base" id="riBase">10,000 AED</span>
-                </div>
-                <div class="result-divider"></div>
-                <div class="result-item">
-                  <span class="ri-label">Tax Amount</span>
-                  <span class="ri-val ri-tax" id="riTax">500 AED</span>
-                </div>
-              </div>
-              <div class="result-total-row">
-                <span class="rt-label">TOTAL PAYABLE</span>
-                <span class="rt-val" id="riTotal">10,500 AED</span>
-              </div>
-            </div>
-
-            <div class="mini-chart">
-              <div class="mc-label">Monthly Tax Overview</div>
-              <div class="mc-bars">
-                <div class="mc-bar-wrap"><div class="mc-bar" style="height:55%"></div><span>Jan</span></div>
-                <div class="mc-bar-wrap"><div class="mc-bar" style="height:72%"></div><span>Feb</span></div>
-                <div class="mc-bar-wrap"><div class="mc-bar" style="height:48%"></div><span>Mar</span></div>
-                <div class="mc-bar-wrap"><div class="mc-bar" style="height:88%"></div><span>Apr</span></div>
-                <div class="mc-bar-wrap"><div class="mc-bar active-bar" style="height:100%"></div><span>May</span></div>
-                <div class="mc-bar-wrap"><div class="mc-bar" style="height:65%"></div><span>Jun</span></div>
-                <div class="mc-bar-wrap"><div class="mc-bar loading-bar" style="height:30%"></div><span>Jul</span></div>
-              </div>
-            </div>
-
-            <div class="card-bottom-glow" id="cardGlow"></div>
-          </div>
-
-          <div class="float-card fc-1">
-            <span>✅</span>
-            <div>
-              <div class="fc-title">FTA Verified</div>
-              <div class="fc-sub">Compliant 2026</div>
-            </div>
-          </div>
-          <div class="float-card fc-2">
-            <span>📈</span>
-            <div>
-              <div class="fc-title">+12% saved</div>
-              <div class="fc-sub">vs manual filing</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
 
 <!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker-track">
-    <span class="tick-item"><span class="tick-dot pink"></span>VAT 5% — UAE Standard Rate</span>
-    <span class="tick-item"><span class="tick-dot purple"></span>Corporate Tax 9% — Effective June 2023</span>
-    <span class="tick-item"><span class="tick-dot cyan"></span>Free Zone QFZP — 0% Eligible</span>
-    <span class="tick-item"><span class="tick-dot gold"></span>FTA Filing — Monthly &amp; Quarterly</span>
-    <span class="tick-item"><span class="tick-dot green"></span>Small Business Relief — AED 3M Threshold</span>
-    <span class="tick-item"><span class="tick-dot pink"></span>Transfer Pricing — New Rules 2026</span>
-    <span class="tick-item"><span class="tick-dot purple"></span>Corporate Tax 9% — Effective June 2023</span>
-    <span class="tick-item"><span class="tick-dot cyan"></span>Free Zone QFZP — 0% Eligible</span>
-    <span class="tick-item"><span class="tick-dot gold"></span>FTA Filing — Monthly &amp; Quarterly</span>
-    <span class="tick-item"><span class="tick-dot green"></span>Small Business Relief — AED 3M Threshold</span>
-    <span class="tick-item"><span class="tick-dot pink"></span>VAT 5% — UAE Standard Rate</span>
-    <span class="tick-item"><span class="tick-dot purple"></span>Corporate Tax 9% — Effective June 2023</span>
+    <span class="tick-item"><span class="tdot pink"></span>UAE VAT 5% — Federal Tax Authority</span>
+    <span class="tick-item"><span class="tdot purple"></span>Corporate Tax 9% — UAE Jun 2023</span>
+    <span class="tick-item"><span class="tdot cyan"></span>Free Zone QFZP — 0% Eligible</span>
+    <span class="tick-item"><span class="tdot india"></span>India GST — 0% / 5% / 12% / 18% / 28%</span>
+    <span class="tick-item"><span class="tdot india"></span>Income Tax India — FY 2025-26 Slabs</span>
+    <span class="tick-item"><span class="tdot india"></span>TDS Rates — Section 194 Updated 2026</span>
+    <span class="tick-item"><span class="tdot nepal"></span>Nepal VAT 13% — IRD Compliant</span>
+    <span class="tick-item"><span class="tdot nepal"></span>Nepal Income Tax — 25% Corporate Rate</span>
+    <span class="tick-item"><span class="tdot gold"></span>Small Business Relief — AED 3M Threshold</span>
+    <span class="tick-item"><span class="tdot pink"></span>UAE VAT 5% — Federal Tax Authority</span>
+    <span class="tick-item"><span class="tdot purple"></span>Corporate Tax 9% — UAE Jun 2023</span>
+    <span class="tick-item"><span class="tdot cyan"></span>Free Zone QFZP — 0% Eligible</span>
+    <span class="tick-item"><span class="tdot india"></span>India GST — 0% / 5% / 12% / 18% / 28%</span>
+    <span class="tick-item"><span class="tdot india"></span>Income Tax India — FY 2025-26 Slabs</span>
+    <span class="tick-item"><span class="tdot nepal"></span>Nepal VAT 13% — IRD Compliant</span>
+    <span class="tick-item"><span class="tdot nepal"></span>Nepal Income Tax — 25% Corporate Rate</span>
   </div>
 </div>
 
-<!-- STATS -->
-<section class="stats-section" id="stats">
-  <div class="section-wrap">
-    <div class="stats-grid">
-      <div class="stat-card" data-index="0">
-        <div class="stat-card-inner">
-          <div class="stat-icon-wrap">
-            <div class="stat-icon-bg"></div>
-            <span class="stat-emoji">🏢</span>
-          </div>
-          <div class="stat-content">
-            <div class="stat-number">
-              <span class="count-up" data-target="1240">0</span>
-              <span class="stat-plus">+</span>
-            </div>
-            <div class="stat-label">Businesses Served</div>
-            <div class="stat-sublabel">Across UAE &amp; GCC</div>
-          </div>
-          <div class="stat-graph">
-            <svg viewBox="0 0 80 30" preserveAspectRatio="none">
-              <polyline points="0,28 15,22 25,25 38,14 50,18 62,8 75,4 80,2" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-        <div class="stat-card-glow"></div>
-      </div>
-
-      <div class="stat-card" data-index="1">
-        <div class="stat-card-inner">
-          <div class="stat-icon-wrap">
-            <div class="stat-icon-bg"></div>
-            <span class="stat-emoji">🧮</span>
-          </div>
-          <div class="stat-content">
-            <div class="stat-number">
-              <span class="count-up" data-target="8500">0</span>
-              <span class="stat-plus">+</span>
-            </div>
-            <div class="stat-label">Tax Calculations</div>
-            <div class="stat-sublabel">Processed this month</div>
-          </div>
-          <div class="stat-graph">
-            <svg viewBox="0 0 80 30" preserveAspectRatio="none">
-              <polyline points="0,24 12,20 22,22 32,12 44,16 55,6 68,10 80,2" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-        <div class="stat-card-glow"></div>
-      </div>
-
-      <div class="stat-card" data-index="2">
-        <div class="stat-card-inner">
-          <div class="stat-icon-wrap">
-            <div class="stat-icon-bg"></div>
-            <span class="stat-emoji">🎯</span>
-          </div>
-          <div class="stat-content">
-            <div class="stat-number">
-              <span class="count-up" data-target="99">0</span>
-              <span class="stat-plus">%</span>
-            </div>
-            <div class="stat-label">Accuracy Rate</div>
-            <div class="stat-sublabel">FTA-validated results</div>
-          </div>
-          <div class="stat-graph">
-            <svg viewBox="0 0 80 30" preserveAspectRatio="none">
-              <polyline points="0,20 20,18 35,14 50,12 65,8 80,4" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-        <div class="stat-card-glow"></div>
-      </div>
-
-      <div class="stat-card" data-index="3">
-        <div class="stat-card-inner">
-          <div class="stat-icon-wrap">
-            <div class="stat-icon-bg"></div>
-            <span class="stat-emoji">🤖</span>
-          </div>
-          <div class="stat-content">
-            <div class="stat-number">
-              <span style="font-size:inherit">24/7</span>
-            </div>
-            <div class="stat-label">AI Support</div>
-            <div class="stat-sublabel">Always available</div>
-          </div>
-          <div class="stat-graph">
-            <svg viewBox="0 0 80 30" preserveAspectRatio="none">
-              <polyline points="0,15 10,15 10,5 20,5 20,15 30,15 30,5 40,5 40,15 50,15 50,5 60,5 60,15 70,15 70,5 80,5" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-        <div class="stat-card-glow"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SERVICES -->
-<section class="services-section" id="services">
+<!-- TAX PANELS -->
+<div class="tax-panels" id="taxPanels">
   <div class="section-wrap">
 
-    <div class="section-header">
-      <div class="section-eyebrow">
-        <span class="ey-line"></span>
-        <span>Our Tools</span>
-        <span class="ey-line"></span>
-      </div>
-      <h2 class="section-title">Everything you need <br><span class="title-accent">in one platform</span></h2>
-      <p class="section-desc">Four precision tools, one unified platform — built for UAE tax compliance, powered by AI.</p>
-    </div>
+    <!-- ══════════════════════════════════
+         UAE PANEL
+    ══════════════════════════════════ -->
+    <div class="panel active" id="panel-uae">
+      <div class="sec-eyebrow uae">🇦🇪 United Arab Emirates</div>
+      <h2 class="sec-title">UAE Tax Tools</h2>
+      <p class="sec-sub">All UAE tax calculations — VAT, Corporate Tax, Free Zone QFZP and AI-powered consultation. Linked directly to your dedicated UAE tools.</p>
 
-    <div class="svc-bento">
-
-      <a class="svc-bento-card card-vat" href="vat.html">
-        <div class="sbc-bg-effect"></div>
-        <div class="sbc-top">
-          <div class="sbc-icon-wrap">
-            <div class="sbc-icon-3d">
-              <span>🧮</span>
-              <div class="icon-shadow"></div>
-            </div>
-          </div>
-          <div class="sbc-meta">
-            <span class="sbc-tag">Most Popular</span>
-          </div>
-        </div>
-        <div class="sbc-body">
-          <h3 class="sbc-title">VAT Calculator</h3>
-          <p class="sbc-desc">Instant UAE VAT calculations at 5% — accurate to the fils every time with full breakdown, invoice preview and FTA export.</p>
-        </div>
-        <div class="sbc-visual">
-          <div class="sbc-bar-preview">
-            <div class="sbp-bar" style="width:100%"><span>Base Amount</span><span>10,000</span></div>
-            <div class="sbp-bar sbp-tax"><span>VAT 5%</span><span>500</span></div>
-            <div class="sbp-bar sbp-total" style="width:100%"><span>Total Payable</span><span>10,500</span></div>
-          </div>
-        </div>
-        <div class="sbc-footer">
-          <span class="sbc-cta">Open Tool</span>
-          <span class="sbc-arrow">→</span>
-        </div>
-        <div class="sbc-glow"></div>
-        <div class="sbc-border-glow"></div>
-      </a>
-
-      <a class="svc-bento-card card-corp" href="corporate-tax.html">
-        <div class="sbc-bg-effect"></div>
-        <div class="sbc-top">
-          <div class="sbc-icon-wrap">
-            <div class="sbc-icon-3d">
-              <span>🏦</span>
-              <div class="icon-shadow"></div>
-            </div>
-          </div>
-          <div class="sbc-meta">
-            <span class="sbc-tag tag-purple">9% Rate</span>
-          </div>
-        </div>
-        <div class="sbc-body">
-          <h3 class="sbc-title">Corporate Tax</h3>
-          <p class="sbc-desc">Calculate UAE 9% corporate tax with full deductions, exemptions and filing guidance.</p>
-        </div>
-        <div class="sbc-footer">
-          <span class="sbc-cta">Open Tool</span>
-          <span class="sbc-arrow">→</span>
-        </div>
-        <div class="sbc-glow"></div>
-        <div class="sbc-border-glow"></div>
-      </a>
-
-      <a class="svc-bento-card card-free" href="freezone.html">
-        <div class="sbc-bg-effect"></div>
-        <div class="sbc-top">
-          <div class="sbc-icon-wrap">
-            <div class="sbc-icon-3d">
-              <span>🏙️</span>
-              <div class="icon-shadow"></div>
-            </div>
-          </div>
-          <div class="sbc-meta">
-            <span class="sbc-tag tag-cyan">0% Tax</span>
-          </div>
-        </div>
-        <div class="sbc-body">
-          <h3 class="sbc-title">Free Zone Tax</h3>
-          <p class="sbc-desc">Dubai Free Zone 0% tax guidance and QFZP eligibility checks with expert support.</p>
-        </div>
-        <div class="sbc-footer">
-          <span class="sbc-cta">Open Tool</span>
-          <span class="sbc-arrow">→</span>
-        </div>
-        <div class="sbc-glow"></div>
-        <div class="sbc-border-glow"></div>
-      </a>
-
-      <a class="svc-bento-card card-ai" href="ai-assistant.html">
-        <div class="sbc-bg-effect"></div>
-        <div class="sbc-top">
-          <div class="sbc-icon-wrap">
-            <div class="sbc-icon-3d">
-              <span>🤖</span>
-              <div class="icon-shadow"></div>
-            </div>
-          </div>
-          <div class="sbc-meta">
-            <span class="sbc-tag tag-gold">AI Powered</span>
-          </div>
-        </div>
-        <div class="sbc-body">
-          <h3 class="sbc-title">AI Tax Assistant</h3>
-          <p class="sbc-desc">AI-powered UAE tax advisor — ask anything, get instant expert-level answers 24/7. Trained on FTA regulations, UAE law &amp; case studies.</p>
-        </div>
-        <div class="sbc-chat-preview">
-          <div class="chat-bubble user-bubble">What is the VAT rate for exported services?</div>
-          <div class="chat-bubble ai-bubble">
-            <span class="ai-dot"></span>
-            Exported services are zero-rated (0%) under UAE VAT law, provided the recipient is outside the UAE and services are consumed abroad...
-          </div>
-        </div>
-        <div class="sbc-footer">
-          <span class="sbc-cta">Talk to AI</span>
-          <span class="sbc-arrow">→</span>
-        </div>
-        <div class="sbc-glow"></div>
-        <div class="sbc-border-glow"></div>
-      </a>
-
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how-section" id="how">
-  <div class="section-wrap">
-
-    <div class="section-header">
-      <div class="section-eyebrow">
-        <span class="ey-line"></span>
-        <span>How It Works</span>
-        <span class="ey-line"></span>
-      </div>
-      <h2 class="section-title">File your taxes in <br><span class="title-accent">3 simple steps</span></h2>
-    </div>
-
-    <div class="steps-3d">
-      <div class="step-card">
-        <div class="step-num-3d">
-          <span>01</span>
-          <div class="step-num-shadow"></div>
-        </div>
-        <div class="step-icon-3d">⚡</div>
-        <h3 class="step-title">Enter Your Figures</h3>
-        <p class="step-desc">Input your revenue, expenses or invoice amount. Our smart forms guide you through every field in under 60 seconds.</p>
-        <div class="step-connector">
-          <div class="connector-line"></div>
-          <div class="connector-dot"></div>
-        </div>
+      <!-- Dedicated UAE tool links -->
+      <div class="uae-tools-grid">
+        <a class="uae-tool-link utl-vat" href="vat.html">
+          <span class="tool-icon">🧮</span>
+          <div class="tool-name">VAT Calculator</div>
+          <div class="tool-desc">UAE 5% VAT with invoice export & FTA breakdown</div>
+          <span class="tool-arrow">Open Full Tool →</span>
+        </a>
+        <a class="uae-tool-link utl-corp" href="corporate-tax.html">
+          <span class="tool-icon">🏦</span>
+          <div class="tool-name">Corporate Tax</div>
+          <div class="tool-desc">9% UAE corp tax with deductions & filing guide</div>
+          <span class="tool-arrow">Open Full Tool →</span>
+        </a>
+        <a class="uae-tool-link utl-free" href="freezone.html">
+          <span class="tool-icon">🏙️</span>
+          <div class="tool-name">Free Zone Tax</div>
+          <div class="tool-desc">QFZP eligibility check & 0% guidance</div>
+          <span class="tool-arrow">Open Full Tool →</span>
+        </a>
+        <a class="uae-tool-link utl-ai" href="ai-assistant.html">
+          <span class="tool-icon">🤖</span>
+          <div class="tool-name">AI Tax Assistant</div>
+          <div class="tool-desc">24/7 UAE tax expert — ask anything</div>
+          <span class="tool-arrow">Open Full Tool →</span>
+        </a>
       </div>
 
-      <div class="step-card">
-        <div class="step-num-3d">
-          <span>02</span>
-          <div class="step-num-shadow"></div>
-        </div>
-        <div class="step-icon-3d">🤖</div>
-        <h3 class="step-title">AI Calculates &amp; Checks</h3>
-        <p class="step-desc">Our AI engine validates against FTA rules, applies correct rates, exemptions and deductions automatically.</p>
-        <div class="step-connector">
-          <div class="connector-line"></div>
-          <div class="connector-dot"></div>
-        </div>
+      <!-- UAE Quick Calculator -->
+      <div class="tool-tabs" id="uaeTabs">
+        <div class="ttab uae active" onclick="setTool('uae','vat')">🧮 VAT Calculator</div>
+        <div class="ttab uae" onclick="setTool('uae','corp')">🏦 Corporate Tax</div>
+        <div class="ttab uae" onclick="setTool('uae','freezone')">🏙️ Free Zone</div>
+        <div class="ttab uae" onclick="setTool('uae','excise')">🚬 Excise Tax</div>
       </div>
 
-      <div class="step-card">
-        <div class="step-num-3d">
-          <span>03</span>
-          <div class="step-num-shadow"></div>
+      <div id="uaeCalcArea"></div>
+
+      <!-- UAE Info Cards -->
+      <h3 style="font-size:22px;font-weight:800;margin-bottom:24px;margin-top:48px;color:#fff;">UAE Tax Overview</h3>
+      <div class="info-grid">
+        <div class="info-card ic-uae">
+          <div class="info-card-top">
+            <div class="info-card-icon">🧮</div>
+            <span class="info-card-tag">Standard</span>
+          </div>
+          <div class="info-card-title">Value Added Tax (VAT)</div>
+          <div class="info-card-desc">Introduced January 2018 under Federal Decree-Law No. 8. Applies to most goods & services in the UAE.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">Standard Rate</span><span class="icrate-val" style="color:var(--pink)">5%</span></div>
+            <div class="icrate"><span class="icrate-name">Zero-Rated (Exports)</span><span class="icrate-val" style="color:var(--cyan)">0%</span></div>
+            <div class="icrate"><span class="icrate-name">Exempt (Healthcare, Education)</span><span class="icrate-val" style="color:var(--green)">Exempt</span></div>
+            <div class="icrate"><span class="icrate-name">Registration Threshold</span><span class="icrate-val">AED 375,000</span></div>
+          </div>
+          <button class="info-card-cta" onclick="location.href='vat.html'">Full VAT Tool <span class="cta-arrow">→</span></button>
         </div>
-        <div class="step-icon-3d">✅</div>
-        <h3 class="step-title">Get Your Report</h3>
-        <p class="step-desc">Download your FTA-ready report, get your tax breakdown and file directly. Done in minutes.</p>
+        <div class="info-card ic-uae2">
+          <div class="info-card-top">
+            <div class="info-card-icon">🏦</div>
+            <span class="info-card-tag">June 2023</span>
+          </div>
+          <div class="info-card-title">Corporate Tax</div>
+          <div class="info-card-desc">UAE Corporate Tax came into effect June 2023 under Federal Decree-Law No. 47. Applies to business income.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">Standard Rate</span><span class="icrate-val" style="color:var(--purple)">9%</span></div>
+            <div class="icrate"><span class="icrate-name">Taxable Income ≤ AED 375K</span><span class="icrate-val" style="color:var(--cyan)">0%</span></div>
+            <div class="icrate"><span class="icrate-name">Free Zone QFZP (Qualifying)</span><span class="icrate-val" style="color:var(--green)">0%</span></div>
+            <div class="icrate"><span class="icrate-name">Small Business Relief ≤ AED 3M</span><span class="icrate-val" style="color:var(--gold)">0% (Relief)</span></div>
+          </div>
+          <button class="info-card-cta" onclick="location.href='corporate-tax.html'">Full Corp Tax Tool <span class="cta-arrow">→</span></button>
+        </div>
+        <div class="info-card ic-uae3">
+          <div class="info-card-top">
+            <div class="info-card-icon">🏙️</div>
+            <span class="info-card-tag">0% Eligible</span>
+          </div>
+          <div class="info-card-title">Free Zone Tax (QFZP)</div>
+          <div class="info-card-desc">Qualifying Free Zone Persons enjoy 0% corporate tax on qualifying income if conditions are met.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">Qualifying Income</span><span class="icrate-val" style="color:var(--cyan)">0%</span></div>
+            <div class="icrate"><span class="icrate-name">Non-Qualifying Income</span><span class="icrate-val" style="color:var(--pink)">9%</span></div>
+            <div class="icrate"><span class="icrate-name">Mainland Dealings Tax</span><span class="icrate-val" style="color:var(--gold)">9%</span></div>
+            <div class="icrate"><span class="icrate-name">Major Free Zones</span><span class="icrate-val">DIFC, DMCC, JAFZA</span></div>
+          </div>
+          <button class="info-card-cta" onclick="location.href='freezone.html'">Free Zone Checker <span class="cta-arrow">→</span></button>
+        </div>
+        <div class="info-card ic-uae4">
+          <div class="info-card-top">
+            <div class="info-card-icon">🚬</div>
+            <span class="info-card-tag">Excise</span>
+          </div>
+          <div class="info-card-title">Excise Tax</div>
+          <div class="info-card-desc">UAE Excise Tax targets harmful goods. Effective October 2017 with expanded scope in 2019.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">Tobacco Products</span><span class="icrate-val" style="color:var(--pink)">100%</span></div>
+            <div class="icrate"><span class="icrate-name">Energy Drinks</span><span class="icrate-val" style="color:var(--orange)">100%</span></div>
+            <div class="icrate"><span class="icrate-name">Carbonated Drinks</span><span class="icrate-val" style="color:var(--gold)">50%</span></div>
+            <div class="icrate"><span class="icrate-name">Sweetened Beverages</span><span class="icrate-val" style="color:var(--purple)">50%</span></div>
+          </div>
+        </div>
       </div>
     </div>
 
-  </div>
-</section>
+    <!-- ══════════════════════════════════
+         INDIA PANEL
+    ══════════════════════════════════ -->
+    <div class="panel" id="panel-india">
+      <div class="sec-eyebrow india">🇮🇳 Republic of India</div>
+      <h2 class="sec-title">India Tax Tools</h2>
+      <p class="sec-sub">GST, Income Tax, TDS, Corporate Tax, Dividend Tax and more — FY 2025-26 slabs and rates, CBDT compliant.</p>
 
-<!-- FEATURES STRIP (NEW) -->
-<section class="features-strip-section">
-  <div class="section-wrap">
-    <div class="features-strip">
-      <div class="feature-item">
-        <div class="fi-icon">🔒</div>
-        <div class="fi-text">
-          <div class="fi-title">Bank-Grade Security</div>
-          <div class="fi-sub">256-bit SSL encryption</div>
+      <div class="tool-tabs" id="indiaTabs">
+        <div class="ttab india active" onclick="setTool('india','gst')">🧾 GST Calculator</div>
+        <div class="ttab india" onclick="setTool('india','income')">💰 Income Tax</div>
+        <div class="ttab india" onclick="setTool('india','corp')">🏢 Corporate Tax</div>
+        <div class="ttab india" onclick="setTool('india','tds')">📋 TDS Calculator</div>
+        <div class="ttab india" onclick="setTool('india','capital')">📈 Capital Gains</div>
+      </div>
+
+      <div id="indiaCalcArea"></div>
+
+      <h3 style="font-size:22px;font-weight:800;margin-bottom:24px;margin-top:48px;color:#fff;">India Tax Overview</h3>
+      <div class="info-grid">
+        <div class="info-card ic-india">
+          <div class="info-card-top">
+            <div class="info-card-icon">🧾</div>
+            <span class="info-card-tag">GST 2017</span>
+          </div>
+          <div class="info-card-title">Goods & Services Tax</div>
+          <div class="info-card-desc">Unified indirect tax system introduced July 2017. Replaces VAT, Service Tax, Excise. Multi-slab structure.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">Essential Goods</span><span class="icrate-val" style="color:var(--green)">0% / 5%</span></div>
+            <div class="icrate"><span class="icrate-name">Standard Goods</span><span class="icrate-val" style="color:var(--india)">12% / 18%</span></div>
+            <div class="icrate"><span class="icrate-name">Luxury / Demerit</span><span class="icrate-val" style="color:var(--pink)">28%</span></div>
+            <div class="icrate"><span class="icrate-name">Services (General)</span><span class="icrate-val" style="color:var(--gold)">18%</span></div>
+          </div>
+        </div>
+        <div class="info-card ic-india2">
+          <div class="info-card-top">
+            <div class="info-card-icon">💰</div>
+            <span class="info-card-tag">FY 2025-26</span>
+          </div>
+          <div class="info-card-title">Income Tax (Individual)</div>
+          <div class="info-card-desc">New Tax Regime is now default for individuals from FY 2023-24. Revised slabs for FY 2025-26 budget.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">Upto ₹4 Lakh (New Regime)</span><span class="icrate-val" style="color:var(--green)">0%</span></div>
+            <div class="icrate"><span class="icrate-name">₹4L – ₹8L</span><span class="icrate-val" style="color:var(--india)">5%</span></div>
+            <div class="icrate"><span class="icrate-name">₹8L – ₹12L</span><span class="icrate-val" style="color:var(--gold)">10%</span></div>
+            <div class="icrate"><span class="icrate-name">₹12L – ₹16L</span><span class="icrate-val" style="color:var(--orange)">15%</span></div>
+            <div class="icrate"><span class="icrate-name">₹20L – ₹24L</span><span class="icrate-val" style="color:var(--pink)">25%</span></div>
+            <div class="icrate"><span class="icrate-name">Above ₹24L</span><span class="icrate-val" style="color:var(--purple)">30%</span></div>
+          </div>
+        </div>
+        <div class="info-card ic-india3">
+          <div class="info-card-top">
+            <div class="info-card-icon">🏢</div>
+            <span class="info-card-tag">Domestic</span>
+          </div>
+          <div class="info-card-title">Corporate Tax</div>
+          <div class="info-card-desc">Base corporate tax rates. Surcharge and cess apply additionally. Section 115BAB for new manufacturing companies.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">Domestic Company (General)</span><span class="icrate-val" style="color:#8888ff">30%</span></div>
+            <div class="icrate"><span class="icrate-name">Domestic (Sec 115BAA opt)</span><span class="icrate-val" style="color:var(--india)">22%</span></div>
+            <div class="icrate"><span class="icrate-name">New Manufacturing (Sec 115BAB)</span><span class="icrate-val" style="color:var(--green)">15%</span></div>
+            <div class="icrate"><span class="icrate-name">Foreign Companies</span><span class="icrate-val" style="color:var(--orange)">40%</span></div>
+          </div>
+        </div>
+        <div class="info-card ic-india4">
+          <div class="info-card-top">
+            <div class="info-card-icon">📋</div>
+            <span class="info-card-tag">TDS</span>
+          </div>
+          <div class="info-card-title">TDS (Tax Deducted at Source)</div>
+          <div class="info-card-desc">TDS is deducted by payer before remitting to payee. Key sections updated in Finance Act 2024.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">Salary (Sec 192)</span><span class="icrate-val" style="color:var(--india)">Slab Rate</span></div>
+            <div class="icrate"><span class="icrate-name">Interest (Sec 194A)</span><span class="icrate-val" style="color:var(--gold)">10%</span></div>
+            <div class="icrate"><span class="icrate-name">Contractor (Sec 194C)</span><span class="icrate-val" style="color:var(--orange)">1% / 2%</span></div>
+            <div class="icrate"><span class="icrate-name">Rent (Sec 194I)</span><span class="icrate-val" style="color:var(--pink)">2% / 10%</span></div>
+            <div class="icrate"><span class="icrate-name">Professional (Sec 194J)</span><span class="icrate-val" style="color:var(--purple)">10%</span></div>
+          </div>
         </div>
       </div>
-      <div class="fi-divider"></div>
-      <div class="feature-item">
-        <div class="fi-icon">🇦🇪</div>
-        <div class="fi-text">
-          <div class="fi-title">FTA Compliant</div>
-          <div class="fi-sub">Always up-to-date with UAE law</div>
-        </div>
-      </div>
-      <div class="fi-divider"></div>
-      <div class="feature-item">
-        <div class="fi-icon">⚡</div>
-        <div class="fi-text">
-          <div class="fi-title">Instant Results</div>
-          <div class="fi-sub">Calculate in under 10 seconds</div>
-        </div>
-      </div>
-      <div class="fi-divider"></div>
-      <div class="feature-item">
-        <div class="fi-icon">📄</div>
-        <div class="fi-text">
-          <div class="fi-title">Export Ready</div>
-          <div class="fi-sub">PDF &amp; FTA portal format</div>
-        </div>
-      </div>
-      <div class="fi-divider"></div>
-      <div class="feature-item">
-        <div class="fi-icon">🆓</div>
-        <div class="fi-text">
-          <div class="fi-title">Free to Use</div>
-          <div class="fi-sub">No credit card required</div>
-        </div>
+
+      <!-- Capital Gains Comparison Table -->
+      <h3 style="font-size:18px;font-weight:800;margin-bottom:16px;color:#fff;">India Capital Gains Tax (FY 2025-26)</h3>
+      <div class="comp-table-wrap">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Asset Type</th>
+              <th>Holding Period</th>
+              <th>STCG Rate</th>
+              <th>LTCG Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Listed Equity Shares</td>
+              <td>&lt; 12 months STCG</td>
+              <td><span class="comp-badge" style="background:rgba(255,45,120,0.15);color:var(--pink);">20%</span></td>
+              <td><span class="comp-badge" style="background:rgba(6,255,165,0.12);color:var(--green);">12.5% (>₹1.25L)</span></td>
+            </tr>
+            <tr>
+              <td>Equity Mutual Funds</td>
+              <td>&lt; 12 months STCG</td>
+              <td><span class="comp-badge" style="background:rgba(255,45,120,0.15);color:var(--pink);">20%</span></td>
+              <td><span class="comp-badge" style="background:rgba(6,255,165,0.12);color:var(--green);">12.5% (>₹1.25L)</span></td>
+            </tr>
+            <tr>
+              <td>Property / Real Estate</td>
+              <td>&lt; 24 months STCG</td>
+              <td><span class="comp-badge" style="background:rgba(255,153,51,0.12);color:var(--india);">Slab Rate</span></td>
+              <td><span class="comp-badge" style="background:rgba(180,79,255,0.12);color:var(--purple);">12.5% (no index.)</span></td>
+            </tr>
+            <tr>
+              <td>Debt Mutual Funds</td>
+              <td>Any</td>
+              <td colspan="2" style="text-align:center;color:rgba(255,255,255,0.5);">Slab Rate (both STCG & LTCG post Apr 2023)</td>
+            </tr>
+            <tr>
+              <td>Gold / Physical Assets</td>
+              <td>&lt; 24 months STCG</td>
+              <td><span class="comp-badge" style="background:rgba(255,209,102,0.12);color:var(--gold);">Slab Rate</span></td>
+              <td><span class="comp-badge" style="background:rgba(0,245,255,0.1);color:var(--cyan);">12.5%</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- BLOG / INSIGHTS -->
-<section class="blog-section" id="blog">
-  <div class="section-wrap">
+    <!-- ══════════════════════════════════
+         NEPAL PANEL
+    ══════════════════════════════════ -->
+    <div class="panel" id="panel-nepal">
+      <div class="sec-eyebrow nepal">🇳🇵 Federal Democratic Republic of Nepal</div>
+      <h2 class="sec-title">Nepal Tax Tools</h2>
+      <p class="sec-sub">VAT, Income Tax, Corporate Tax, TDS, Customs Duty and more — IRD Nepal compliant, FY 2081/82 (2024/25) rates.</p>
 
-    <div class="section-header blog-header-row">
-      <div>
-        <div class="section-eyebrow" style="text-align:left">
-          <span class="ey-line"></span>
-          <span>Latest News</span>
-          <span class="ey-line"></span>
-        </div>
-        <h2 class="section-title">UAE Tax <span class="title-accent">Updates</span></h2>
-      </div>
-      <a href="#" class="view-all-btn">View All <span>→</span></a>
-    </div>
-
-    <div class="blog-masonry">
-
-      <article class="blog-post bp-large">
-        <div class="bp-image bp-img-1">
-          <div class="bp-img-overlay"></div>
-          <span class="bp-category cat-corp">Corporate Tax</span>
-        </div>
-        <div class="bp-content">
-          <time class="bp-date">June 2026</time>
-          <h3 class="bp-title">UAE Corporate Tax 2024: What Changed for Every Business</h3>
-          <p class="bp-excerpt">Key updates to the UAE corporate tax regime every business must know — from small business relief thresholds to multinational group rules.</p>
-          <div class="bp-footer">
-            <div class="bp-author">
-              <div class="bp-author-avatar">E</div>
-              <span>Emunib Team</span>
-            </div>
-            <a href="#" class="bp-read-more">Read More →</a>
-          </div>
-        </div>
-        <div class="bp-glow"></div>
-      </article>
-
-      <div class="blog-stack">
-        <article class="blog-post bp-small">
-          <div class="bp-content">
-            <span class="bp-category cat-vat">VAT</span>
-            <h3 class="bp-title">VAT Filing Deadlines You Can't Miss in 2026</h3>
-            <p class="bp-excerpt">Complete calendar of FTA deadlines for UAE VAT-registered businesses.</p>
-            <div class="bp-footer">
-              <time class="bp-date">May 2026</time>
-              <a href="#" class="bp-read-more">Read →</a>
-            </div>
-          </div>
-          <div class="bp-glow"></div>
-        </article>
-
-        <article class="blog-post bp-small">
-          <div class="bp-content">
-            <span class="bp-category cat-free">Free Zone</span>
-            <h3 class="bp-title">QFZP Status: New Eligibility Rules 2026</h3>
-            <p class="bp-excerpt">Updated criteria for Qualifying Free Zone Person status under the latest UAE law.</p>
-            <div class="bp-footer">
-              <time class="bp-date">Apr 2026</time>
-              <a href="#" class="bp-read-more">Read →</a>
-            </div>
-          </div>
-          <div class="bp-glow"></div>
-        </article>
-
-        <article class="blog-post bp-small">
-          <div class="bp-content">
-            <span class="bp-category cat-corp">Compliance</span>
-            <h3 class="bp-title">Transfer Pricing: New UAE Documentation Requirements</h3>
-            <p class="bp-excerpt">What businesses need to prepare before the next filing period.</p>
-            <div class="bp-footer">
-              <time class="bp-date">Mar 2026</time>
-              <a href="#" class="bp-read-more">Read →</a>
-            </div>
-          </div>
-          <div class="bp-glow"></div>
-        </article>
+      <div class="tool-tabs" id="nepalTabs">
+        <div class="ttab nepal active" onclick="setTool('nepal','vat')">🧾 VAT Calculator</div>
+        <div class="ttab nepal" onclick="setTool('nepal','income')">💰 Income Tax</div>
+        <div class="ttab nepal" onclick="setTool('nepal','corp')">🏢 Corporate Tax</div>
+        <div class="ttab nepal" onclick="setTool('nepal','tds')">📋 TDS / WHT</div>
       </div>
 
-    </div>
-  </div>
-</section>
+      <div id="nepalCalcArea"></div>
 
-<!-- TESTIMONIALS (NEW) -->
-<section class="testimonials-section" id="testimonials">
-  <div class="section-wrap">
-
-    <div class="section-header">
-      <div class="section-eyebrow">
-        <span class="ey-line"></span>
-        <span>Trusted By</span>
-        <span class="ey-line"></span>
-      </div>
-      <h2 class="section-title">What businesses <span class="title-accent">say about us</span></h2>
-    </div>
-
-    <div class="testi-grid">
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"Cut our VAT filing time from 4 hours to under 10 minutes. The AI catches errors we used to miss every quarter."</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,#FF2D78,#B44FFF)">A</div>
-          <div>
-            <div class="testi-name">Ahmed Al-Rashidi</div>
-            <div class="testi-role">CFO, Dubai Retail Group</div>
+      <h3 style="font-size:22px;font-weight:800;margin-bottom:24px;margin-top:48px;color:#fff;">Nepal Tax Overview</h3>
+      <div class="info-grid">
+        <div class="info-card ic-nepal">
+          <div class="info-card-top">
+            <div class="info-card-icon">🧾</div>
+            <span class="info-card-tag">IRD Nepal</span>
+          </div>
+          <div class="info-card-title">Value Added Tax (VAT)</div>
+          <div class="info-card-desc">Nepal VAT introduced in 1997 under VAT Act 2052. Single rate system unlike India's GST.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">Standard Rate</span><span class="icrate-val" style="color:var(--nepal)">13%</span></div>
+            <div class="icrate"><span class="icrate-name">Exports</span><span class="icrate-val" style="color:var(--cyan)">0%</span></div>
+            <div class="icrate"><span class="icrate-name">Exempt (Basic Agri etc.)</span><span class="icrate-val" style="color:var(--green)">Exempt</span></div>
+            <div class="icrate"><span class="icrate-name">Registration Threshold</span><span class="icrate-val">NPR 20 Lakh/yr</span></div>
           </div>
         </div>
-        <div class="testi-glow"></div>
-      </div>
-
-      <div class="testi-card testi-featured">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"We manage 14 free zone entities. Emunib's QFZP eligibility checker saves us thousands in consultant fees annually."</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,#00F5FF,#06FFA5)">S</div>
-          <div>
-            <div class="testi-name">Sara Mahmoud</div>
-            <div class="testi-role">Tax Director, DMCC Licensed</div>
+        <div class="info-card ic-nepal2">
+          <div class="info-card-top">
+            <div class="info-card-icon">💰</div>
+            <span class="info-card-tag">FY 2081/82</span>
+          </div>
+          <div class="info-card-title">Income Tax (Individual)</div>
+          <div class="info-card-desc">Progressive income tax slabs for individuals. Additional tax on income above certain thresholds.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">Upto NPR 5,00,000</span><span class="icrate-val" style="color:var(--green)">1%</span></div>
+            <div class="icrate"><span class="icrate-name">NPR 5L – 7L</span><span class="icrate-val" style="color:var(--gold)">10%</span></div>
+            <div class="icrate"><span class="icrate-name">NPR 7L – 10L</span><span class="icrate-val" style="color:var(--india)">20%</span></div>
+            <div class="icrate"><span class="icrate-name">NPR 10L – 20L</span><span class="icrate-val" style="color:var(--orange)">30%</span></div>
+            <div class="icrate"><span class="icrate-name">Above NPR 20L</span><span class="icrate-val" style="color:var(--pink)">36%</span></div>
           </div>
         </div>
-        <div class="testi-glow"></div>
-      </div>
-
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"Finally a platform that understands UAE corporate tax nuances. The AI assistant answered questions my accountant charged AED 800 to answer."</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,#FFD166,#FF7043)">R</div>
-          <div>
-            <div class="testi-name">Raj Patel</div>
-            <div class="testi-role">Founder, Sharjah SME</div>
+        <div class="info-card ic-nepal3">
+          <div class="info-card-top">
+            <div class="info-card-icon">🏢</div>
+            <span class="info-card-tag">Corporate</span>
+          </div>
+          <div class="info-card-title">Corporate Tax</div>
+          <div class="info-card-desc">Corporate income tax rates in Nepal vary by industry type. Listed companies get concession.</div>
+          <div class="info-card-rates">
+            <div class="icrate"><span class="icrate-name">General Companies</span><span class="icrate-val" style="color:var(--nepal)">25%</span></div>
+            <div class="icrate"><span class="icrate-name">Banks / Finance</span><span class="icrate-val" style="color:var(--orange)">30%</span></div>
+            <div class="icrate"><span class="icrate-name">Listed Companies (concession)</span><span class="icrate-val" style="color:var(--green)">23%</span></div>
+            <div class="icrate"><span class="icrate-name">Special Industries</span><span class="icrate-val" style="color:var(--cyan)">15% – 20%</span></div>
           </div>
         </div>
-        <div class="testi-glow"></div>
       </div>
     </div>
 
   </div>
-</section>
-
-<!-- CTA BANNER -->
-<section class="cta-section">
-  <div class="section-wrap">
-    <div class="cta-card">
-      <div class="cta-bg-orb cta-orb-1"></div>
-      <div class="cta-bg-orb cta-orb-2"></div>
-      <div class="cta-grid-overlay"></div>
-      <div class="cta-content">
-        <div class="cta-badge">🇦🇪 Free for UAE Businesses</div>
-        <h2 class="cta-title">Ready to simplify your UAE taxes?</h2>
-        <p class="cta-sub">Join 1,240+ businesses already using Emunib for faster, more accurate tax compliance.</p>
-        <div class="cta-actions">
-          <button class="btn-primary" onclick="location.href='vat.html'">
-            <div class="btn-primary-bg"></div>
-            <span class="btn-primary-content">
-              <span class="btn-icon">⚡</span>
-              <span>Start for Free</span>
-            </span>
-            <div class="btn-primary-particles">
-              <span></span><span></span><span></span><span></span>
-            </div>
-          </button>
-          <button class="btn-ghost" onclick="location.href='ai-assistant.html'">
-            <div class="btn-ghost-border"></div>
-            <span>Talk to AI Expert</span>
-            <span class="btn-ghost-arrow">→</span>
-          </button>
-        </div>
-      </div>
-      <div class="cta-decoration">
-        <div class="cta-deco-ring r1"></div>
-        <div class="cta-deco-ring r2"></div>
-        <div class="cta-deco-ring r3"></div>
-        <div class="cta-deco-icon">🏛️</div>
-      </div>
-    </div>
-  </div>
-</section>
+</div>
 
 <!-- FOOTER -->
 <footer class="site-footer">
-  <div class="footer-glow-bar"></div>
-  <div class="section-wrap">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a class="nav-logo footer-logo-link" href="index.html">
-          <div class="logo-crystal logo-crystal-sm">
-            <div class="crystal-face face-front"></div>
-            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
-              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-              <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
-          </div>
-          <span class="logo-text-main" style="font-size:22px">Emunib</span>
-        </a>
-        <p class="footer-tagline">The UAE's most trusted AI-powered tax platform. Built for compliance, designed for speed.</p>
-        <div class="footer-social">
-          <a href="#" class="social-btn">in</a>
-          <a href="#" class="social-btn">𝕏</a>
-          <a href="#" class="social-btn">f</a>
+  <div class="footer-glow"></div>
+  <div class="footer-inner">
+    <div>
+      <div class="nav-logo" style="cursor:default;">
+        <div class="logo-crystal" style="width:36px;height:36px;border-radius:12px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" width="18" height="18">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
         </div>
+        <span class="logo-text-main" style="font-size:20px;">Emunib</span>
       </div>
-
-      <div class="footer-cols">
-        <div class="footer-col">
-          <div class="fc-heading">Platform</div>
-          <a href="vat.html">VAT Calculator</a>
-          <a href="corporate-tax.html">Corporate Tax</a>
-          <a href="freezone.html">Free Zone Tax</a>
-          <a href="ai-assistant.html">AI Assistant</a>
-        </div>
-        <div class="footer-col">
-          <div class="fc-heading">Resources</div>
-          <a href="#">UAE Tax Guide</a>
-          <a href="#">FTA Portal</a>
-          <a href="#">Filing Calendar</a>
-          <a href="#">Tax Blog</a>
-        </div>
-        <div class="footer-col">
-          <div class="fc-heading">Company</div>
-          <a href="#">About Emunib</a>
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Use</a>
-          <a href="#">Contact</a>
-        </div>
+      <div class="footer-brand-text">UAE, India & Nepal's trusted multi-country tax calculator platform. Built for compliance, designed for simplicity.</div>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="fc-head">UAE Tools</div>
+        <a href="vat.html">VAT Calculator</a>
+        <a href="corporate-tax.html">Corporate Tax</a>
+        <a href="freezone.html">Free Zone Tax</a>
+        <a href="ai-assistant.html">AI Assistant</a>
+      </div>
+      <div class="footer-col">
+        <div class="fc-head">India Tools</div>
+        <a href="#" onclick="switchCountry('india');setTool('india','gst');return false;">GST Calculator</a>
+        <a href="#" onclick="switchCountry('india');setTool('india','income');return false;">Income Tax</a>
+        <a href="#" onclick="switchCountry('india');setTool('india','corp');return false;">Corporate Tax</a>
+        <a href="#" onclick="switchCountry('india');setTool('india','tds');return false;">TDS Calculator</a>
+      </div>
+      <div class="footer-col">
+        <div class="fc-head">Nepal Tools</div>
+        <a href="#" onclick="switchCountry('nepal');setTool('nepal','vat');return false;">VAT Calculator</a>
+        <a href="#" onclick="switchCountry('nepal');setTool('nepal','income');return false;">Income Tax</a>
+        <a href="#" onclick="switchCountry('nepal');setTool('nepal','corp');return false;">Corporate Tax</a>
+        <a href="#" onclick="switchCountry('nepal');setTool('nepal','tds');return false;">TDS / WHT</a>
       </div>
     </div>
-
-    <div class="footer-bottom">
-      <span class="footer-copy">© 2026 Emunib. All Rights Reserved.</span>
-      <div class="footer-tags">
-        <span>🇦🇪 UAE</span>
-        <span>FTA Compliant</span>
-        <span>ISO 27001</span>
-      </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Emunib. All Rights Reserved.</span>
+    <div class="footer-tags">
+      <span class="ftag">🇦🇪 UAE FTA</span>
+      <span class="ftag">🇮🇳 CBDT India</span>
+      <span class="ftag">🇳🇵 IRD Nepal</span>
+      <span class="ftag">ISO 27001</span>
     </div>
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script>
+'use strict';
+
+/* ── STATE ── */
+let currentCountry = 'uae';
+let currentTool = { uae:'vat', india:'gst', nepal:'vat' };
+let lastResult = {};
+
+/* ── PARTICLES ── */
+(function(){
+  const canvas = document.getElementById('particleCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W,H,particles=[];
+  const COLORS=['#FF2D78','#B44FFF','#00F5FF','#06FFA5'];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  function mkp(){const a=Math.random()*Math.PI*2,s=0.1+Math.random()*0.35;return{x:Math.random()*W,y:Math.random()*H,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:0.7+Math.random()*1.5,a:0.2+Math.random()*0.5,c:COLORS[~~(Math.random()*COLORS.length)],p:Math.random()*Math.PI*2,ps:0.01+Math.random()*0.02};}
+  function init(){resize();particles=[];for(let i=0;i<90;i++)particles.push(mkp());}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.p+=p.ps;
+      if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;
+      if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;
+      const al=p.a*(0.5+0.5*Math.sin(p.p));
+      const rgb=p.c.match(/\w\w/g).map(h=>parseInt(h,16));
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${rgb[0]},${rgb[1]},${rgb[2]},${al})`;ctx.fill();
+    });
+    for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){
+      const a=particles[i],b=particles[j];
+      const d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<110){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(180,79,255,${(1-d/110)*0.08})`;ctx.lineWidth=0.5;ctx.stroke();}
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',()=>{resize();particles.forEach(p=>{if(p.x>W)p.x=Math.random()*W;if(p.y>H)p.y=Math.random()*H;});});
+  init();draw();
+})();
+
+/* ── COUNTRY SWITCH ── */
+function switchCountry(c){
+  currentCountry=c;
+  document.querySelectorAll('.cpill').forEach(p=>p.classList.remove('active'));
+  document.querySelector('.cpill.'+c)?.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+c)?.classList.add('active');
+  document.getElementById('navCountrySelect').value=c;
+  renderCalc(c, currentTool[c]);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── TOOL SWITCH ── */
+function setTool(country, tool){
+  currentTool[country]=tool;
+  const tabs = document.querySelectorAll('#'+country+'Tabs .ttab');
+  tabs.forEach(t=>t.classList.remove('active'));
+  // find matching tab
+  tabs.forEach(t=>{
+    if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+tool+"'")){
+      t.classList.add('active');
+    }
+  });
+  renderCalc(country, tool);
+}
+
+function scrollToCalc(){
+  document.getElementById('taxPanels').scrollIntoView({behavior:'smooth'});
+}
+
+/* ── RENDER CALCULATOR ── */
+function renderCalc(country, tool){
+  const areaId = country+'CalcArea';
+  const area = document.getElementById(areaId);
+  if(!area) return;
+
+  const defs = getCalcDef(country, tool);
+  area.innerHTML = buildCalcHTML(country, tool, defs);
+  initCalcEvents(country, tool, defs);
+}
+
+/* ── CALC DEFINITIONS ── */
+function getCalcDef(country, tool){
+  const defs = {
+    uae:{
+      vat:{
+        title:'VAT Calculator',subtitle:'UAE Federal Tax Authority — 5% Standard Rate',
+        currency:'AED',currencySymbol:'AED',
+        amountLabel:'Invoice / Sale Amount',defaultAmount:10000,maxAmount:1000000,
+        fields:[],
+        options:[
+          {label:'Standard 5%',rate:5,icon:'📊',note:'Most goods & services'},
+          {label:'Zero-Rated 0%',rate:0,icon:'✈️',note:'Exports, International transport'},
+          {label:'Exempt',rate:0,icon:'🏥',note:'Healthcare, Education, Bare Land'},
+        ],
+        calc:(amt,opt)=>{
+          const tax=amt*opt.rate/100;
+          return[
+            {label:'Base Amount (excl. VAT)',val:fmt(amt,'AED')},
+            {label:'VAT @ '+opt.rate+'%',val:fmt(tax,'AED'),cls:'uae'},
+            {label:'Total Payable (incl. VAT)',val:fmt(amt+tax,'AED'),isTotal:true},
+          ];
+        },
+        notes:['UAE VAT registration mandatory if annual turnover ≥ AED 375,000','Voluntary registration if turnover ≥ AED 187,500','File VAT return monthly or quarterly with FTA']
+      },
+      corp:{
+        title:'Corporate Tax Calculator',subtitle:'UAE Federal Decree-Law No. 47 of 2022',
+        currency:'AED',currencySymbol:'AED',
+        amountLabel:'Taxable Income (Annual)',defaultAmount:500000,maxAmount:10000000,
+        fields:[
+          {id:'relief',type:'checkbox',label:'Small Business Relief (≤ AED 3M revenue, SME)'}
+        ],
+        options:[
+          {label:'Standard 9%',rate:9,icon:'🏦',note:'General businesses'},
+          {label:'Free Zone QFZP 0%',rate:0,icon:'🏙️',note:'Qualifying income only'},
+          {label:'Exempt Entity',rate:0,icon:'🏛️',note:'Government, extractive business'},
+        ],
+        calc:(amt,opt,fields)=>{
+          let rate=opt.rate;
+          let taxable=amt;
+          if(fields.relief&&rate===9){
+            if(amt<=375000){taxable=0;rate=0;}
+            else{taxable=amt-375000;}
+          }
+          const tax=taxable*rate/100;
+          const rows=[
+            {label:'Gross Taxable Income',val:fmt(amt,'AED')},
+          ];
+          if(fields.relief&&rate===9)rows.push({label:'Tax-Free Threshold (AED 375K)',val:fmt(Math.min(amt,375000),'AED'),cls:'uae'});
+          rows.push({label:'Corporate Tax @ '+opt.rate+'%',val:fmt(tax,'AED'),cls:'uae'});
+          rows.push({label:'Net Tax Payable',val:fmt(tax,'AED'),isTotal:true});
+          return rows;
+        },
+        notes:['First AED 375,000 of taxable income is 0% for all entities','Small Business Relief available if revenue ≤ AED 3 million','QFZP must maintain substance in the Free Zone to qualify for 0%']
+      },
+      freezone:{
+        title:'Free Zone Tax Checker',subtitle:'QFZP Eligibility — UAE Corporate Tax Law',
+        currency:'AED',currencySymbol:'AED',
+        amountLabel:'Qualifying Income (Annual)',defaultAmount:500000,maxAmount:5000000,
+        fields:[
+          {id:'substance',type:'checkbox',label:'Adequate Substance in Free Zone'},
+          {id:'nonqual',type:'number',label:'Non-Qualifying Income (AED)',placeholder:'0'},
+        ],
+        options:[
+          {label:'DMCC',rate:0,icon:'🏙️',note:'Dubai Multi Commodities Centre'},
+          {label:'DIFC',rate:0,icon:'🏦',note:'Dubai International Financial Centre'},
+          {label:'JAFZA',rate:0,icon:'🚢',note:'Jebel Ali Free Zone'},
+          {label:'Other FZ',rate:0,icon:'🌐',note:'Other Qualifying Free Zone'},
+        ],
+        calc:(amt,opt,fields)=>{
+          if(!fields.substance){
+            return[
+              {label:'Qualifying Income',val:fmt(amt,'AED')},
+              {label:'QFZP Status',val:'❌ Not Eligible',cls:'uae'},
+              {label:'Tax Payable (9% standard)',val:fmt(amt*0.09,'AED'),isTotal:true}
+            ];
+          }
+          const nq=parseFloat(fields.nonqual)||0;
+          const qualTax=0;
+          const nqTax=nq*0.09;
+          return[
+            {label:'Qualifying Income',val:fmt(amt,'AED')},
+            {label:'Tax on Qualifying Income (0%)',val:fmt(0,'AED'),cls:'uae'},
+            {label:'Non-Qualifying Income',val:fmt(nq,'AED')},
+            {label:'Tax on Non-Qualifying (9%)',val:fmt(nqTax,'AED'),cls:'uae'},
+            {label:'Total Tax Payable',val:fmt(nqTax,'AED'),isTotal:true}
+          ];
+        },
+        notes:['Must be incorporated in a Qualifying Free Zone to be QFZP','Cannot have taxable presence on mainland UAE','De minimis non-qualifying income threshold: 5% of total revenue or AED 5M (whichever lower)']
+      },
+      excise:{
+        title:'Excise Tax Calculator',subtitle:'UAE Excise Tax — Federal Decree-Law No. 7 of 2017',
+        currency:'AED',currencySymbol:'AED',
+        amountLabel:'Retail Price / CIF Value',defaultAmount:100,maxAmount:50000,
+        fields:[],
+        options:[
+          {label:'Tobacco 100%',rate:100,icon:'🚬',note:'Cigarettes, cigars, waterpipe tobacco'},
+          {label:'Energy Drinks 100%',rate:100,icon:'⚡',note:'Beverages marketed as energy drinks'},
+          {label:'Carbonated Drinks 50%',rate:50,icon:'🥤',note:'Soft drinks with added CO₂'},
+          {label:'Sweetened Beverages 50%',rate:50,icon:'🧃',note:'Beverages with added sugar/sweeteners'},
+        ],
+        calc:(amt,opt)=>{
+          const tax=amt*opt.rate/100;
+          return[
+            {label:'Retail/CIF Price',val:fmt(amt,'AED')},
+            {label:'Excise Tax @ '+opt.rate+'%',val:fmt(tax,'AED'),cls:'uae'},
+            {label:'Total Consumer Price',val:fmt(amt+tax,'AED'),isTotal:true}
+          ];
+        },
+        notes:['Excise tax is collected at import or first production in UAE','Applicable to producers, importers and stockpilers','Must register with FTA before dealing in excisable goods']
+      }
+    },
+    india:{
+      gst:{
+        title:'GST Calculator',subtitle:'India Goods & Services Tax — CBDT / GST Council',
+        currency:'INR',currencySymbol:'₹',
+        amountLabel:'Transaction / Invoice Amount (₹)',defaultAmount:10000,maxAmount:1000000,
+        fields:[
+          {id:'gsttype',type:'select',label:'Transaction Type',options:[
+            {value:'inter',label:'Inter-State (IGST)'},
+            {value:'intra',label:'Intra-State (CGST + SGST)'},
+          ]},
+          {id:'inclusive',type:'checkbox',label:'Amount is GST Inclusive'},
+        ],
+        options:[
+          {label:'0%',rate:0,icon:'🌾',note:'Essential goods — food grains, books'},
+          {label:'5%',rate:5,icon:'🧴',note:'Household items, medicines, transport'},
+          {label:'12%',rate:12,icon:'📦',note:'Processed food, computers, business services'},
+          {label:'18%',rate:18,icon:'⚙️',note:'Most services, electronics, AC, paint'},
+          {label:'28%',rate:28,icon:'💎',note:'Luxury goods, tobacco, cars, aerated drinks'},
+        ],
+        calc:(amt,opt,fields)=>{
+          const isInclusive=!!fields.inclusive;
+          let base=amt;
+          if(isInclusive&&opt.rate>0) base=amt/(1+opt.rate/100);
+          const tax=base*opt.rate/100;
+          const rows=[{label:'Base Amount (excl. GST)',val:fmt(base,'₹')}];
+          if(fields.gsttype==='intra'&&opt.rate>0){
+            rows.push({label:'CGST @ '+(opt.rate/2)+'%',val:fmt(tax/2,'₹'),cls:'india'});
+            rows.push({label:'SGST @ '+(opt.rate/2)+'%',val:fmt(tax/2,'₹'),cls:'india'});
+          } else if(opt.rate>0){
+            rows.push({label:'IGST @ '+opt.rate+'%',val:fmt(tax,'₹'),cls:'india'});
+          }
+          rows.push({label:'Total GST',val:fmt(tax,'₹'),cls:'india'});
+          rows.push({label:'Total Payable',val:fmt(base+tax,'₹'),isTotal:true});
+          return rows;
+        },
+        notes:['GST composition scheme available for turnover ≤ ₹1.5 Crore','Monthly GSTR-3B & quarterly GSTR-1 filing mandatory','E-invoice mandatory for businesses with turnover > ₹5 Crore']
+      },
+      income:{
+        title:'Income Tax Calculator',subtitle:'India Individual Income Tax — FY 2025-26 New Regime (Default)',
+        currency:'INR',currencySymbol:'₹',
+        amountLabel:'Annual Gross Income (₹)',defaultAmount:800000,maxAmount:5000000,
+        fields:[
+          {id:'regime',type:'select',label:'Tax Regime',options:[
+            {value:'new',label:'New Regime (Default from FY 2023-24)'},
+            {value:'old',label:'Old Regime (with deductions)'},
+          ]},
+          {id:'deductions',type:'number',label:'Total Deductions (Old Regime only, ₹)',placeholder:'150000'},
+          {id:'hraexempt',type:'number',label:'HRA Exempt (Old Regime only, ₹)',placeholder:'0'},
+        ],
+        options:[
+          {label:'Individual (< 60 yrs)',rate:0,icon:'👤',note:'Standard individual'},
+          {label:'Senior Citizen (60-80)',rate:0,icon:'👴',note:'Basic exemption ₹3L (old) / ₹4L (new)'},
+          {label:'Super Senior (>80)',rate:0,icon:'🧓',note:'Basic exemption ₹5L (old only)'},
+        ],
+        calc:(amt,opt,fields)=>{
+          const regime=fields.regime||'new';
+          let taxable=amt;
+          if(regime==='old'){
+            const ded=parseFloat(fields.deductions)||0;
+            const hra=parseFloat(fields.hraexempt)||0;
+            taxable=Math.max(0,amt-ded-hra-50000); // 50k standard deduction
+          } else {
+            taxable=Math.max(0,amt-75000); // 75k standard deduction new regime
+          }
+          let tax=0;
+          if(regime==='new'){
+            const slabs=[
+              [400000,0],[400000,0.05],[400000,0.10],[400000,0.15],[400000,0.20],[Infinity,0.30]
+            ];
+            // New FY2025-26: 0-4L=0%, 4-8L=5%, 8-12L=10%, 12-16L=15%, 16-20L=20%, 20-24L=25%, 24+L=30%
+            const s2=[
+              [400000,0],[400000,0.05],[400000,0.10],[400000,0.15],[400000,0.20],[400000,0.25],[Infinity,0.30]
+            ];
+            let rem=taxable;let prev=0;
+            for(const [slab,r] of s2){
+              if(rem<=0)break;
+              const chunk=Math.min(rem,slab);
+              tax+=chunk*r;rem-=chunk;
+            }
+            // Rebate u/s 87A if taxable ≤ ₹12L
+            if(taxable<=1200000) tax=0;
+          } else {
+            // Old regime
+            const ex = opt.label.includes('Super') ? 500000 : (opt.label.includes('Senior') ? 300000 : 250000);
+            const s=[
+              [ex,0],[250000,0.05],[500000,0.20],[Infinity,0.30]
+            ];
+            let rem=Math.max(0,taxable-ex);
+            if(rem>0){
+              const s2=[[250000,0.05],[500000,0.20],[Infinity,0.30]];
+              for(const [slab,r] of s2){if(rem<=0)break;const chunk=Math.min(rem,slab);tax+=chunk*r;rem-=chunk;}
+            }
+            // Rebate u/s 87A if taxable ≤ ₹5L
+            if(taxable<=500000) tax=0;
+          }
+          const surcharge = taxable>5000000&&taxable<=10000000 ? tax*0.10 : (taxable>10000000 ? tax*0.15 : 0);
+          const cess=(tax+surcharge)*0.04;
+          const totalTax=tax+surcharge+cess;
+          return[
+            {label:'Gross Income',val:fmt(amt,'₹')},
+            {label:'Taxable Income (after deductions)',val:fmt(taxable,'₹')},
+            {label:'Income Tax',val:fmt(tax,'₹'),cls:'india'},
+            surcharge>0?{label:'Surcharge',val:fmt(surcharge,'₹'),cls:'india'}:null,
+            {label:'Health & Education Cess (4%)',val:fmt(cess,'₹'),cls:'india'},
+            {label:'Total Tax Liability',val:fmt(totalTax,'₹'),isTotal:true},
+            {label:'Effective Tax Rate',val:(totalTax/amt*100).toFixed(2)+'%'},
+          ].filter(Boolean);
+        },
+        notes:['New Regime: No deductions except 75K standard deduction','Under New Regime, rebate u/s 87A makes income ≤ ₹12L effectively tax-free','Old Regime allows 80C (₹1.5L), 80D, HRA, LTA deductions']
+      },
+      corp:{
+        title:'Corporate Tax Calculator',subtitle:'India Corporate Income Tax — Finance Act 2024',
+        currency:'INR',currencySymbol:'₹',
+        amountLabel:'Net Taxable Profit (₹)',defaultAmount:5000000,maxAmount:100000000,
+        fields:[
+          {id:'listing',type:'select',label:'Company Type',options:[
+            {value:'general',label:'Domestic Company (General — 30%)'},
+            {value:'optout',label:'Domestic Company (115BAA opt — 22%)'},
+            {value:'newmfg',label:'New Manufacturing (115BAB — 15%)'},
+            {value:'foreign',label:'Foreign Company (40%)'},
+          ]}
+        ],
+        options:[
+          {label:'Turnover ≤ ₹400 Cr',rate:25,icon:'🏢',note:'Domestic companies up to ₹400Cr turnover (general)'},
+          {label:'Turnover > ₹400 Cr',rate:30,icon:'🏭',note:'Domestic companies above ₹400Cr turnover'},
+          {label:'With 115BAA',rate:22,icon:'⚡',note:'Special concessional rate'},
+          {label:'115BAB (New Mfg)',rate:15,icon:'🏗️',note:'New manufacturing companies incorporated after Oct 2019'},
+        ],
+        calc:(amt,opt,fields)=>{
+          const type=fields.listing||'general';
+          let rate=opt.rate;
+          let surRate=0;
+          if(type==='general'||type==='optout'){
+            if(amt<=10000000)surRate=0.07;
+            else if(amt<=100000000)surRate=0.12;
+            else surRate=0.12;
+          }
+          const tax=amt*rate/100;
+          const sur=tax*surRate;
+          const cess=(tax+sur)*0.04;
+          const total=tax+sur+cess;
+          return[
+            {label:'Net Taxable Profit',val:fmt(amt,'₹')},
+            {label:'Base Tax @ '+rate+'%',val:fmt(tax,'₹'),cls:'india'},
+            surRate>0?{label:'Surcharge @ '+(surRate*100)+'%',val:fmt(sur,'₹'),cls:'india'}:null,
+            {label:'Health & Education Cess (4%)',val:fmt(cess,'₹'),cls:'india'},
+            {label:'Total Tax Payable',val:fmt(total,'₹'),isTotal:true},
+            {label:'Effective Rate',val:(total/amt*100).toFixed(2)+'%'},
+          ].filter(Boolean);
+        },
+        notes:['MAT (Minimum Alternate Tax) @ 15% on book profit if MAT > normal tax','Companies opting for 115BAA/115BAB cannot claim most deductions/exemptions','Dividend income is now taxable in hands of shareholder at applicable slab rates']
+      },
+      tds:{
+        title:'TDS Calculator',subtitle:'Tax Deducted at Source — Finance Act 2024 Rates',
+        currency:'INR',currencySymbol:'₹',
+        amountLabel:'Payment Amount (₹)',defaultAmount:50000,maxAmount:5000000,
+        fields:[
+          {id:'pan',type:'select',label:'PAN Status',options:[
+            {value:'pan',label:'PAN Available'},
+            {value:'nopan',label:'No PAN (higher TDS)'},
+          ]}
+        ],
+        options:[
+          {label:'Salary (Sec 192)',rate:0,icon:'💼',note:'Per slab rate — use Income Tax calc'},
+          {label:'Interest (Sec 194A)',rate:10,icon:'🏦',note:'Bank/FD interest'},
+          {label:'Contractor (Sec 194C)',rate:1,icon:'🔨',note:'Individual: 1%, Company: 2%'},
+          {label:'Rent (Sec 194I)',rate:10,icon:'🏠',note:'Plant/Machinery: 2%, Land/Bldg: 10%'},
+          {label:'Professional (Sec 194J)',rate:10,icon:'💡',note:'Technical services: 2%, Others: 10%'},
+          {label:'Commission (Sec 194H)',rate:5,icon:'🤝',note:'Brokerage or commission'},
+        ],
+        calc:(amt,opt,fields)=>{
+          let rate=opt.rate;
+          if(fields.pan==='nopan'&&rate>0) rate=Math.max(rate,20);
+          const tds=amt*rate/100;
+          const net=amt-tds;
+          return[
+            {label:'Gross Payment',val:fmt(amt,'₹')},
+            {label:'TDS @ '+rate+'%',val:fmt(tds,'₹'),cls:'india'},
+            {label:'Net Payment to Payee',val:fmt(net,'₹'),isTotal:true},
+            {label:'TDS to Deposit (Govt)',val:fmt(tds,'₹')},
+          ];
+        },
+        notes:['TDS must be deposited by 7th of following month (March: 30th April)','Obtain Form 16/16A from deductor for claiming TDS credit in ITR','If PAN not provided, TDS at 20% or applicable rate whichever is higher']
+      },
+      capital:{
+        title:'Capital Gains Tax Calculator',subtitle:'India Capital Gains — Finance Act 2024 (Budget Amendments)',
+        currency:'INR',currencySymbol:'₹',
+        amountLabel:'Sale Proceeds (₹)',defaultAmount:200000,maxAmount:10000000,
+        fields:[
+          {id:'cost',type:'number',label:'Cost of Acquisition (₹)',placeholder:'100000'},
+          {id:'indexed',type:'checkbox',label:'Apply Indexation (Old Regime LTCG only)'},
+          {id:'cii_purchase',type:'number',label:'CII of Purchase Year',placeholder:'351'},
+          {id:'cii_sale',type:'number',label:'CII of Sale Year',placeholder:'363'},
+        ],
+        options:[
+          {label:'Listed Equity STCG (<12m)',rate:20,icon:'📈',note:'New rate from Budget 2024'},
+          {label:'Listed Equity LTCG (>12m)',rate:12.5,icon:'📊',note:'>₹1.25L exempt annually'},
+          {label:'Property LTCG (>24m)',rate:12.5,icon:'🏠',note:'No indexation from Aug 2024'},
+          {label:'Debt MF (any period)',rate:0,icon:'📄',note:'Taxable at slab rate'},
+        ],
+        calc:(amt,opt,fields)=>{
+          const cost=parseFloat(fields.cost)||0;
+          let indexedCost=cost;
+          if(fields.indexed&&fields.cii_purchase&&fields.cii_sale){
+            indexedCost=cost*(parseFloat(fields.cii_sale)/parseFloat(fields.cii_purchase));
+          }
+          let gain=amt-indexedCost;
+          let exempt=0;
+          if(opt.label.includes('LTCG')&&opt.label.includes('Equity')) exempt=125000;
+          const taxableGain=Math.max(0,gain-exempt);
+          const rate=opt.rate;
+          const tax=opt.label.includes('Debt')?0:taxableGain*rate/100;
+          return[
+            {label:'Sale Proceeds',val:fmt(amt,'₹')},
+            {label:fields.indexed?'Indexed Cost of Acquisition':'Cost of Acquisition',val:fmt(indexedCost,'₹')},
+            {label:'Capital Gain',val:fmt(gain,'₹')},
+            exempt>0?{label:'Annual Exemption (₹1.25L)',val:fmt(exempt,'₹'),cls:'india'}:null,
+            {label:'Taxable Gain',val:fmt(taxableGain,'₹')},
+            opt.label.includes('Debt')
+              ?{label:'Tax',val:'At slab rate',cls:'india'}
+              :{label:'Capital Gains Tax @ '+rate+'%',val:fmt(tax,'₹'),cls:'india'},
+            {label:'Net Gain After Tax',val:fmt(gain-tax,'₹'),isTotal:true},
+          ].filter(Boolean);
+        },
+        notes:['STCG on listed equity raised to 20% from July 23, 2024 (was 15%)','LTCG on all assets (except debt) is 12.5% without indexation from Aug 2024','Reinvest in bonds u/s 54EC (max ₹50L) to save LTCG on property']
+      }
+    },
+    nepal:{
+      vat:{
+        title:'VAT Calculator',subtitle:'Nepal IRD — Value Added Tax Act 2052 (Single 13% Rate)',
+        currency:'NPR',currencySymbol:'NPR',
+        amountLabel:'Transaction Amount (NPR)',defaultAmount:50000,maxAmount:2000000,
+        fields:[
+          {id:'inclusive',type:'checkbox',label:'Amount is VAT Inclusive'},
+          {id:'tradetype',type:'select',label:'Transaction Type',options:[
+            {value:'std',label:'Standard Taxable Supply'},
+            {value:'export',label:'Export (Zero-Rated)'},
+            {value:'exempt',label:'Exempt Supply'},
+          ]}
+        ],
+        options:[
+          {label:'Standard 13%',rate:13,icon:'🧾',note:'General goods & services'},
+          {label:'Zero-Rated 0%',rate:0,icon:'🚢',note:'Exports, diplomatic'},
+          {label:'Exempt 0%',rate:0,icon:'🌾',note:'Agri, basic health, education'},
+        ],
+        calc:(amt,opt,fields)=>{
+          const inclusive=!!fields.inclusive;
+          let base=amt;
+          if(inclusive&&opt.rate>0) base=amt/(1+opt.rate/100);
+          const tax=base*opt.rate/100;
+          return[
+            {label:'Base Amount (excl. VAT)',val:fmt(base,'NPR')},
+            {label:'VAT @ '+opt.rate+'%',val:fmt(tax,'NPR'),cls:'nepal'},
+            {label:'Total Payable',val:fmt(base+tax,'NPR'),isTotal:true},
+          ];
+        },
+        notes:['VAT registration mandatory if annual turnover ≥ NPR 20 Lakh','File VAT return (VAT Form 13) monthly by 25th of following month','Nepal uses single-rate VAT unlike India\'s multi-rate GST']
+      },
+      income:{
+        title:'Income Tax Calculator',subtitle:'Nepal Income Tax — FY 2081/82 (2024/25) IRD Nepal',
+        currency:'NPR',currencySymbol:'NPR',
+        amountLabel:'Annual Income (NPR)',defaultAmount:800000,maxAmount:5000000,
+        fields:[
+          {id:'type',type:'select',label:'Taxpayer Category',options:[
+            {value:'individual',label:'Individual (Natural Person)'},
+            {value:'couple',label:'Married Couple (Joint Filing)'},
+          ]},
+          {id:'ssf',type:'checkbox',label:'Contribution to SSF / CIT (deductible)'},
+          {id:'ssf_amt',type:'number',label:'SSF / CIT Contribution (NPR)',placeholder:'0'},
+        ],
+        options:[
+          {label:'Employment Income',rate:0,icon:'💼',note:'Salary, allowances'},
+          {label:'Business Income',rate:0,icon:'🏪',note:'Self-employed / business'},
+          {label:'Investment Income',rate:0,icon:'📈',note:'Interest, dividend, rent'},
+        ],
+        calc:(amt,opt,fields)=>{
+          const type=fields.type||'individual';
+          const ssf=fields.ssf?Math.min(parseFloat(fields.ssf_amt)||0,amt*0.33):0;
+          const taxable=Math.max(0,amt-ssf);
+          // Individual slabs FY 2081/82
+          let slabs;
+          if(type==='couple'){
+            // Couple threshold is NPR 6L (vs 5L individual)
+            slabs=[[600000,0.01],[200000,0.10],[300000,0.20],[1000000,0.30],[Infinity,0.36]];
+          } else {
+            slabs=[[500000,0.01],[200000,0.10],[300000,0.20],[1000000,0.30],[Infinity,0.36]];
+          }
+          let tax=0; let rem=taxable;
+          for(const [s,r] of slabs){if(rem<=0)break;const c=Math.min(rem,s);tax+=c*r;rem-=c;}
+          const additionalTax=taxable>2000000?(taxable-2000000)*0.02:0; // 2% surcharge above NPR 20L
+          const total=tax+additionalTax;
+          return[
+            {label:'Gross Annual Income',val:fmt(amt,'NPR')},
+            ssf>0?{label:'SSF/CIT Deduction',val:fmt(ssf,'NPR')}:null,
+            {label:'Taxable Income',val:fmt(taxable,'NPR')},
+            {label:'Income Tax',val:fmt(tax,'NPR'),cls:'nepal'},
+            additionalTax>0?{label:'2% Surcharge (>NPR 20L)',val:fmt(additionalTax,'NPR'),cls:'nepal'}:null,
+            {label:'Total Tax Payable',val:fmt(total,'NPR'),isTotal:true},
+            {label:'Effective Rate',val:(total/amt*100).toFixed(2)+'%'},
+          ].filter(Boolean);
+        },
+        notes:['1% tax on first slab is unique to Nepal (not 0%)','Tax Clearance Certificate (TCC) required for most government dealings','SSF/CIT contributions are deductible up to 1/3 of income']
+      },
+      corp:{
+        title:'Corporate Tax Calculator',subtitle:'Nepal Corporate Income Tax — Income Tax Act 2058',
+        currency:'NPR',currencySymbol:'NPR',
+        amountLabel:'Net Taxable Profit (NPR)',defaultAmount:2000000,maxAmount:50000000,
+        fields:[
+          {id:'sector',type:'select',label:'Industry/Sector',options:[
+            {value:'general',label:'General Company (25%)'},
+            {value:'bank',label:'Bank / Finance Company (30%)'},
+            {value:'listed',label:'Listed Company Concession (23%)'},
+            {value:'special',label:'Special Industry (15%)'},
+            {value:'hydro',label:'Hydropower / Energy (varies)'},
+          ]}
+        ],
+        options:[
+          {label:'General 25%',rate:25,icon:'🏢',note:'Manufacturing, trading, service companies'},
+          {label:'Bank 30%',rate:30,icon:'🏦',note:'Commercial banks, development banks, finance cos'},
+          {label:'Listed 23%',rate:23,icon:'📈',note:'Listed companies get 2% concession'},
+          {label:'Special 15%',rate:15,icon:'⚡',note:'Special industries declared by government'},
+        ],
+        calc:(amt,opt,fields)=>{
+          const sector=fields.sector||'general';
+          const rateMap={general:25,bank:30,listed:23,special:15,hydro:20};
+          const rate=rateMap[sector]||opt.rate;
+          const tax=amt*rate/100;
+          const additional=amt>10000000?(amt-10000000)*0.01:0; // 1% surcharge above NPR 1Cr
+          const total=tax+additional;
+          return[
+            {label:'Taxable Profit',val:fmt(amt,'NPR')},
+            {label:'Corporate Tax @ '+rate+'%',val:fmt(tax,'NPR'),cls:'nepal'},
+            additional>0?{label:'Additional Tax (>NPR 1Cr)',val:fmt(additional,'NPR'),cls:'nepal'}:null,
+            {label:'Total Tax Payable',val:fmt(total,'NPR'),isTotal:true},
+            {label:'Effective Rate',val:(total/amt*100).toFixed(2)+'%'},
+          ].filter(Boolean);
+        },
+        notes:['Tax year in Nepal: Shrawan to Ashad (mid-July to mid-July)','Advance tax payable in 3 installments during fiscal year','Foreign companies operating in Nepal pay 25% on Nepal-source income']
+      },
+      tds:{
+        title:'TDS / Withholding Tax Calculator',subtitle:'Nepal Tax Deducted at Source — Income Tax Act 2058',
+        currency:'NPR',currencySymbol:'NPR',
+        amountLabel:'Payment Amount (NPR)',defaultAmount:100000,maxAmount:5000000,
+        fields:[],
+        options:[
+          {label:'Employment (Sec 87)',rate:0,icon:'💼',note:'Slab rate — per income tax slabs'},
+          {label:'Interest (Sec 88)',rate:5,icon:'🏦',note:'Bank/cooperative/company interest'},
+          {label:'Dividend (Sec 88)',rate:5,icon:'📈',note:'Dividend from resident company'},
+          {label:'Rental (Sec 88)',rate:10,icon:'🏠',note:'House/land rental income'},
+          {label:'Contractor (Sec 88)',rate:1.5,icon:'🔨',note:'Contract payments above NPR 50K'},
+          {label:'Consulting (Sec 88)',rate:15,icon:'💡',note:'Professional / consulting fee'},
+        ],
+        calc:(amt,opt)=>{
+          const tds=amt*opt.rate/100;
+          const net=amt-tds;
+          return[
+            {label:'Gross Payment',val:fmt(amt,'NPR')},
+            {label:'TDS @ '+opt.rate+'%',val:fmt(tds,'NPR'),cls:'nepal'},
+            {label:'Net Payment to Payee',val:fmt(net,'NPR'),isTotal:true},
+            {label:'Amount to Deposit (IRD)',val:fmt(tds,'NPR')},
+          ];
+        },
+        notes:['TDS must be deposited by 25th of following month to IRD','File TDS return (Form 4-4-G) quarterly','Collect TDS certificate from deductor for annual return filing']
+      }
+    }
+  };
+  return defs[country]?.[tool] || null;
+}
+
+/* ── BUILD CALC HTML ── */
+function buildCalcHTML(country, tool, def){
+  if(!def) return '<div style="padding:40px;color:rgba(255,255,255,0.3);text-align:center;">Tool not available.</div>';
+  const cs = country; // color class
+  const firstOpt = def.options[0];
+
+  let optionsHTML = def.options.map((o,i)=>`
+    <div class="rpill ${i===0?'active '+cs:''}" data-idx="${i}" onclick="selectOpt('${country}','${tool}',${i},this)" style="cursor:pointer;">
+      <span class="rpill-icon">${o.icon}</span>
+      ${o.label}
+      <span style="display:block;font-size:10px;margin-top:3px;opacity:0.6;font-weight:500;">${o.note}</span>
+    </div>
+  `).join('');
+
+  let extraFieldsHTML = '';
+  if(def.fields && def.fields.length){
+    def.fields.forEach(f=>{
+      extraFieldsHTML += `<div class="calc-section">`;
+      extraFieldsHTML += `<label class="calc-label" for="${country}_${f.id}">${f.label}</label>`;
+      if(f.type==='checkbox'){
+        extraFieldsHTML += `<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);">
+          <input type="checkbox" id="${country}_${f.id}" style="width:18px;height:18px;cursor:pointer;accent-color:var(--${cs==='uae'?'pink':cs==='india'?'india':'nepal'});">
+          <span style="font-size:13px;color:rgba(255,255,255,0.5);">${f.label}</span>
+        </div>`;
+      } else if(f.type==='select'){
+        extraFieldsHTML += `<select class="calc-select" id="${country}_${f.id}">
+          ${(f.options||[]).map(o=>`<option value="${o.value}">${o.label}</option>`).join('')}
+        </select>`;
+      } else if(f.type==='number'){
+        extraFieldsHTML += `<input type="number" class="calc-input" id="${country}_${f.id}" placeholder="${f.placeholder||''}">`;
+      }
+      extraFieldsHTML += `</div>`;
+    });
+  }
+
+  const sliderClass = `slider-${cs}`;
+  const bgGrad = cs==='uae'?'linear-gradient(135deg,var(--pink),var(--purple))':cs==='india'?'linear-gradient(135deg,var(--india),var(--india2))':'linear-gradient(135deg,var(--nepal),var(--nepal2))';
+  const symColor = cs==='uae'?'var(--gold)':cs==='india'?'var(--india)':'var(--nepal)';
+
+  return `
+  <div class="calc-grid" id="calcGrid_${country}_${tool}">
+    <div class="calc-card">
+      <div class="calc-section">
+        <label class="calc-label">${def.amountLabel}</label>
+        <div class="amount-row">
+          <div class="amount-big" id="amtDisp_${country}_${tool}" style="background:${bgGrad};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${def.currency} ${def.defaultAmount.toLocaleString('en')}</div>
+        </div>
+        <input type="range" class="calc-slider ${sliderClass}" id="amtSlider_${country}_${tool}"
+          min="${def.defaultAmount < 1000 ? 100 : 1000}"
+          max="${def.maxAmount}"
+          step="${def.defaultAmount < 1000 ? 10 : 1000}"
+          value="${def.defaultAmount}"
+          style="background:${buildSliderTrack(def.defaultAmount, def.defaultAmount < 1000 ? 100 : 1000, def.maxAmount, cs)}">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,0.2);font-weight:600;margin-top:5px;">
+          <span>${def.currency} ${(def.defaultAmount < 1000 ? 100 : 1000).toLocaleString()}</span>
+          <span>${def.currency} ${def.maxAmount.toLocaleString()}</span>
+        </div>
+        <div style="margin-top:12px;">
+          <input type="number" class="calc-input" id="amtInput_${country}_${tool}" value="${def.defaultAmount}" placeholder="${def.currency} amount" style="font-size:15px;">
+        </div>
+      </div>
+      ${extraFieldsHTML}
+      <div class="calc-section">
+        <span class="calc-label">${def.options.length > 1 ? 'Tax Rate / Category' : 'Type'}</span>
+        <div class="rate-pills" id="ratePills_${country}_${tool}">
+          ${optionsHTML}
+        </div>
+      </div>
+      <button class="calc-btn ${cs}" onclick="runCalc('${country}','${tool}')" id="calcRunBtn_${country}_${tool}">
+        <div class="calc-btn-bg"></div>
+        <span>⚡ Calculate Tax</span>
+      </button>
+    </div>
+
+    <div class="result-card" id="resultCard_${country}_${tool}">
+      <div class="result-placeholder" id="resultPlaceholder_${country}_${tool}">
+        <div class="result-placeholder-icon">🔢</div>
+        <div class="result-placeholder-text">Enter amount & click Calculate</div>
+      </div>
+      <div class="result-content" id="resultContent_${country}_${tool}">
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildSliderTrack(val, min, max, cs){
+  const pct=((val-min)/(max-min)*100).toFixed(1);
+  const col=cs==='uae'?'var(--pink)':cs==='india'?'var(--india)':'var(--nepal)';
+  return `linear-gradient(90deg,${col} ${pct}%,rgba(255,255,255,0.1) ${pct}%)`;
+}
+
+/* ── INIT CALC EVENTS ── */
+function initCalcEvents(country, tool, def){
+  if(!def) return;
+  const slider = document.getElementById(`amtSlider_${country}_${tool}`);
+  const input  = document.getElementById(`amtInput_${country}_${tool}`);
+  const disp   = document.getElementById(`amtDisp_${country}_${tool}`);
+  if(!slider||!input) return;
+
+  function updateAmt(val){
+    val=Math.max(parseFloat(slider.min),Math.min(parseFloat(slider.max),val));
+    slider.value=val;
+    input.value=val;
+    disp.textContent=def.currency+' '+val.toLocaleString('en');
+    slider.style.background=buildSliderTrack(val,parseFloat(slider.min),parseFloat(slider.max),country);
+  }
+
+  slider.addEventListener('input',function(){updateAmt(parseFloat(this.value)||0);});
+  input.addEventListener('input',function(){
+    const v=parseFloat(this.value)||0;
+    updateAmt(v);
+  });
+
+  // Auto run on change
+  slider.addEventListener('change',()=>runCalc(country,tool));
+  input.addEventListener('change',()=>runCalc(country,tool));
+}
+
+/* ── SELECT OPTION ── */
+function selectOpt(country, tool, idx, el){
+  document.querySelectorAll(`#ratePills_${country}_${tool} .rpill`).forEach(p=>{
+    p.classList.remove('active');p.classList.remove(country);
+  });
+  el.classList.add('active',country);
+  runCalc(country,tool);
+}
+
+/* ── RUN CALCULATION ── */
+function runCalc(country, tool){
+  const def = getCalcDef(country, tool);
+  if(!def) return;
+  const slider = document.getElementById(`amtSlider_${country}_${tool}`);
+  const input  = document.getElementById(`amtInput_${country}_${tool}`);
+  let amt = parseFloat(input?.value||slider?.value||def.defaultAmount)||def.defaultAmount;
+
+  // Get selected option
+  const activePill = document.querySelector(`#ratePills_${country}_${tool} .rpill.active`);
+  const optIdx = activePill ? parseInt(activePill.dataset.idx) : 0;
+  const opt = def.options[optIdx] || def.options[0];
+
+  // Collect extra fields
+  const fields={};
+  if(def.fields){
+    def.fields.forEach(f=>{
+      const el=document.getElementById(`${country}_${f.id}`);
+      if(!el) return;
+      if(f.type==='checkbox') fields[f.id]=el.checked;
+      else fields[f.id]=el.value;
+    });
+  }
+
+  const rows = def.calc(amt, opt, fields);
+  renderResult(country, tool, def, rows, amt, opt);
+}
+
+/* ── RENDER RESULT ── */
+function renderResult(country, tool, def, rows, amt, opt){
+  const ph = document.getElementById(`resultPlaceholder_${country}_${tool}`);
+  const rc = document.getElementById(`resultContent_${country}_${tool}`);
+  if(!ph||!rc) return;
+
+  ph.style.display='none';
+  rc.classList.add('show');
+
+  const cs = country;
+  const totalRow = rows.find(r=>r&&r.isTotal);
+  const totalVal = totalRow ? totalRow.val : '';
+
+  const rowsHTML = rows.filter(r=>r&&!r.isTotal).map(r=>`
+    <div class="res-row">
+      <span class="res-row-label">${r.label}</span>
+      <span class="res-row-val ${r.cls?'highlight-'+r.cls:''}">${r.val}</span>
+    </div>
+  `).join('');
+
+  const notesHTML = (def.notes||[]).map(n=>`
+    <div class="res-note"><span class="res-note-icon">ℹ️</span>${n}</div>
+  `).join('');
+
+  // Quick bar chart (base vs tax vs total)
+  const allRows = rows.filter(Boolean);
+  const chartBars = allRows.slice(0,4).map(r=>{
+    const numMatch = r.val.match(/[\d,]+(\.\d+)?/);
+    const num = numMatch ? parseFloat(numMatch[0].replace(/,/g,'')) : 0;
+    return {label:r.label.split(' ').slice(-1)[0], val:num};
+  });
+  const chartMax = Math.max(...chartBars.map(b=>b.val),1);
+  const barColors=[
+    cs==='uae'?'rgba(180,79,255,0.5)':cs==='india'?'rgba(255,153,51,0.5)':'rgba(220,20,60,0.5)',
+    cs==='uae'?'var(--pink)':cs==='india'?'var(--india)':'var(--nepal)',
+    cs==='uae'?'var(--cyan)':cs==='india'?'var(--india2)':'var(--nepal2)',
+    'rgba(255,255,255,0.2)'
+  ];
+  const chartHTML = chartBars.map((b,i)=>`
+    <div class="rc-bar-wrap">
+      <div class="rc-bar" style="height:${Math.max(4,(b.val/chartMax*100)).toFixed(1)}%;background:${barColors[i%barColors.length]};min-height:4px;"></div>
+      <span class="rc-bar-label">${b.label.substring(0,5)}</span>
+    </div>
+  `).join('');
+
+  rc.innerHTML = `
+    <div class="result-head">
+      <span class="result-title">${def.title}</span>
+      <span class="result-tag ${cs}">${opt.icon} ${opt.label}</span>
+    </div>
+    <div class="res-rows">${rowsHTML}</div>
+    ${totalRow?`<div class="res-total ${cs}">
+      <span class="res-total-label">RESULT</span>
+      <span class="res-total-val">${totalVal}</span>
+    </div>`:''}
+    <div class="result-chart">
+      <div class="rc-label">Breakdown</div>
+      <div class="rc-bars">${chartHTML}</div>
+    </div>
+    ${notesHTML?`<div class="res-notes">${notesHTML}</div>`:''}
+    <div class="export-row">
+      <button class="export-btn" onclick="copyResult('${country}','${tool}')">📋 Copy Result</button>
+      <button class="export-btn" onclick="printResult('${country}','${tool}')">🖨️ Print / PDF</button>
+    </div>
+  `;
+}
+
+/* ── UTILITY FUNCS ── */
+function fmt(num, sym){
+  if(typeof num!=='number'||isNaN(num)) return sym+' 0';
+  return sym+' '+Math.round(num*100)/100..toLocaleString('en-IN');
+}
+
+function copyResult(country, tool){
+  const rc = document.getElementById(`resultContent_${country}_${tool}`);
+  if(!rc) return;
+  const text = rc.innerText;
+  navigator.clipboard.writeText('Emunib Tax Calculation\n\n'+text).then(()=>{
+    showToast('Result copied to clipboard!','success');
+  });
+}
+
+function printResult(country, tool){
+  const rc = document.getElementById(`resultContent_${country}_${tool}`);
+  if(!rc) return;
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Tax Calculation — Emunib</title>
+  <style>body{font-family:sans-serif;padding:32px;background:#fff;color:#222;}
+  .res-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;}
+  .res-total{display:flex;justify-content:space-between;padding:12px 0;font-weight:700;font-size:18px;border-top:2px solid #222;}
+  h2{color:#333;}p{color:#666;font-size:13px;}</style></head><body>
+  <h2>Emunib — Tax Calculation Report</h2>
+  <p>Country: ${country.toUpperCase()} | Tool: ${tool.toUpperCase()} | Date: ${new Date().toLocaleDateString()}</p>
+  <hr>
+  ${rc.innerHTML}
+  <hr><p style="font-size:11px;color:#999;">Generated by Emunib Multi-Country Tax Platform | emunib.com</p>
+  </body></html>`);
+  w.document.close();w.print();
+}
+
+function showToast(msg, type){
+  const t=document.createElement('div');
+  t.style.cssText=`position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(6,255,165,0.15);border:1px solid rgba(6,255,165,0.4);backdrop-filter:blur(20px);border-radius:14px;padding:12px 24px;font-size:14px;font-weight:700;color:#fff;z-index:99999;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.4s;opacity:0;`;
+  t.textContent='✅ '+msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{t.style.transform='translateX(-50%) translateY(0)';t.style.opacity='1';});});
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(60px)';setTimeout(()=>t.remove(),500);},3000);
+}
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded',()=>{
+  // Init default UAE VAT calculator
+  renderCalc('uae','vat');
+  // Ticker pause on hover
+  const track=document.querySelector('.ticker-track');
+  if(track){
+    track.parentElement.addEventListener('mouseenter',()=>track.style.animationPlayState='paused');
+    track.parentElement.addEventListener('mouseleave',()=>track.style.animationPlayState='running');
+  }
+});
+</script>
 </body>
 </html>
